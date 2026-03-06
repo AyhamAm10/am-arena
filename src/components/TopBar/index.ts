@@ -1,0 +1,1 @@
+export {Factory as TopBar} from "./factory"
