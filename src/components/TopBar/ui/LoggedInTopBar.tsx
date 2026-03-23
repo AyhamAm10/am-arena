@@ -62,6 +62,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.darkBackground2,
   },
   left: {
     flexDirection: "row",

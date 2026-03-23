@@ -6,7 +6,7 @@ export type TournamentCardState = {
   participantsCurrent: number;
   participantsMax: number;
   timeRemaining: string;
-  imageSource?: ImageSourcePropType;
+  imageSource?: string;
   onJoinPress?: () => void;
 };
 

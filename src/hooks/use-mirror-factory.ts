@@ -34,12 +34,12 @@ const mirrorFactory = <T extends object>(store: T) => {
   const useMirrorRegistry = <U extends keyof T>(
     state: U,
     params: T[U],
-    type: "value" | "reference" = "reference"
+    trigger?: any
   ) => {
-    useCompareEffect(type)(() => {
+    useEffect(() => {
       internalStore.setState((s) => ({ ...s, [state]: params }));
-    }, [params]);
-
+    }, [params, trigger]);
+  
     return params;
   };
 

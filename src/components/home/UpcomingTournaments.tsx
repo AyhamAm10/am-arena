@@ -16,7 +16,7 @@ export type TournamentItem = {
   prize: string;
   participantsCurrent: number;
   participantsMax: number;
-  timeRemaining: string;
+  timeRemaining?: string ;
   imageSource?: TournamentCardState["imageSource"];
   onJoinPress?: () => void;
 };
@@ -36,7 +36,7 @@ function buildById(
       prize: t.prize,
       participantsCurrent: t.participantsCurrent,
       participantsMax: t.participantsMax,
-      timeRemaining: t.timeRemaining,
+      timeRemaining: t.timeRemaining ?? "",
       imageSource: t.imageSource,
       onJoinPress: t.onJoinPress,
     };

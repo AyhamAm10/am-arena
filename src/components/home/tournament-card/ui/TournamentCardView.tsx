@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import type { TournamentCardState } from "../state/init";
+import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 
 type Props = {
   card: TournamentCardState | undefined;
@@ -27,11 +28,13 @@ export default function TournamentCardView({ card }: Props) {
     onJoinPress,
   } = card;
 
+  console.log("IMAGE SOURCE:", imageSource);
+  console.log("FORMAT IMAGE URL:", formatImageUrl(imageSource ?? ""));
   return (
     <View style={styles.container}>
       <View style={styles.imageWrap}>
         {imageSource ? (
-          <Image source={imageSource} style={styles.image} resizeMode="cover" />
+          <Image source={{ uri: formatImageUrl(imageSource) }} style={styles.image} resizeMode="cover" />
         ) : (
           <View style={styles.imagePlaceholder}>
             <Icon name="sports-esports" size={40} color={colors.grey} />

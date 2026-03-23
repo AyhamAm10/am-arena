@@ -1,6 +1,9 @@
 import { Tabs, useRouter, useSegments } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import BottomNav from "../../components/BottomNav/ui/BottomNav";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const TAB_ROUTES: Record<string, string> = {
   Home: "/",
@@ -41,6 +44,7 @@ function TabBarWithRouter() {
 
 export default function TabsLayout() {
   return (
+    <QueryClientProvider client={queryClient}>
     <View style={styles.root}>
       <Tabs
         screenOptions={{
@@ -56,6 +60,7 @@ export default function TabsLayout() {
       </Tabs>
       <TabBarWithRouter />
     </View>
+    </QueryClientProvider>
   );
 }
 
