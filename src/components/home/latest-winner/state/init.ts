@@ -3,7 +3,7 @@ import { ImageSourcePropType } from "react-native";
 type InitState = {
   teamName: string;
   tournamentName: string;
-  imageSource?: ImageSourcePropType;
+  imageSource?: string;
 };
 
 const store = (): InitState => ({

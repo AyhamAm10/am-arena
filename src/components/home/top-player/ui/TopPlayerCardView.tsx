@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import type { TopPlayerCardState } from "../state/init";
+import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 
 type Props = {
   card: TopPlayerCardState | undefined;
@@ -17,6 +18,7 @@ export default function TopPlayerCardView({ card }: Props) {
   if (!card) return null;
 
   const { rank, avatarSource, name, tier, xp, xpProgress } = card;
+  console.log("avatarSource", avatarSource);
   const clampedProgress = Math.min(1, Math.max(0, xpProgress));
 
   return (
@@ -25,7 +27,7 @@ export default function TopPlayerCardView({ card }: Props) {
         <Text style={styles.rankText}>{rank}</Text>
       </View>
       {avatarSource ? (
-        <Image source={avatarSource} style={styles.avatar} />
+        <Image source={{ uri: formatImageUrl(avatarSource) }} style={styles.avatar} />
       ) : (
         <View style={styles.avatarPlaceholder}>
           <Icon name="person" size={28} color={colors.grey} />

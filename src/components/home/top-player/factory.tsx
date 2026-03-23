@@ -8,6 +8,7 @@ export type TopPlayerFactoryProps = InitTopPlayerState & {
 
 export function Factory(props: TopPlayerFactoryProps) {
   const { instanceId, byId } = props;
+  
   return (
     <Init byId={byId}>
       <UiFactory instanceId={instanceId} />

@@ -3,16 +3,20 @@ import { parseApiResponse } from "../axios/apiResponseParser";
 import { ApiResponse } from "../types/api-response";
 import type {
   AuthLoginBody,
-  AuthRegisterBody,
   AuthTokensResponse,
 } from "../types/auth.types";
 
 export async function register(
-  body: AuthRegisterBody
+  body: FormData
 ): Promise<AuthTokensResponse> {
   const res = await axiosInstance.post<ApiResponse<AuthTokensResponse>>(
     "/auth/register",
-    body
+    body,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   return parseApiResponse(res);
 }

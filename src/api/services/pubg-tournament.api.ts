@@ -14,3 +14,13 @@ export const getPubgTournaments = async (
 
   return parseApiResponse(res);
 };
+
+export const getPubgTournamentById = async (
+  tournamentId: string
+): Promise<PubgGame> => {
+  const res = await axiosInstance.get<ApiResponse<PubgGame>>(
+    `/pubg-tournament/${tournamentId}`
+  );
+
+  return parseApiResponse(res);
+};

@@ -1,8 +1,8 @@
-import { ImageSourcePropType } from "react-native";
+
 
 export type TopPlayerCardState = {
   rank: number;
-  avatarSource?: ImageSourcePropType;
+  avatarSource?: string;
   name: string;
   tier: string;
   xp: string | number;

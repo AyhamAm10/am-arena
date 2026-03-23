@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import { useMirror } from "../state";
+import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 
 export default function LatestWinnerCard() {
   const teamName = useMirror("teamName");
@@ -17,7 +18,7 @@ export default function LatestWinnerCard() {
     <View style={styles.container}>
       {imageSource ? (
         <ImageBackground
-          source={imageSource}
+          source={{ uri: formatImageUrl(imageSource as string) }}
           style={styles.imageBackground}
           imageStyle={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
           resizeMode="cover"

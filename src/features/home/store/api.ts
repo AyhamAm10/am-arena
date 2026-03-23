@@ -1,15 +1,26 @@
 import { ApiResponse } from "@/src/api/types/api-response";
+import { HeroContent } from "@/src/api/types/hero-content.types";
 import { PubgGame } from "@/src/api/types/pubg-tournament.types";
+import { TournamentSummary, UserPublicSummary } from "@/src/api/types/user.types";
+import { TopPlayerItem } from "@/src/components/home";
 
 
 type ApiState = {
-    data: PubgGame[] | undefined
-    isLoading: boolean
+    tournaments: PubgGame[] | undefined
+    IsLoadingTournaments: boolean
+    bestPlayers: UserPublicSummary[] | undefined
+    IsLoadingBestPlayers: boolean
+    latestWinners: HeroContent[] | undefined
+    IsLoadingLatestWinners: boolean
 };
 
 const store = (): ApiState => ({
-    data: undefined,
-    isLoading: false,
+    tournaments: undefined,
+    IsLoadingTournaments: false,    
+    bestPlayers: undefined,
+    IsLoadingBestPlayers: false,
+    latestWinners: undefined,
+    IsLoadingLatestWinners: false,
 });
 
 export { store as ApiState };

@@ -9,6 +9,7 @@ export interface RegisterForTournamentFieldValue {
 
 export interface RegisterForTournamentBody {
   field_values: RegisterForTournamentFieldValue[];
+  friends: number[]; // array of user ids
 }
 
 /** Response items include id and timestamps (OpenAPI path pubg-tournament.yaml) */

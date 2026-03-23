@@ -74,9 +74,8 @@ This document summarizes **only** structures, patterns, and tooling present in t
 
 ## Routing (`src/app`)
 
-- **Root layout** (`src/app/_layout.tsx`): `Stack` from `expo-router`, `headerShown: false`.
+- **Root layout** (`src/app/_layout.tsx`): `Stack` from `expo-router`, `headerShown: false`, wrapped in `QueryClientProvider` with module-level `QueryClient`.
 - **Tabs layout** (`src/app/(tabs)/_layout.tsx`):
-  - Wraps tab content in `QueryClientProvider` with a module-level `QueryClient`.
   - Uses `Tabs` with `headerShown: false`, native tab bar hidden via `tabBarStyle: { display: "none" }`.
   - Custom bottom bar: `BottomNav` from `../../components/BottomNav/ui/BottomNav`, driven by `useRouter` / `useSegments` and a `TAB_ROUTES` map from labels (`Home`, `Tournaments`, etc.) to paths (`/`, `/tournaments`, …).
   - Declares `Tabs.Screen` entries: `index`, `tournaments`, `reels`, `channels`, `profile`.
@@ -96,10 +95,32 @@ This document summarizes **only** structures, patterns, and tooling present in t
 ### `home` feature (specific structure)
 
 - `factory.tsx`: `Factory` renders `<Api><Ui /></Api>`.
-- `api.tsx`: `Api` uses `PropsWithChildren`, calls `useGetPubgTournaments`, registers values via `useMirrorRegistry` from `./store` (`"data"`, `"isLoading"`).
+- `api.tsx`: `Api` uses `PropsWithChildren`, calls data hooks, and registers store values via `useMirrorRegistry` from `./store`.
 - `store/index.ts`: Builds `useMirror` / `useMirrorRegistry` via `mirrorFactory` from `../../../hooks/use-mirror-factory` and spreads `ApiState()` from `./store/api`.
 - `store/api.ts`: Defines `ApiState` type and initial `store` function; exports `ApiState` and type alias `ApiHomeState`.
 - `static-data.ts`: Exports `STATIC_TOURNAMENTS`, `STATIC_PLAYERS` aligned with `TournamentItem` / `TopPlayerItem` from `@/src/components/home`.
+
+### `login` feature (specific structure)
+
+- `factory.tsx`: `Factory` renders `<Api><Utils><State><Ui /></State></Utils></Api>`.
+- `api.tsx`: `Api` uses `PropsWithChildren`, calls `useLoginUser`, and registers mirror state via `useMirrorRegistry` from `./store` (`"submit"`, `"isLoading"`, `"error"`).
+- `state.tsx`: Owns local form values/setters and registers them to store via `useMirrorRegistry`.
+- `utils.tsx`: Computes helper values/actions (`canSubmit`, `onSubmit`, validation) and registers them via `useMirrorRegistry`.
+- `store/index.ts`: Builds `useMirror` / `useMirrorRegistry` via `mirrorFactory` from `../../../hooks/use-mirror-factory` and spreads `ApiState()` + `LoginState()` + `LoginUtils()`.
+- `store/api.ts`, `store/state.ts`, `store/utils.ts`: Define API/state/utils slices and default values; these are composed in `store/index.ts`.
+- `ui.tsx`: Reads all values/actions through `useMirror` only; does not define local state/utils logic.
+- Route entry exists at `src/app/login.tsx` and re-exports `Login` from `@/src/features/login`.
+
+### `register` feature (specific structure)
+
+- `factory.tsx`: `Factory` renders `<Api><Utils><State><Ui /></State></Utils></Api>`.
+- `api.tsx`: `Api` uses `PropsWithChildren`, calls `useRegisterUser`, and registers mirror state via `useMirrorRegistry` from `./store` (`"submit"`, `"isLoading"`, `"error"`).
+- `state.tsx`: Owns register form values/setters and registers them to store via `useMirrorRegistry`.
+- `utils.tsx`: Computes helper values/actions (`canSubmit`, `onSubmit`, validation) and registers them via `useMirrorRegistry`.
+- `store/index.ts`: Builds `useMirror` / `useMirrorRegistry` via `mirrorFactory` from `../../../hooks/use-mirror-factory` and spreads `ApiState()` + `RegisterState()` + `RegisterUtils()`.
+- `store/api.ts`, `store/state.ts`, `store/utils.ts`: Define API/state/utils slices and default values; these are composed in `store/index.ts`.
+- `ui.tsx`: Reads all values/actions through `useMirror` only; does not define local state/utils logic.
+- Route entry exists at `src/app/register.tsx` and re-exports `Register` from `@/src/features/register`.
 
 ### Other tab features
 
@@ -114,6 +135,8 @@ This document summarizes **only** structures, patterns, and tooling present in t
 - **`useMirror(state)`:** Selects one key from the store.
 - Also exports `useCompareEffect` (value vs reference dependency behavior).
 - Per-feature or per-component **store** files (e.g. `src/features/home/store/index.ts`, `src/components/home/tournament-card/state/index.ts`) call `mirrorFactory({ ...InitState() })` where `InitState` / `ApiState` is a `store` function in `state/init.ts` or `store/api.ts`, re-exporting `useMirror` and `useMirrorRegistry`.
+- For layered auth features (`login`, `register`), enforce `Api -> Utils -> State -> Ui`, compose store slices in `store/index.ts`, and register API/state/utils values/actions through `useMirrorRegistry`.
+- For layered auth features (`login`, `register`), `ui.tsx` must consume values/actions via `useMirror` only; no direct `useState` or utils/business logic in UI.
 
 ---
 
