@@ -17,4 +17,9 @@ export interface AuthLoginBody {
 export interface AuthTokensResponse {
   user: Record<string, unknown>;
   accessToken: string;
+  refreshToken: string;
+}
+
+export interface AuthRefreshResponse {
+  accessToken: string;
 }

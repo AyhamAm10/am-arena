@@ -1,9 +1,10 @@
-export const handleApiError = (status?: number) => {
+import { router } from "expo-router";
 
+export const handleApiError = (status?: number) => {
     switch (status) {
   
       case 401:
-        console.log("Redirect to login");
+        router.replace("/login");
         break;
   
       case 403:
@@ -19,7 +20,6 @@ export const handleApiError = (status?: number) => {
         break;
   
       default:
-        console.log("Unknown error");
+        break;
     }
-  
   };

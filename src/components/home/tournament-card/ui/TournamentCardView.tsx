@@ -62,6 +62,7 @@ export default function TournamentCardView({ card }: Props) {
           style={styles.button}
           onPress={onJoinPress}
           activeOpacity={0.8}
+          onPress={onJoinPress}
         >
           <Text style={styles.buttonText}>Join Now</Text>
         </TouchableOpacity>

@@ -1,10 +1,8 @@
 import { PropsWithChildren, useMemo } from 'react'
 import * as ImagePicker from 'expo-image-picker'
-import { useRouter } from 'expo-router'
 import { useMirror, useMirrorRegistry } from './store'
 
 function Utils({ children }: PropsWithChildren) {
-  const router = useRouter()
   const submit = useMirror('submit')
   const isLoading = useMirror('isLoading')
   const phone = useMirror('phone')
@@ -73,8 +71,6 @@ function Utils({ children }: PropsWithChildren) {
     } as any)
 
     await submit(payload)
-
-    router.replace('/')
   }
 
   useMirrorRegistry('formError', formError)

@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useMirror } from "./store";
 import { styles } from "./styles";
+import { FriendOption } from "./store/api";
 
 const fallbackMap = require("../../assets/pubg.jpg");
 
@@ -32,6 +33,7 @@ export function Ui() {
   const isLoadingFriends = useMirror("isLoadingFriends");
   const isFetchingMoreFriends = useMirror("isFetchingMoreFriends");
 
+  
   if (isLoadingTournament || isLoadingRegistrationFields || isLoadingFriends) {
     return (
       <SafeAreaView style={styles.rootLoading}>
@@ -44,6 +46,8 @@ export function Ui() {
     ? { uri: formatImageUrl(tournament.game.image) }
     : fallbackMap;
 
+    console.log("tournament image", formatImageUrl(tournament?.game.image ?? ""));
+    console.log("tournament", tournament);
   return (
     <SafeAreaView style={styles.root}>
       <View style={styles.container}>
@@ -101,12 +105,12 @@ export function Ui() {
 
         <FlatList
           data={friends}
-          keyExtractor={(item) => String(item.id)}
+          keyExtractor={(item: FriendOption) => String(item.id)}
           style={styles.list}
           contentContainerStyle={styles.listContent}
           onEndReachedThreshold={0.4}
           onEndReached={onFriendsListEndReached}
-          renderItem={({ item }) => {
+          renderItem={({ item }: { item: FriendOption }) => {
             const selected = selectedFriendIds.includes(item.id);
             const blocked = !selected && selectedFriendIds.length >= 3;
             return (

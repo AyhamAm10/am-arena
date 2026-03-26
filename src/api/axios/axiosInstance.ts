@@ -5,6 +5,7 @@ import { apiUrl } from "./api-url";
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },

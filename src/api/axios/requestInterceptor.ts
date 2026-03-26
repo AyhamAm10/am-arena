@@ -1,20 +1,27 @@
-import { InternalAxiosRequestConfig } from "axios";
+import { InternalAxiosRequestConfig, AxiosHeaders } from "axios";
+import { useAuthStore } from "@/src/stores/authStore";
 
 export const requestInterceptor = (
   config: InternalAxiosRequestConfig
 ): InternalAxiosRequestConfig => {
-
-  // نتأكد أن headers موجودة
-  config.headers = config.headers ?? {};
-
-  const token = localStorage.getItem("accessToken");
-
-  if (token) {
-    // type assertion لتجنب مشاكل TS
-    (config.headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+  if (!config.headers) {
+    config.headers = new AxiosHeaders();
   }
 
-  (config.headers as Record<string, string>)["Accept-Language"] = "en";
+  const token = useAuthStore.getState().accessToken;
+  if (token) {
+    if (config.headers instanceof AxiosHeaders) {
+      config.headers.set("Authorization", `Bearer ${token}`);
+    } else {
+      (config.headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
+    }
+  }
+
+  if (config.headers instanceof AxiosHeaders) {
+    config.headers.set("Accept-Language", "en");
+  } else {
+    (config.headers as Record<string, string>)["Accept-Language"] = "en";
+  }
 
   return config;
 };

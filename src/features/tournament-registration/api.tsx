@@ -68,15 +68,11 @@ function Api({ children }: PropsWithChildren) {
   const registerMutation = useRegisterForTournament();
 
   const friends = useMemo(() => {
-    const mapped = (friendsQuery.data?.pages ?? [])
-      .flatMap((page) => page.data)
+    const mapped = (friendsQuery.data?.data ?? [])
       .map((friend) => mapFriendRecordToOption(friend))
       .filter((friend): friend is FriendOption => Boolean(friend));
-
-    const byId = new Map<number, FriendOption>();
-    mapped.forEach((friend) => byId.set(friend.id, friend));
-    return Array.from(byId.values());
-  }, [friendsQuery.data?.pages]);
+    return mapped;
+  }, [friendsQuery.data?.data]);
 
   useMirrorRegistry("tournamentId", tournamentId, tournamentId);
   useMirrorRegistry("tournament", tournamentQuery.data ?? null, tournamentQuery.dataUpdatedAt);

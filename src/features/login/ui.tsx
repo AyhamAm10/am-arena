@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import {
   ActivityIndicator,
   Image,
@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { useRouter } from 'expo-router'
 import { styles } from './styles'
 import { colors } from '@/src/theme/colors'
 import { useMirror } from './store'
@@ -18,11 +17,6 @@ import { useMirror } from './store'
 const heroBanner = require('../../assets/Image+Overlay+Shadow.png')
 
 export function Ui() {
-
-  const router = useRouter()
-  const submit = useMirror('submit')
-  const isLoading = useMirror('isLoading')
-  const error = useMirror('error')
   const email = useMirror('email')
   const password = useMirror('password')
   const showPassword = useMirror('showPassword')
@@ -30,18 +24,10 @@ export function Ui() {
   const setPassword = useMirror('setPassword')
   const setShowPassword = useMirror('setShowPassword')
 
-  const canSubmit = useMemo(() => {
-    return email.trim().length > 0 && password.trim().length > 0 && !isLoading
-  }, [email, password, isLoading])
-
-  const onSubmit = async () => {
-    if (!canSubmit) return
-    await submit({
-      email: email.trim(),
-      password,
-    })
-    router.replace('/')
-  }
+  const canSubmit = useMirror('canSubmit')
+  const onSubmit = useMirror('onSubmit')
+  const isLoading = useMirror('isLoading')
+  const error = useMirror('error')
 
   return (
     <KeyboardAvoidingView
