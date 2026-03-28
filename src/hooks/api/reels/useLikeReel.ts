@@ -1,12 +1,13 @@
 import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import { likeReel } from "@/src/api/services/reel.api";
+import type { ReelLikeEntity } from "@/src/api/types/reel.types";
 
 /**
  * Like a reel.
  * POST /reel/{id}/like
  */
 export function useLikeReel(): UseMutationResult<
-  Record<string, unknown>,
+  ReelLikeEntity,
   Error,
   string
 > {

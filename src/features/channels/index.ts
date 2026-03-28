@@ -1,1 +1,1 @@
-export { Factory as Channels } from './factory';
+export { Factory as Channels } from "./factory";

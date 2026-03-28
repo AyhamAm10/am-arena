@@ -1,11 +1,11 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { getFriends } from "@/src/api/services/friend.api";
 import { apiHooksQueryDefaults } from "@/src/constants/apiHooksQueryDefaults";
-import type { FriendRecord, GetFriendsQuery } from "@/src/api/types/friend.types";
+import type { FriendEntityResponse, GetFriendsQuery } from "@/src/api/types/friend.types";
 import type { ApiPaginationMeta } from "@/src/api/types/pubg-tournament.types";
 
 export type FriendsListResult = {
-  data: FriendRecord[];
+  data: FriendEntityResponse[];
   meta?: ApiPaginationMeta;
 };
 

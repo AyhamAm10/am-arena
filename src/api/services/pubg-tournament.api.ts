@@ -1,13 +1,16 @@
 import { parseApiResponse } from "../axios/apiResponseParser";
 import axiosInstance from "../axios/axiosInstance";
 import { ApiResponse } from "../types/api-response";
-import { GetPubgTournamentsQuery, PubgGame } from "../types/pubg-tournament.types";
+import {
+  GetPubgTournamentsQuery,
+  PubgTournamentDetail,
+} from "../types/pubg-tournament.types";
 
 export const getPubgTournaments = async (
   query: GetPubgTournamentsQuery
 ) => {
   const res = await axiosInstance.get<
-    ApiResponse<PubgGame[]>
+    ApiResponse<PubgTournamentDetail[]>
   >("/pubg-tournament", {
     params: query,
   });
@@ -17,8 +20,8 @@ export const getPubgTournaments = async (
 
 export const getPubgTournamentById = async (
   tournamentId: string
-): Promise<PubgGame> => {
-  const res = await axiosInstance.get<ApiResponse<PubgGame>>(
+): Promise<PubgTournamentDetail> => {
+  const res = await axiosInstance.get<ApiResponse<PubgTournamentDetail>>(
     `/pubg-tournament/${tournamentId}`
   );
 

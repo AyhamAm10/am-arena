@@ -1,6 +1,6 @@
 import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import { addReelComment } from "@/src/api/services/reel.api";
-import type { AddCommentBody } from "@/src/api/types/reel.types";
+import type { AddCommentBody, ReelCommentEntity } from "@/src/api/types/reel.types";
 
 type Variables = { reelId: string; body: AddCommentBody };
 
@@ -9,7 +9,7 @@ type Variables = { reelId: string; body: AddCommentBody };
  * POST /reel/{id}/comment — AddCommentBody (OpenAPI AddCommentBody).
  */
 export function useAddReelComment(): UseMutationResult<
-  Record<string, unknown>,
+  ReelCommentEntity,
   Error,
   Variables
 > {

@@ -4,6 +4,7 @@ import { ApiResponse } from "../types/api-response";
 import type {
   AuthLoginBody,
   AuthTokensResponse,
+  CurrentUserResponse,
 } from "../types/auth.types";
 
 export async function register(
@@ -30,14 +31,14 @@ export async function login(body: AuthLoginBody): Promise<AuthTokensResponse> {
 }
 
 export async function logout(): Promise<void> {
-  const res = await axiosInstance.post<ApiResponse<Record<string, unknown>>>(
+  const res = await axiosInstance.post<ApiResponse<Record<string, never>>>(
     "/auth/logout"
   );
   parseApiResponse(res);
 }
 
-export async function getCurrentUser(): Promise<Record<string, unknown>> {
-  const res = await axiosInstance.get<ApiResponse<Record<string, unknown>>>(
+export async function getCurrentUser(): Promise<CurrentUserResponse> {
+  const res = await axiosInstance.get<ApiResponse<CurrentUserResponse>>(
     "/auth/current-user"
   );
   return parseApiResponse(res);

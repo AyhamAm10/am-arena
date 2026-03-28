@@ -2,7 +2,8 @@ import axiosInstance from "../axios/axiosInstance";
 import { parseApiResponse } from "../axios/apiResponseParser";
 import { ApiResponse } from "../types/api-response";
 import type {
-  FriendRecord,
+  FriendEntityResponse,
+  FriendRequestCreatedResponse,
   GetFriendsQuery,
   SendFriendRequestBody,
 } from "../types/friend.types";
@@ -11,8 +12,8 @@ import type { ApiPaginationMeta } from "../types/pubg-tournament.types";
 
 export async function sendFriendRequest(
   body: SendFriendRequestBody
-): Promise<Record<string, unknown>> {
-  const res = await axiosInstance.post<ApiResponse<Record<string, unknown>>>(
+): Promise<FriendRequestCreatedResponse> {
+  const res = await axiosInstance.post<ApiResponse<FriendRequestCreatedResponse>>(
     "/friend/request",
     body
   );
@@ -20,10 +21,10 @@ export async function sendFriendRequest(
 }
 
 export async function getFriends(query: GetFriendsQuery): Promise<{
-  data: FriendRecord[];
+  data: FriendEntityResponse[];
   meta?: ApiPaginationMeta;
 }> {
-  const res = await axiosInstance.get<ApiResponse<FriendRecord[]>>("/friend", {
+  const res = await axiosInstance.get<ApiResponse<FriendEntityResponse[]>>("/friend", {
     params: query,
   });
   return parseApiResponseWithMeta(res);

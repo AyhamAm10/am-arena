@@ -1,11 +1,13 @@
-// src/components/BottomNav/BottomNavigation.tsx
+// Standalone demo of the tab bar (e.g. Storybook). Prefer TabBarShell in app routes.
 import React, { useState } from "react";
 import BottomNav from "./ui/BottomNav";
 
 const BottomNavigation: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("Home");
+  const [activeTab, setActiveTab] = useState<string | null>("Home");
 
-  return <BottomNav activeTab={activeTab} onTabPress={setActiveTab} />;
+  return (
+    <BottomNav activeTab={activeTab} onTabPress={(tab) => setActiveTab(tab)} />
+  );
 };
 
-export  {BottomNavigation};
+export { BottomNavigation };

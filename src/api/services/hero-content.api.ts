@@ -48,7 +48,7 @@ export async function updateHeroContent(
 }
 
 export async function deleteHeroContent(id: string): Promise<void> {
-  const res = await axiosInstance.delete<ApiResponse<Record<string, unknown>>>(
+  const res = await axiosInstance.delete<ApiResponse<Record<string, never>>>(
     `/hero-content/${id}`
   );
   parseApiResponse(res);

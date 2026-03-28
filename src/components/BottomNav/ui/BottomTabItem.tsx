@@ -1,30 +1,175 @@
-// src/components/BottomNav/ui/BottomTabItem.tsx
 import { colors } from "@/src/theme/colors";
-import React from "react";
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
-
+import React, { useEffect } from "react";
+import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import Animated, {
+  interpolate,
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
 
 type Props = {
   label: string;
-  icon: React.ReactNode;
+  iconName: string;
   active?: boolean;
   onPress: () => void;
 };
 
-const BottomTabItem: React.FC<Props> = ({ label, icon, active, onPress }) => {
+const INACTIVE_ICON_SIZE = 26;
+const ACTIVE_ICON_SIZE = 28;
+
+const springConfig = {
+  damping: 20,
+  stiffness: 260,
+  mass: 0.85,
+};
+
+const BottomTabItem: React.FC<Props> = ({
+  label,
+  iconName,
+  active,
+  onPress,
+}) => {
+  const progress = useSharedValue(active ? 1 : 0);
+
+  useEffect(() => {
+    progress.value = withSpring(active ? 1 : 0, springConfig);
+  }, [active]);
+
+  const inactiveLayerStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0, 0.35], [1, 0]),
+    transform: [
+      {
+        scale: interpolate(progress.value, [0, 1], [1, 0.94]),
+      },
+    ],
+  }));
+
+  const fabLayerStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(progress.value, [0.2, 0.65], [0, 1]),
+    transform: [
+      {
+        scale: interpolate(progress.value, [0, 1], [0.86, 1]),
+      },
+    ],
+  }));
+
+  const labelStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      progress.value,
+      [0, 1],
+      [colors.grey, colors.white]
+    ),
+    transform: [
+      {
+        translateY: interpolate(progress.value, [0, 1], [1.5, 0]),
+      },
+    ],
+  }));
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={{ opacity: active ? 1 : 0.5 }}>{icon}</View>
-      <Text style={[styles.label, { color: active ? colors.primaryPurple : colors.white }]}>
-        {label}
-      </Text>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onPress}
+      activeOpacity={0.92}
+    >
+      <View style={styles.iconSlot}>
+        <Animated.View
+          style={[styles.inactiveLayer, inactiveLayerStyle]}
+          pointerEvents="none"
+        >
+          <Icon
+            name={iconName}
+            size={INACTIVE_ICON_SIZE}
+            color={colors.grey}
+          />
+        </Animated.View>
+        <Animated.View
+          style={[styles.fabLayer, fabLayerStyle]}
+          pointerEvents="none"
+        >
+          <View style={[styles.fab, styles.fabActive]}>
+            <Icon
+              name={iconName}
+              size={ACTIVE_ICON_SIZE}
+              color={colors.white}
+            />
+          </View>
+        </Animated.View>
+      </View>
+      <Animated.Text style={[styles.label, labelStyle]}>
+        {label.toUpperCase()}
+      </Animated.Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: "center", justifyContent: "center", paddingVertical: 6 },
-  label: { fontSize: 12, marginTop: 2 },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: 6,
+    paddingTop: 4,
+  },
+  iconSlot: {
+    height: 58,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginBottom: 0,
+  },
+  inactiveLayer: {
+    position: "absolute",
+    bottom: 4,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  fabLayer: {
+    position: "absolute",
+    bottom: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: -32,
+  },
+  fab: {
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: colors.primaryPurple,
+    alignItems: "center",
+    justifyContent: "center",
+    ...Platform.select({
+      ios: {
+        shadowColor: colors.primaryPurple,
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.55,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 14,
+      },
+    }),
+  },
+  fabActive: {
+    ...Platform.select({
+      ios: {
+        shadowOpacity: 0.75,
+        shadowRadius: 16,
+      },
+      android: {
+        elevation: 18,
+      },
+    }),
+  },
+  label: {
+    fontSize: 10,
+    marginTop: 4,
+    fontWeight: "700",
+    letterSpacing: 0.6,
+  },
 });
 
 export default BottomTabItem;

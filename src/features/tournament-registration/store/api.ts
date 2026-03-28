@@ -1,4 +1,4 @@
-import type { PubgGame } from "@/src/api/types/pubg-tournament.types";
+import type { PubgTournamentDetail } from "@/src/api/types/pubg-tournament.types";
 import type { TournamentRegistrationField } from "@/src/api/types/pubg-tournament-registration.types";
 
 export type FriendOption = {
@@ -10,7 +10,7 @@ export type FriendOption = {
 
 type ApiState = {
   tournamentId: string;
-  tournament: PubgGame | null;
+  tournament: PubgTournamentDetail | null;
   isLoadingTournament: boolean;
   registrationFields: TournamentRegistrationField[];
   isLoadingRegistrationFields: boolean;
@@ -24,6 +24,7 @@ type ApiState = {
     body: { field_values: { field_id: number; value: string }[]; friends: number[] };
   }) => Promise<unknown>;
   isSubmitting: boolean;
+  friendsTotalCount: number;
 };
 
 const store = (): ApiState => ({
@@ -39,6 +40,7 @@ const store = (): ApiState => ({
   fetchMoreFriends: async () => undefined,
   submitRegistration: async () => undefined,
   isSubmitting: false,
+  friendsTotalCount: 0,
 });
 
 export { store as ApiState };

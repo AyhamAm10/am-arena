@@ -9,20 +9,30 @@ export interface Game {
     updated_at: string;
 }
 
-export interface PubgGame {
-    id: number;
-    title: string;
-    description: string;
-    entry_fee: number;
-    max_players: number;
-    prize_pool: number;
-    start_date?: string | null;
-    end_date?: string | null;
-    is_active?: boolean;
-    registration_fields?: RegistrationField[];
-    game: Game;
-
+/**
+ * Single PUBG tournament from API (list item or GET /pubg-tournament/:id).
+ * Includes nested `game` and optional `registration_fields`.
+ */
+export interface PubgTournamentDetail {
+  id: number;
+  title: string;
+  description: string;
+  entry_fee: number | string;
+  max_players: number;
+  prize_pool: number | string;
+  start_date?: string | null;
+  end_date?: string | null;
+  is_active?: boolean;
+  game_type?: string;
+  game_ref_id?: number;
+  created_at?: string;
+  updated_at?: string;
+  game: Game;
+  registration_fields?: RegistrationField[];
 }
+
+/** @deprecated Use PubgTournamentDetail — kept for gradual migration */
+export type PubgGame = PubgTournamentDetail;
 
 export type RegistrationFieldType =
     | "string"

@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { getCurrentUser } from "@/src/api/services/auth.api";
+import type { CurrentUserResponse } from "@/src/api/types/auth.types";
 import { apiHooksQueryDefaults } from "@/src/constants/apiHooksQueryDefaults";
 
 /**
@@ -8,7 +9,7 @@ import { apiHooksQueryDefaults } from "@/src/constants/apiHooksQueryDefaults";
  */
 export function useFetchCurrentUser(options?: {
   enabled?: boolean;
-}): UseQueryResult<Record<string, unknown>, Error> {
+}): UseQueryResult<CurrentUserResponse, Error> {
   return useQuery({
     queryKey: ["auth", "current-user"],
     queryFn: getCurrentUser,

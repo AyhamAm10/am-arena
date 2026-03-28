@@ -1,1 +1,1 @@
-export { Factory as Reels } from './factory'
+export { Factory as Reels } from "./factory";

@@ -1,26 +1,88 @@
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
-import { colors } from "@/src/theme/colors";
+import type { PubgGameType } from "@/src/api/types/pubg-tournament.types";
+import type { TournamentRegistrationField } from "@/src/api/types/pubg-tournament-registration.types";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Image,
+  Modal,
+  Pressable,
   SafeAreaView,
+  StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useMirror } from "./store";
-import { styles } from "./styles";
-import { FriendOption } from "./store/api";
+import { trColors, styles } from "./styles";
+import type { FriendOption } from "./store/api";
+import {
+  getDefaultFieldValue,
+  resolvedFieldValue,
+} from "./utils";
 
 const fallbackMap = require("../../assets/pubg.jpg");
+
+function teamSizeFromGameType(type: PubgGameType | undefined): number {
+  if (type === "duo") return 2;
+  if (type === "squad") return 4;
+  return 1;
+}
+
+function gameTypeLabel(type: PubgGameType | undefined): string {
+  if (type === "duo") return "DUO";
+  if (type === "squad") return "SQUAD";
+  return "SOLO";
+}
+
+function formatStartSubtitle(
+  type: PubgGameType | undefined,
+  startDate: string | null | undefined
+): string {
+  const t = gameTypeLabel(type);
+  const n = teamSizeFromGameType(type);
+  const mode = `${n}V${n}`;
+  let datePart = "DATE TBA";
+  if (startDate) {
+    const d = new Date(startDate);
+    if (!Number.isNaN(d.getTime())) {
+      datePart = d
+        .toLocaleString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "UTC",
+          timeZoneName: "short",
+        })
+        .toUpperCase()
+        .replace(",", " •");
+      datePart = `STARTING ${datePart}`;
+    }
+  }
+  return `${t} • ${mode} • ${datePart}`;
+}
+
+function parseSelectOptions(field: TournamentRegistrationField): string[] {
+  if (!field.options) return [];
+  return field.options
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean);
+}
 
 export function Ui() {
   const router = useRouter();
   const tournament = useMirror("tournament");
-  const friends = useMirror("friends");
+  const friendsTotalCount = useMirror("friendsTotalCount");
+  const filteredFriends = useMirror("filteredFriends");
+  const registrationFields = useMirror("registrationFields");
+  const fieldValues = useMirror("fieldValues");
+  const setFieldValue = useMirror("setFieldValue");
   const selectedFriendIds = useMirror("selectedFriendIds");
   const toggleFriendSelection = useMirror("toggleFriendSelection");
   const selectedCountLabel = useMirror("selectedCountLabel");
@@ -32,127 +94,382 @@ export function Ui() {
   const isLoadingRegistrationFields = useMirror("isLoadingRegistrationFields");
   const isLoadingFriends = useMirror("isLoadingFriends");
   const isFetchingMoreFriends = useMirror("isFetchingMoreFriends");
+  const showSquadFriends = useMirror("showSquadFriends");
+  const termsAccepted = useMirror("termsAccepted");
+  const setTermsAccepted = useMirror("setTermsAccepted");
+  const friendSearch = useMirror("friendSearch");
+  const setFriendSearch = useMirror("setFriendSearch");
 
-  
-  if (isLoadingTournament || isLoadingRegistrationFields || isLoadingFriends) {
-    return (
-      <SafeAreaView style={styles.rootLoading}>
-        <ActivityIndicator size="large" color={colors.primaryPurple} />
-      </SafeAreaView>
-    );
-  }
+  const [selectModalFieldId, setSelectModalFieldId] = useState<number | null>(
+    null
+  );
+
+  const gameType = tournament?.game?.type;
+  const maxPlayers = tournament?.max_players ?? 16;
+  const filledPlayers = 0;
+  const fillRatio = maxPlayers > 0 ? filledPlayers / maxPlayers : 0;
+  const remainingPct = Math.max(0, Math.min(100, Math.round((1 - fillRatio) * 100)));
 
   const headerImage = tournament?.game?.image
     ? { uri: formatImageUrl(tournament.game.image) }
     : fallbackMap;
 
-    console.log("tournament image", formatImageUrl(tournament?.game.image ?? ""));
-    console.log("tournament", tournament);
-  return (
-    <SafeAreaView style={styles.root}>
-      <View style={styles.container}>
-        <View style={styles.headerRow}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <Text style={styles.backIcon}>{"<"}</Text>
-          </TouchableOpacity>
-          <Text style={styles.pageTitle}>Join Tournament</Text>
-          <View style={styles.backButtonSpacer} />
-        </View>
+  const selectModalField = useMemo(
+    () =>
+      registrationFields.find((f) => f.id === selectModalFieldId) ?? null,
+    [registrationFields, selectModalFieldId]
+  );
+  const selectModalOptions = selectModalField
+    ? parseSelectOptions(selectModalField)
+    : [];
 
-        <View style={styles.card}>
-          <Image source={headerImage} style={styles.cardImage} resizeMode="cover" />
-          <View style={styles.cardBody}>
-            <Text style={styles.entryFeeText}>
-              ENTRY FEE: {tournament?.entry_fee ?? 0} CREDITS
+  const loadingGate =
+    isLoadingTournament ||
+    isLoadingRegistrationFields ||
+    isLoadingFriends;
+
+  if (loadingGate) {
+    return (
+      <SafeAreaView style={styles.rootLoading}>
+        <ActivityIndicator size="large" color={trColors.purple} />
+      </SafeAreaView>
+    );
+  }
+
+  const renderDynamicField = (field: TournamentRegistrationField) => {
+    const displayValue = resolvedFieldValue(field, fieldValues);
+
+    if (field.type === "string") {
+      return (
+        <View key={field.id} style={styles.fieldBlock}>
+          <Text style={styles.fieldLabel}>{field.label.toUpperCase()}</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholderTextColor={trColors.labelMuted}
+            placeholder={field.label}
+            value={
+              fieldValues[field.id] !== undefined
+                ? fieldValues[field.id]
+                : ""
+            }
+            onChangeText={(t) => setFieldValue(field.id, t)}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        </View>
+      );
+    }
+
+    if (field.type === "number") {
+      return (
+        <View key={field.id} style={styles.fieldBlock}>
+          <Text style={styles.fieldLabel}>{field.label.toUpperCase()}</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholderTextColor={trColors.labelMuted}
+            placeholder={field.label}
+            keyboardType="numeric"
+            value={
+              fieldValues[field.id] !== undefined
+                ? fieldValues[field.id]
+                : ""
+            }
+            onChangeText={(t) => setFieldValue(field.id, t)}
+          />
+        </View>
+      );
+    }
+
+    if (field.type === "select") {
+      return (
+        <View key={field.id} style={styles.fieldBlock}>
+          <Text style={styles.fieldLabel}>{field.label.toUpperCase()}</Text>
+          <TouchableOpacity
+            style={styles.selectField}
+            activeOpacity={0.85}
+            onPress={() => setSelectModalFieldId(field.id)}
+          >
+            <Text style={styles.selectFieldText} numberOfLines={1}>
+              {displayValue || getDefaultFieldValue(field)}
             </Text>
-            <Text style={styles.tournamentTitle}>{tournament?.title ?? "PUBG Pro Masters"}</Text>
-            <Text style={styles.metaText}>Squad - 100 Teams - Asia Server</Text>
-            <View style={styles.poolPill}>
-              <Text style={styles.poolText}>Prize Pool: {tournament?.prize_pool ?? 0}</Text>
+            <Text style={{ color: trColors.labelMuted, fontSize: 12 }}>▼</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    if (field.type === "boolean") {
+      const on = displayValue === "true";
+      return (
+        <View key={field.id} style={styles.fieldBlock}>
+          <TouchableOpacity
+            style={styles.boolRow}
+            activeOpacity={0.85}
+            onPress={() => setFieldValue(field.id, on ? "false" : "true")}
+          >
+            <View style={[styles.checkBox, on && styles.checkBoxOn]}>
+              {on ? (
+                <Text style={{ color: trColors.bg, fontWeight: "900" }}>✓</Text>
+              ) : null}
+            </View>
+            <Text style={styles.termsText}>{field.label}</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return null;
+  };
+
+  const listHeader = (
+    <>
+      <View style={styles.headerRow}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Text style={styles.backIcon}>{"<"}</Text>
+        </TouchableOpacity>
+        <Text style={styles.pageTitle}>Join Tournament</Text>
+        <View style={styles.backButtonSpacer} />
+      </View>
+
+      <View style={styles.heroCard}>
+        <View>
+          <Image
+            source={headerImage}
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
+          <View style={styles.heroImageOverlayTop} pointerEvents="none">
+            <View style={styles.heroPubgPill}>
+              <Text style={styles.heroPubgText}>PUBG MOBILE</Text>
             </View>
           </View>
+          <LinearGradient
+            colors={[trColors.purple, "#EC4899"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.heroLiveBadge}
+          >
+            <Text style={styles.heroLiveText}>LIVE QUALIFIERS</Text>
+          </LinearGradient>
         </View>
-
-        <Text style={styles.sectionTitle}>Tournament Details</Text>
-        <View style={styles.detailsWrap}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailKey}>Format</Text>
-            <Text style={styles.detailValue}>Squad (4 Players)</Text>
+        <View style={styles.heroBody}>
+          <Text style={styles.heroTitle}>
+            {(tournament?.title ?? "").toUpperCase()}
+          </Text>
+          <Text style={styles.heroSubtitle}>
+            {formatStartSubtitle(gameType, tournament?.start_date ?? null)}
+          </Text>
+          <View style={styles.progressRow}>
+            <Text style={styles.progressLabel}>PLAYER COUNT</Text>
+            <Text style={styles.progressCount}>
+              {filledPlayers} / {maxPlayers}
+            </Text>
           </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailKey}>Mode</Text>
-            <Text style={styles.detailValue}>{tournament?.game?.type?.toUpperCase() ?? "TPP"}</Text>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${Math.round(fillRatio * 100)}%` },
+              ]}
+            />
           </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailKey}>Map</Text>
-            <Text style={styles.detailValue}>{tournament?.game?.map ?? "Erangel"}</Text>
-          </View>
+          <Text style={styles.progressSub}>
+            {remainingPct}% SLOTS REMAINING
+          </Text>
         </View>
+      </View>
 
-        <View style={styles.squadHeader}>
-          <Text style={styles.sectionTitle}>Select Your Squad</Text>
-          <Text style={styles.selectedCounter}>{selectedCountLabel}</Text>
+      <View
+        style={[
+          styles.joinButtonWrap,
+          (!canSubmit || isSubmitting) && styles.joinButtonDisabled,
+        ]}
+      >
+        <TouchableOpacity
+          activeOpacity={0.9}
+          disabled={!canSubmit || isSubmitting}
+          onPress={() => void onConfirmJoin()}
+        >
+          <LinearGradient
+            colors={["#2563EB", trColors.cyan]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.joinButton}
+          >
+            {isSubmitting ? (
+              <ActivityIndicator color={trColors.white} />
+            ) : (
+              <>
+                <Text style={{ fontSize: 18 }}>🎮</Text>
+                <Text style={styles.joinButtonText}>JOIN TOURNAMENT</Text>
+              </>
+            )}
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+
+      {registrationFields.map((f) => renderDynamicField(f))}
+
+      <View style={styles.fieldBlock}>
+        <Text style={styles.fieldLabel}>TEAM SIZE</Text>
+        <View style={styles.selectField}>
+          <Text style={styles.selectFieldText}>
+            {String(teamSizeFromGameType(gameType))}
+          </Text>
         </View>
+      </View>
 
-        <View style={styles.friendRow}>
-          <View style={styles.avatarStub} />
-          <View style={styles.friendTextWrap}>
-            <Text style={styles.friendName}>You (Captain)</Text>
-            <Text style={styles.friendStatus}>Ready</Text>
+      <View style={styles.fieldBlock}>
+        <TouchableOpacity
+          style={styles.boolRow}
+          activeOpacity={0.85}
+          onPress={() => setTermsAccepted(!termsAccepted)}
+        >
+          <View
+            style={[styles.checkBox, termsAccepted && styles.checkBoxOn]}
+          >
+            {termsAccepted ? (
+              <Text style={{ color: trColors.bg, fontWeight: "900" }}>✓</Text>
+            ) : null}
           </View>
-          <View style={[styles.selectCircle, styles.selectCircleActive]} />
-        </View>
+          <Text style={styles.termsText}>
+            I agree to the Tournament Rules and the Code of Conduct. I confirm
+            that all team members are over 16 years of age.
+          </Text>
+        </TouchableOpacity>
+      </View>
 
+      {showSquadFriends ? (
+        <>
+          <View style={styles.inviteHeader}>
+            <View style={styles.inviteTitleRow}>
+              <Text style={{ color: trColors.cyan, fontSize: 18 }}>👤+</Text>
+              <Text style={styles.inviteTitle}>Invite Friends</Text>
+            </View>
+            <View style={styles.selectedBadge}>
+              <Text style={styles.selectedBadgeText}>{selectedCountLabel}</Text>
+            </View>
+          </View>
+          <View style={styles.searchRow}>
+            <Text style={{ color: trColors.labelMuted }}>🔍</Text>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search friends..."
+              placeholderTextColor={trColors.labelMuted}
+              value={friendSearch}
+              onChangeText={setFriendSearch}
+            />
+          </View>
+        </>
+      ) : null}
+    </>
+  );
+
+  const listFooter = showSquadFriends ? (
+    <>
+      <TouchableOpacity style={styles.viewAllFriends} activeOpacity={0.8}>
+        <Text style={styles.viewAllFriendsText}>
+          VIEW ALL FRIENDS ({friendsTotalCount})
+        </Text>
+      </TouchableOpacity>
+      {isFetchingMoreFriends ? (
+        <View style={styles.loadingMoreWrap}>
+          <ActivityIndicator size="small" color={trColors.purple} />
+        </View>
+      ) : null}
+    </>
+  ) : null;
+
+  return (
+    <SafeAreaView style={styles.root}>
         <FlatList
-          data={friends}
+          data={showSquadFriends ? filteredFriends : []}
           keyExtractor={(item: FriendOption) => String(item.id)}
-          style={styles.list}
-          contentContainerStyle={styles.listContent}
-          onEndReachedThreshold={0.4}
+          ListHeaderComponent={listHeader}
+          contentContainerStyle={styles.scrollContent}
+          style={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          onEndReachedThreshold={0.35}
           onEndReached={onFriendsListEndReached}
           renderItem={({ item }: { item: FriendOption }) => {
             const selected = selectedFriendIds.includes(item.id);
             const blocked = !selected && selectedFriendIds.length >= 3;
+            const avatarSource = item.avatarUrl
+              ? { uri: formatImageUrl(item.avatarUrl) }
+              : undefined;
             return (
               <TouchableOpacity
                 style={[styles.friendRow, blocked && styles.friendRowBlocked]}
                 activeOpacity={0.9}
                 onPress={() => toggleFriendSelection(item.id)}
               >
-                <View style={styles.avatarStub} />
+                {avatarSource ? (
+                  <Image
+                    source={avatarSource}
+                    style={styles.friendAvatar}
+                  />
+                ) : (
+                  <View style={styles.friendAvatar} />
+                )}
                 <View style={styles.friendTextWrap}>
                   <Text style={styles.friendName}>{item.name}</Text>
-                  <Text style={styles.friendStatus}>{item.status || "Online"}</Text>
+                  <Text style={styles.friendStatus}>
+                    {item.status || "ONLINE"}
+                  </Text>
                 </View>
-                <View style={[styles.selectCircle, selected && styles.selectCircleActive]} />
+                <View
+                  style={[
+                    styles.selectCircle,
+                    selected && styles.selectCircleActive,
+                  ]}
+                >
+                  {selected ? (
+                    <Text style={{ color: trColors.white, fontWeight: "900" }}>
+                      ✓
+                    </Text>
+                  ) : null}
+                </View>
               </TouchableOpacity>
             );
           }}
-          ListFooterComponent={
-            isFetchingMoreFriends ? (
-              <View style={styles.loadingMoreWrap}>
-                <ActivityIndicator size="small" color={colors.primaryPurple} />
-              </View>
-            ) : null
-          }
+          ListFooterComponent={showSquadFriends ? listFooter : null}
         />
 
-        <TouchableOpacity
-          style={[styles.confirmButton, (!canSubmit || isSubmitting) && styles.confirmButtonDisabled]}
-          onPress={onConfirmJoin}
-          disabled={!canSubmit || isSubmitting}
-        >
-          {isSubmitting ? (
-            <ActivityIndicator color={colors.white} />
-          ) : (
-            <Text style={styles.confirmText}>Confirm Join Tournament</Text>
-          )}
-        </TouchableOpacity>
-
-        <Text style={styles.walletHint}>
-          BY CLICKING CONFIRM, 50 CREDITS WILL BE DEDUCTED FROM YOUR WALLET
-        </Text>
-      </View>
+      <Modal
+        visible={selectModalFieldId !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSelectModalFieldId(null)}
+      >
+        <View style={styles.modalBackdrop}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => setSelectModalFieldId(null)}
+          />
+          <View style={styles.modalSheet}>
+            <FlatList
+              data={selectModalOptions}
+              keyExtractor={(item) => item}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalOption}
+                  onPress={() => {
+                    if (selectModalField) {
+                      setFieldValue(selectModalField.id, item);
+                    }
+                    setSelectModalFieldId(null);
+                  }}
+                >
+                  <Text style={styles.modalOptionText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }

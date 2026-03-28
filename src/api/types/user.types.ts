@@ -4,6 +4,25 @@ import type { ApiPaginationMeta } from "./pubg-tournament.types";
 
 export type UserRole = "user" | "admin" | "super_admin";
 
+/**
+ * User entity as returned by the API (JSON), excluding password_hash.
+ * Derived from backend `entities/User.ts` scalar columns; dates are ISO strings.
+ */
+export interface UserAccountDto {
+  id: number;
+  full_name: string;
+  gamer_name: string;
+  profile_picture_url: string | null;
+  email: string;
+  phone: string;
+  role: UserRole;
+  is_active: boolean;
+  coins: number | string;
+  xp_points: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface UserPublicSummary {
   id: number;
   full_name: string;
@@ -24,6 +43,16 @@ export interface AchievementPublic {
   color_theme: string | null;
   icon_url: string;
   xp_reward: number;
+}
+
+/**
+ * UserAchievement row with nested achievement, as returned on relations.
+ * Derived from backend `entities/UserAchievement.ts`.
+ */
+export interface UserAchievementApi {
+  id: number;
+  obtained_at: string;
+  achievement: AchievementPublic | null;
 }
 
 export interface UserAchievementEntry {
@@ -70,6 +99,27 @@ export interface GetBestUsersQuery {
   page?: number;
   limit?: number;
 }
+
+/**
+ * RN multipart part for `profile_picture` (e.g. `FormData.append('profile_picture', { uri, name, type })`).
+ * Same pattern as registration; field name matches backend multer.
+ */
+export type ProfilePictureFormPart = {
+  uri: string;
+  name: string;
+  type: string;
+};
+
+/**
+ * Fields for PATCH /user/profile (multipart). Append strings and optional `profile_picture` to FormData.
+ */
+export type UpdateProfileFormFields = Partial<{
+  full_name: string;
+  gamer_name: string;
+  email: string;
+  phone: string;
+  profile_picture: ProfilePictureFormPart;
+}>;
 
 export type PaginatedBestUsers = {
   data: UserPublicSummary[];

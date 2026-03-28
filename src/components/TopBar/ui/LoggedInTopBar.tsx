@@ -1,5 +1,6 @@
 // src/components/TopBar/ui/LoggedInTopBar.tsx
 import { colors } from "@/src/theme/colors";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -8,6 +9,7 @@ import { useMirror } from "../store";
 
 
 const LoggedInTopBar: React.FC = () => {
+  const router = useRouter();
   const avatarSource = useMirror("avatarSource");
   const level = useMirror("level");
   const levelProgress = useMirror("levelProgress");
@@ -35,8 +37,12 @@ const LoggedInTopBar: React.FC = () => {
           <Icon name="attach-money" size={20} color={colors.gold} />
           <Text style={styles.coinsText}>{coins?.toLocaleString()}</Text>
         </View>
-        <TouchableOpacity style={styles.avatarWrap}>
-
+        <TouchableOpacity
+          style={styles.avatarWrap}
+          onPress={() => router.push("/profile")}
+          accessibilityRole="button"
+          accessibilityLabel="Open profile"
+        >
           {avatarSource ? (
             <Image source={avatarSource} style={styles.avatar} />
           ) : (

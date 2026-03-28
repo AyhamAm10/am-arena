@@ -1,6 +1,9 @@
 import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-query";
 import { registerForTournament } from "@/src/api/services/pubg-tournament-registration.api";
-import type { RegisterForTournamentBody } from "@/src/api/types/pubg-tournament-registration.types";
+import type {
+  PubgRegistrationResponse,
+  RegisterForTournamentBody,
+} from "@/src/api/types/pubg-tournament-registration.types";
 
 type RegisterVariables = {
   tournamentId: string;
@@ -12,7 +15,7 @@ type RegisterVariables = {
  * POST /pubg-tournament/{id}/register
  */
 export function useRegisterForTournament(): UseMutationResult<
-  Record<string, unknown>,
+  PubgRegistrationResponse,
   Error,
   RegisterVariables
 > {

@@ -8,6 +8,7 @@ import type {
   GetReelsQuery,
   ReelCommentEntity,
   ReelEntity,
+  ReelLikeEntity,
 } from "../types/reel.types";
 import { parseApiResponseWithMeta } from "../utils/parseApiResponseWithMeta";
 import type { ApiPaginationMeta } from "../types/pubg-tournament.types";
@@ -32,8 +33,8 @@ export async function getReels(query: GetReelsQuery): Promise<{
 export async function addReelComment(
   reelId: string,
   body: AddCommentBody
-): Promise<Record<string, unknown>> {
-  const res = await axiosInstance.post<ApiResponse<Record<string, unknown>>>(
+): Promise<ReelCommentEntity> {
+  const res = await axiosInstance.post<ApiResponse<ReelCommentEntity>>(
     `/reel/${reelId}/comment`,
     body
   );
@@ -54,15 +55,15 @@ export async function getReelComments(
   return parseApiResponseWithMeta(res);
 }
 
-export async function likeReel(reelId: string): Promise<Record<string, unknown>> {
-  const res = await axiosInstance.post<ApiResponse<Record<string, unknown>>>(
+export async function likeReel(reelId: string): Promise<ReelLikeEntity> {
+  const res = await axiosInstance.post<ApiResponse<ReelLikeEntity>>(
     `/reel/${reelId}/like`
   );
   return parseApiResponse(res);
 }
 
 export async function removeReelLike(reelId: string): Promise<void> {
-  const res = await axiosInstance.delete<ApiResponse<Record<string, unknown>>>(
+  const res = await axiosInstance.delete<ApiResponse<Record<string, never>>>(
     `/reel/${reelId}/like`
   );
   parseApiResponse(res);

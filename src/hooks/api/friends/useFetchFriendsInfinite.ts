@@ -1,26 +1,27 @@
 import { getFriends } from "@/src/api/services/friend.api";
-import type { FriendRecord, GetFriendsQuery } from "@/src/api/types/friend.types";
+import type { FriendEntityResponse, GetFriendsQuery } from "@/src/api/types/friend.types";
 import type { ApiPaginationMeta } from "@/src/api/types/pubg-tournament.types";
 import { apiHooksQueryDefaults } from "@/src/constants/apiHooksQueryDefaults";
 import { useInfiniteQuery, type UseInfiniteQueryResult } from "@tanstack/react-query";
 
 export type FriendsPageResult = {
-  data: FriendRecord[];
+  data: FriendEntityResponse[];
   meta?: ApiPaginationMeta;
 };
 
 type UseFetchFriendsInfiniteOptions = Omit<GetFriendsQuery, "page"> & {
   initialPage?: number;
+  enabled?: boolean;
 };
 
 export function useFetchFriendsInfinite(
   options: UseFetchFriendsInfiniteOptions
 ): UseInfiniteQueryResult<FriendsPageResult, Error> {
-  const { initialPage = 1, ...filters } = options;
+  const { initialPage = 1, enabled = true, ...filters } = options;
 
   return useInfiniteQuery({
     queryKey: ["friends", "infinite", filters],
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam }: { pageParam: number }) =>
       getFriends({
         ...filters,
         page: Number(pageParam),
@@ -31,6 +32,8 @@ export function useFetchFriendsInfinite(
       const totalPages = lastPage.meta?.totalPages ?? 1;
       return page < totalPages ? page + 1 : undefined;
     },
-    ...apiHooksQueryDefaults,
+    staleTime: apiHooksQueryDefaults.staleTime,
+    refetchOnWindowFocus: apiHooksQueryDefaults.refetchOnWindowFocus,
+    enabled,
   });
 }
