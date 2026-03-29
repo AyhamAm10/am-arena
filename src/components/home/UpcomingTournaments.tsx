@@ -54,7 +54,7 @@ const UpcomingTournaments: React.FC<Props> = ({
     <View style={styles.section}>
       <View style={styles.header}>
         <Text style={styles.title}>Upcoming Tournaments</Text>
-        <TouchableOpacity onPress={onViewAll}>
+        <TouchableOpacity onPress={onViewAll} disabled={!onViewAll}>
           <Text style={styles.viewAll}>View All</Text>
         </TouchableOpacity>
       </View>

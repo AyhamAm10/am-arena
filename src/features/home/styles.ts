@@ -7,4 +7,9 @@ export const styles = StyleSheet.create({
     section: {
         marginTop: 16,
     },
+    loaderSection: {
+        marginTop: 24,
+        paddingVertical: 24,
+        alignItems: 'center',
+    },
 })

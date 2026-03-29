@@ -1,7 +1,6 @@
 import { colors } from "@/src/theme/colors";
-import React, { useEffect } from "react";
+import React, { useEffect, type ComponentType } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import Animated, {
   interpolate,
   interpolateColor,
@@ -10,9 +9,13 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
+type TabIconProps = { size: number; color: string };
+
 type Props = {
   label: string;
-  iconName: string;
+  Icon: ComponentType<TabIconProps>;
+  /** Inactive glyph color (from design assets). */
+  inactiveIconColor?: string;
   active?: boolean;
   onPress: () => void;
 };
@@ -28,7 +31,8 @@ const springConfig = {
 
 const BottomTabItem: React.FC<Props> = ({
   label,
-  iconName,
+  Icon,
+  inactiveIconColor = "#64748B",
   active,
   onPress,
 }) => {
@@ -60,7 +64,7 @@ const BottomTabItem: React.FC<Props> = ({
     color: interpolateColor(
       progress.value,
       [0, 1],
-      [colors.grey, colors.white]
+      [inactiveIconColor, colors.white]
     ),
     transform: [
       {
@@ -80,22 +84,14 @@ const BottomTabItem: React.FC<Props> = ({
           style={[styles.inactiveLayer, inactiveLayerStyle]}
           pointerEvents="none"
         >
-          <Icon
-            name={iconName}
-            size={INACTIVE_ICON_SIZE}
-            color={colors.grey}
-          />
+          <Icon size={INACTIVE_ICON_SIZE} color={inactiveIconColor} />
         </Animated.View>
         <Animated.View
           style={[styles.fabLayer, fabLayerStyle]}
           pointerEvents="none"
         >
           <View style={[styles.fab, styles.fabActive]}>
-            <Icon
-              name={iconName}
-              size={ACTIVE_ICON_SIZE}
-              color={colors.white}
-            />
+            <Icon size={ACTIVE_ICON_SIZE} color={colors.white} />
           </View>
         </Animated.View>
       </View>

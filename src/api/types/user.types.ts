@@ -34,6 +34,7 @@ export interface UserPublicSummary {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  friend_status?: "accepted" | "pending" | null;
 }
 
 export interface AchievementPublic {
@@ -56,7 +57,9 @@ export interface UserAchievementApi {
 }
 
 export interface UserAchievementEntry {
+  id?: number;
   obtained_at: string;
+  displayed?: boolean;
   achievement: AchievementPublic | null;
 }
 
@@ -89,13 +92,34 @@ export interface UserProfilePublic {
   updated_at: string;
 }
 
+export interface TournamentHistoryItem {
+  tournament_id: number;
+  title: string;
+  entry_fee: number;
+  prize_pool: number;
+  xp_reward: number;
+  is_active: boolean;
+  result: "won" | "lost" | "free";
+  amount: number;
+  registered_at: string;
+}
+
 export interface UserProfileResponse {
   user: UserProfilePublic;
   achievements: UserAchievementEntry[];
   won_tournaments: TournamentSummary[];
+  tournament_history?: TournamentHistoryItem[];
 }
 
 export interface GetBestUsersQuery {
+  page?: number;
+  limit?: number;
+}
+
+/** GET /user/search — authenticated public user discovery */
+export interface GetSearchUsersQuery {
+  gamer_name?: string;
+  exclude_friends?: boolean;
   page?: number;
   limit?: number;
 }

@@ -1,4 +1,5 @@
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
 import { colors } from "@/src/theme/colors";
 import { Image } from "expo-image";
 import React, { useMemo } from "react";
@@ -12,13 +13,6 @@ type ProfileAvatarSectionProps = {
   xpPoints: number;
   rankLabel: string;
 };
-
-function computeLevelAndProgress(xp: number): { level: number; progress: number } {
-  const safe = Number.isFinite(xp) ? xp : 0;
-  const level = Math.max(1, Math.floor(safe / 500) + 1);
-  const progress = (safe % 500) / 500;
-  return { level: Math.min(level, 999), progress };
-}
 
 export function ProfileAvatarSection({
   gamerName,

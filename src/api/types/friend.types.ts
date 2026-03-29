@@ -8,11 +8,22 @@ export interface SendFriendRequestBody {
 
 export type FriendListStatus = "pending" | "accepted" | "blocked";
 
+export type FriendListDirection = "incoming" | "outgoing";
+
 export interface GetFriendsQuery {
   status?: FriendListStatus;
+  direction?: FriendListDirection;
   gamer_name?: string;
   page?: number;
   limit?: number;
+}
+
+export interface AcceptFriendRequestBody {
+  user_id: number;
+}
+
+export interface RemoveFriendUserBody {
+  friend_user_id: number;
 }
 
 /**

@@ -29,6 +29,8 @@ export interface PubgTournamentDetail {
   updated_at?: string;
   game: Game;
   registration_fields?: RegistrationField[];
+  /** Populated on list endpoint: current registration count. */
+  registered_count?: number;
 }
 
 /** @deprecated Use PubgTournamentDetail — kept for gradual migration */
@@ -65,6 +67,7 @@ export interface CreatePubgTournamentBody {
 export interface GetPubgTournamentsQuery {
     page?: number;
     limit?: number;
+    is_active?: boolean;
 }
 
 export interface ApiPaginationMeta {

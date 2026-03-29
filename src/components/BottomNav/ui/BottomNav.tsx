@@ -1,8 +1,16 @@
+import { ChannelNavIcon } from "@/src/components/icons/nav/ChannelNavIcon";
+import { FriendsNavIcon } from "@/src/components/icons/nav/FriendsNavIcon";
+import { HomeNavIcon } from "@/src/components/icons/nav/HomeNavIcon";
+import { ReelsNavIcon } from "@/src/components/icons/nav/ReelsNavIcon";
 import { colors } from "@/src/theme/colors";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomTabItem from "./BottomTabItem";
+
+/** Inactive tab icon fills from `src/assets/*-icon.svg` */
+const INACTIVE_SLATE = "#64748B";
+const INACTIVE_REEL = "#94A3B8";
 
 type Props = {
   activeTab: string | null;
@@ -20,25 +28,29 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
         <View style={styles.row}>
           <BottomTabItem
             label="Home"
-            iconName="home"
+            Icon={HomeNavIcon}
+            inactiveIconColor={INACTIVE_SLATE}
             active={activeTab === "Home"}
             onPress={() => onTabPress("Home")}
           />
           <BottomTabItem
             label="Reels"
-            iconName="movie"
+            Icon={ReelsNavIcon}
+            inactiveIconColor={INACTIVE_REEL}
             active={activeTab === "Reels"}
             onPress={() => onTabPress("Reels")}
           />
           <BottomTabItem
             label="Channels"
-            iconName="forum"
+            Icon={ChannelNavIcon}
+            inactiveIconColor={INACTIVE_SLATE}
             active={activeTab === "Channels"}
             onPress={() => onTabPress("Channels")}
           />
           <BottomTabItem
             label="Friends"
-            iconName="people"
+            Icon={FriendsNavIcon}
+            inactiveIconColor={INACTIVE_SLATE}
             active={activeTab === "Friends"}
             onPress={() => onTabPress("Friends")}
           />

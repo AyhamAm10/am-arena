@@ -1,7 +1,7 @@
 import { colors } from "@/src/theme/colors";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "../state";
 
 export default function SuperSubCard() {
@@ -11,51 +11,72 @@ export default function SuperSubCard() {
   const clampedProgress = Math.min(1, Math.max(0, progress));
 
   return (
-    <View style={styles.container}>
-      <Icon name="bolt" size={28} color={colors.primaryPurple} />
-      <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
-      </View>
-      <View style={styles.progressWrap}>
-        <View style={styles.progressTrack}>
-          <View
-            style={[
-              styles.progressFill,
-              { width: `${clampedProgress * 100}%` },
-            ]}
-          />
+    <LinearGradient
+      colors={["#22D3EE", "#A855F7"]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.gradientBorder}
+    >
+      <View style={styles.inner}>
+        <View style={styles.iconCircle} />
+        <View style={styles.content}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+        </View>
+        <View style={styles.progressWrap}>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${clampedProgress * 100}%` },
+              ]}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  gradientBorder: {
+    borderRadius: 14,
+    padding: 1,
+  },
+  inner: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.darkBackground2,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: 13,
+    padding: 14,
     gap: 12,
+  },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.darkBackground1,
+    borderWidth: 1,
+    borderColor: colors.primaryPurple,
   },
   content: {
     flex: 1,
   },
   title: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: colors.white,
-    letterSpacing: 0.5,
+    fontSize: 11,
+    fontWeight: "800",
+    color: colors.grey,
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
   description: {
-    fontSize: 14,
-    color: colors.grey,
-    marginTop: 2,
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.white,
+    marginTop: 4,
   },
   progressWrap: {
-    width: 60,
+    width: 56,
   },
   progressTrack: {
     height: 6,

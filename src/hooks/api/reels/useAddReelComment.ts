@@ -17,6 +17,7 @@ export function useAddReelComment(): UseMutationResult<
   return useMutation({
     mutationFn: ({ reelId, body }) => addReelComment(reelId, body),
     onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["reels"] });
       queryClient.invalidateQueries({
         queryKey: ["reel", variables.reelId, "comments"],
       });

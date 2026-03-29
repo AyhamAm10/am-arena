@@ -1,12 +1,13 @@
 // src/components/TopBar/ui/LoggedInTopBar.tsx
+import { CoinsIcon } from "@/src/components/icons/figma/CoinsIcon";
+import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIcon";
 import { colors } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "../store";
 
-
+const LOGO = require("../../../assets/main_Logo.png");
 
 const LoggedInTopBar: React.FC = () => {
   const router = useRouter();
@@ -14,28 +15,47 @@ const LoggedInTopBar: React.FC = () => {
   const level = useMirror("level");
   const levelProgress = useMirror("levelProgress");
   const coins = useMirror("coins");
+  const pct = Math.round(
+    Math.min(1, Math.max(0, levelProgress ?? 0)) * 100
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        {/* <Icon name="sports-esports" size={24} color={colors.primaryPurple} /> */}
-        <Image source={require("../../../assets/main_Logo.png")} style={styles.logo} />
-        <Text style={styles.levelText}>LVL {level}</Text>
-        <View style={styles.progressTrack}>
-          <View
-            style={[
-              styles.progressFill,
-              { width: `${Math.min(1, Math.max(0, levelProgress ?? 0)) * 100}%` },
-            ]}
-          />
+        <View style={styles.logoCircle}>
+          <Image source={LOGO} style={styles.logo} resizeMode="contain" />
+        </View>
+        <View style={styles.levelColumn}>
+          <View style={styles.levelRow}>
+            <Text style={styles.levelText}>LVL {level}</Text>
+            <Text style={styles.pctText}>{pct}%</Text>
+          </View>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                {
+                  width: `${Math.min(1, Math.max(0, levelProgress ?? 0)) * 100}%`,
+                },
+              ]}
+            />
+          </View>
         </View>
       </View>
       <View style={styles.right}>
-        <TouchableOpacity>
-          <Icon name="notifications" size={26} color={colors.white} />
+        <TouchableOpacity
+          style={styles.notifWrap}
+          accessibilityRole="button"
+          accessibilityLabel="Notifications"
+        >
+          <NotificationsIcon width={20} height={25} color={colors.white} />
+          <View style={styles.notifDot} />
         </TouchableOpacity>
-        <View style={styles.coinsRow}>
-          <Icon name="attach-money" size={20} color={colors.gold} />
-          <Text style={styles.coinsText}>{coins?.toLocaleString()}</Text>
+        <View style={styles.walletPill}>
+          <CoinsIcon width={12} height={12} color={colors.gold} />
+          <Text style={styles.coinsText}>
+            {Number(coins ?? 0).toLocaleString()}
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.avatarWrap}
@@ -46,9 +66,7 @@ const LoggedInTopBar: React.FC = () => {
           {avatarSource ? (
             <Image source={avatarSource} style={styles.avatar} />
           ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Icon name="person" size={24} color={colors.grey} />
-            </View>
+            <View style={styles.avatarPlaceholder} />
           )}
         </TouchableOpacity>
       </View>
@@ -57,17 +75,14 @@ const LoggedInTopBar: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  logo: {
-    width: 100,
-    height: 100,
-  },
   container: {
-    height: 60,
+    minHeight: 60,
     backgroundColor: colors.darkBackground1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: colors.darkBackground2,
   },
@@ -75,43 +90,93 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
+    minWidth: 0,
+    gap: 10,
+  },
+  logoCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.darkBackground2,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  logo: {
+    width: 28,
+    height: 28,
+  },
+  levelColumn: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: "center",
+  },
+  levelRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
     gap: 8,
+    marginBottom: 4,
   },
   levelText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "700",
     color: colors.white,
   },
+  pctText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: colors.primaryPurple,
+  },
   progressTrack: {
-    height: 8,
-    flex: 1,
-    maxWidth: 120,
+    height: 6,
+    width: "100%",
+    maxWidth: 160,
     backgroundColor: colors.darkBackground2,
-    borderRadius: 4,
+    borderRadius: 3,
     overflow: "hidden",
   },
   progressFill: {
     height: "100%",
     backgroundColor: colors.primaryPurple,
-    borderRadius: 4,
+    borderRadius: 3,
   },
   right: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 10,
+    marginLeft: 8,
   },
-  coinsRow: {
+  notifWrap: {
+    position: "relative",
+    padding: 4,
+  },
+  notifDot: {
+    position: "absolute",
+    top: 2,
+    right: 2,
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: colors.primaryPurple,
+  },
+  walletPill: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.primaryPurple,
+    backgroundColor: colors.darkBackground2,
   },
   coinsText: {
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 13,
+    fontWeight: "700",
     color: colors.white,
   },
   avatarWrap: {
-    marginLeft: 4,
+    marginLeft: 2,
   },
   avatar: {
     width: 36,
@@ -123,8 +188,8 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     backgroundColor: colors.darkBackground2,
-    alignItems: "center",
-    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#3d3450",
   },
 });
 

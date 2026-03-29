@@ -1,5 +1,6 @@
 import type {
   AchievementPublic,
+  TournamentHistoryItem,
   TournamentSummary,
 } from "@/src/api/types/user.types";
 import { colors } from "@/src/theme/colors";
@@ -18,6 +19,7 @@ import { AchievementBadgesSection } from "./components/AchievementBadgesSection"
 import { AddFriendButton } from "./components/AddFriendButton";
 import { ProfileAvatarSection } from "./components/ProfileAvatarSection";
 import { ProfileHeader } from "./components/ProfileHeader";
+import { RecentTournamentHistory } from "./components/RecentTournamentHistory";
 import { TournamentsWonSection } from "./components/TournamentsWonSection";
 
 type AchievementRow = {
@@ -48,18 +50,22 @@ type ProfileScreenModel = {
 
 export function Ui() {
   const router = useRouter();
-  const variant = useMirror("variant");
+  const displayVariant = useMirror("displayVariant");
   const currentUser = useMirror("currentUser");
   const otherProfile = useMirror("otherProfile");
   const isLoadingProfile = useMirror("isLoadingProfile");
   const isProfileError = useMirror("isProfileError");
   const isSendingFriendRequest = useMirror("isSendingFriendRequest");
   const handleAddFriend = useMirror("handleAddFriend");
+  const friendAction = useMirror("friendAction");
+  const handleFriendAction = useMirror("handleFriendAction");
+  const isFriendActionBusy = useMirror("isFriendActionBusy");
   const logout = useMirror("logout");
   const isLoggingOut = useMirror("isLoggingOut");
+  const tournamentHistory = useMirror("tournamentHistory");
 
   const data = useMemo((): ProfileScreenModel | null => {
-    if (variant === "me" && currentUser) {
+    if (displayVariant === "me" && currentUser) {
       const achievements = (currentUser.achievements ?? []) as AchievementRow[];
       return {
         gamerName: currentUser.gamer_name,
@@ -71,7 +77,7 @@ export function Ui() {
         rankLabel: deriveRankLabel(achievements),
       };
     }
-    if (variant === "other" && otherProfile) {
+    if (displayVariant === "other" && otherProfile) {
       const u = otherProfile.user;
       const achievements = (otherProfile.achievements ?? []) as AchievementRow[];
       return {
@@ -85,10 +91,10 @@ export function Ui() {
       };
     }
     return null;
-  }, [variant, currentUser, otherProfile]);
+  }, [displayVariant, currentUser, otherProfile]);
 
-  const headerTitle = variant === "me" ? "My Profile" : "Public Profile";
-  const showBack = variant === "other";
+  const headerTitle = displayVariant === "me" ? "My Profile" : "Public Profile";
+  const showBack = displayVariant === "other";
 
   return (
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
@@ -102,12 +108,16 @@ export function Ui() {
           showBack={showBack}
           onBack={() => router.back()}
           onEditPress={
-            variant === "me"
+            displayVariant === "me"
               ? () => router.push("/profile/edit")
               : undefined
           }
-          onLogoutPress={variant === "me" ? () => void logout() : undefined}
-          isLoggingOut={variant === "me" ? isLoggingOut : undefined}
+          onLogoutPress={
+            displayVariant === "me" ? () => void logout() : undefined
+          }
+          isLoggingOut={
+            displayVariant === "me" ? isLoggingOut : undefined
+          }
         />
 
         {isLoadingProfile ? (
@@ -128,14 +138,21 @@ export function Ui() {
               rankLabel={data.rankLabel}
             />
 
-            {variant === "other" ? (
+            {displayVariant === "other" ? (
               <AddFriendButton
-                onPress={handleAddFriend}
-                loading={isSendingFriendRequest}
+                action={friendAction}
+                onPress={handleFriendAction}
+                loading={isFriendActionBusy}
               />
             ) : null}
 
-            <AchievementBadgesSection entries={data.achievements} />
+            <AchievementBadgesSection
+              entries={data.achievements}
+              showViewAll={displayVariant === "me"}
+            />
+            <RecentTournamentHistory
+              items={(tournamentHistory ?? []) as TournamentHistoryItem[]}
+            />
             <TournamentsWonSection tournaments={data.wonTournaments} />
           </>
         )}

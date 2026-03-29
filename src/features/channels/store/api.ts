@@ -1,23 +1,19 @@
-/**
- * @todo When channel REST is merged into OpenAPI, replace placeholders with real
- * types and wire axios + React Query (see hooks/api/messages-channels-openapi-gap.ts).
- */
-
-export type ChannelListItem = {
-  id: string;
-  title: string;
-};
+import type { ChannelPublic } from "@/src/api/types/chat.types";
 
 type ApiState = {
-  channels: ChannelListItem[] | undefined;
+  channels: ChannelPublic[];
   isLoadingChannels: boolean;
+  isChannelsError: boolean;
+  channelsErrorMessage: string | null;
   refreshChannels: () => Promise<void>;
   onRefreshChannelsPress: () => void;
 };
 
 const store = (): ApiState => ({
-  channels: undefined,
+  channels: [],
   isLoadingChannels: false,
+  isChannelsError: false,
+  channelsErrorMessage: null,
   refreshChannels: async () => {},
   onRefreshChannelsPress: () => {},
 });

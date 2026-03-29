@@ -19,6 +19,7 @@ export function useSendFriendRequest(): UseMutationResult<
     mutationFn: sendFriendRequest,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({ queryKey: ["user-search"] });
     },
   });
 }

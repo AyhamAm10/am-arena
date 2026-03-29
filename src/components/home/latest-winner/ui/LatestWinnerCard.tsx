@@ -20,7 +20,7 @@ export default function LatestWinnerCard() {
         <ImageBackground
           source={{ uri: formatImageUrl(imageSource as string) }}
           style={styles.imageBackground}
-          imageStyle={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
+          imageStyle={styles.imageRadius}
           resizeMode="cover"
         >
           <View style={styles.overlay}>
@@ -32,12 +32,14 @@ export default function LatestWinnerCard() {
           </View>
         </ImageBackground>
       ) : (
-        <View style={[styles.imageBackground, styles.overlay]}>
-          <View style={styles.pill}>
-            <Text style={styles.pillText}>LATEST WINNER</Text>
+        <View style={[styles.imageBackground, styles.fallbackBg]}>
+          <View style={styles.overlay}>
+            <View style={styles.pill}>
+              <Text style={styles.pillText}>LATEST WINNER</Text>
+            </View>
+            <Text style={styles.teamName}>{teamName}</Text>
+            <Text style={styles.tournamentName}>{tournamentName}</Text>
           </View>
-          <Text style={styles.teamName}>{teamName}</Text>
-          <Text style={styles.tournamentName}>{tournamentName}</Text>
         </View>
       )}
     </View>
@@ -49,38 +51,51 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
     backgroundColor: colors.darkBackground2,
+    borderWidth: 1,
+    borderColor: "#2d2440",
   },
   imageBackground: {
     height: 200,
     justifyContent: "flex-end",
     width: "100%",
   },
+  imageRadius: {
+    borderRadius: 16,
+  },
+  fallbackBg: {
+    backgroundColor: colors.darkBackground1,
+    justifyContent: "flex-end",
+  },
   overlay: {
-    backgroundColor: "rgba(0,0,0,0.5)",
-    padding: 16,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    padding: 18,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   pill: {
     alignSelf: "flex-start",
     backgroundColor: colors.primaryPurple,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginBottom: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    marginBottom: 10,
   },
   pillText: {
-    fontSize: 11,
-    fontWeight: "700",
+    fontSize: 10,
+    fontWeight: "800",
     color: colors.white,
-    letterSpacing: 0.5,
+    letterSpacing: 1,
   },
   teamName: {
-    fontSize: 20,
-    fontWeight: "700",
+    fontSize: 22,
+    fontWeight: "800",
     color: colors.white,
-    marginBottom: 4,
+    marginBottom: 6,
   },
   tournamentName: {
     fontSize: 14,
+    fontWeight: "500",
     color: colors.grey,
+    lineHeight: 20,
   },
 });

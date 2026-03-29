@@ -3,12 +3,26 @@ import React from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
+export type FriendAction = "add" | "cancel" | "remove";
+
 type AddFriendButtonProps = {
+  action?: FriendAction;
   onPress: () => void;
   loading: boolean;
 };
 
-export function AddFriendButton({ onPress, loading }: AddFriendButtonProps) {
+const ACTION_CONFIG: Record<FriendAction, { icon: string; label: string }> = {
+  add: { icon: "person-add", label: "Add Friend" },
+  cancel: { icon: "close", label: "Cancel Request" },
+  remove: { icon: "person-remove", label: "Remove Friend" },
+};
+
+export function AddFriendButton({
+  action = "add",
+  onPress,
+  loading,
+}: AddFriendButtonProps) {
+  const { icon, label } = ACTION_CONFIG[action];
   return (
     <Pressable
       style={({ pressed }) => [styles.btn, pressed && styles.btnPressed]}
@@ -19,8 +33,8 @@ export function AddFriendButton({ onPress, loading }: AddFriendButtonProps) {
         <ActivityIndicator color={colors.white} />
       ) : (
         <View style={styles.row}>
-          <Icon name="person-add" size={22} color={colors.white} />
-          <Text style={styles.label}>Add Friend</Text>
+          <Icon name={icon} size={22} color={colors.white} />
+          <Text style={styles.label}>{label}</Text>
         </View>
       )}
     </Pressable>

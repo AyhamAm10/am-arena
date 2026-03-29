@@ -5,6 +5,7 @@ import { apiUrl } from "../axios/api-url";
 import { ApiResponse } from "../types/api-response";
 import type {
   GetBestUsersQuery,
+  GetSearchUsersQuery,
   UserProfileResponse,
   UserPublicSummary,
 } from "../types/user.types";
@@ -27,6 +28,17 @@ export async function getBestUsers(query: GetBestUsersQuery): Promise<{
 }> {
   const res = await axiosInstance.get<ApiResponse<UserPublicSummary[]>>(
     "/user/best",
+    { params: query }
+  );
+  return parseApiResponseWithMeta(res);
+}
+
+export async function searchUsers(query: GetSearchUsersQuery): Promise<{
+  data: UserPublicSummary[];
+  meta?: ApiPaginationMeta;
+}> {
+  const res = await axiosInstance.get<ApiResponse<UserPublicSummary[]>>(
+    "/user/search",
     { params: query }
   );
   return parseApiResponseWithMeta(res);

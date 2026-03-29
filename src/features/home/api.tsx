@@ -10,6 +10,7 @@ function Api({ children }: PropsWithChildren) {
     const { data, isLoading  , dataUpdatedAt    , isFetching } = useGetPubgTournaments({
         page: 1,
         limit: 10,
+        is_active: true,
     });
 
     const { data: bestPlayers, isLoading: isLoadingBestPlayers, dataUpdatedAt: dataUpdatedAtBestPlayers, isFetching: isFetchingBestPlayers } = useFetchBestPlayers({

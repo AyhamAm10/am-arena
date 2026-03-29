@@ -1,3 +1,5 @@
+import { HourIcon } from "@/src/components/icons/figma/HourIcon";
+import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 import { colors } from "@/src/theme/colors";
 import React from "react";
 import {
@@ -7,13 +9,19 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 import type { TournamentCardState } from "../state/init";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 
 type Props = {
   card: TournamentCardState | undefined;
 };
+
+function formatPrize(prize: string): string {
+  const n = Number(prize);
+  if (Number.isFinite(n)) {
+    return `$${n.toLocaleString()}`;
+  }
+  return prize.startsWith("$") ? prize : `$${prize}`;
+}
 
 export default function TournamentCardView({ card }: Props) {
   if (!card) return null;
@@ -28,33 +36,32 @@ export default function TournamentCardView({ card }: Props) {
     onJoinPress,
   } = card;
 
-  console.log("IMAGE SOURCE:", imageSource);
-  console.log("FORMAT IMAGE URL:", formatImageUrl(imageSource ?? ""));
   return (
     <View style={styles.container}>
       <View style={styles.imageWrap}>
         {imageSource ? (
-          <Image source={{ uri: formatImageUrl(imageSource) }} style={styles.image} resizeMode="cover" />
+          <Image
+            source={{ uri: formatImageUrl(imageSource) }}
+            style={styles.image}
+            resizeMode="cover"
+          />
         ) : (
-          <View style={styles.imagePlaceholder}>
-            <Icon name="sports-esports" size={40} color={colors.grey} />
-          </View>
+          <View style={styles.imagePlaceholder} />
         )}
       </View>
       <View style={styles.body}>
-        <Text style={styles.title} numberOfLines={1}>
-          {title}
-        </Text>
-        <Text style={styles.prize}>{prize}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          <Text style={styles.prize}>{formatPrize(prize)}</Text>
+        </View>
         <View style={styles.meta}>
+          <Text style={styles.metaText}>
+            {participantsCurrent}/{participantsMax}
+          </Text>
           <View style={styles.metaItem}>
-            <Icon name="people" size={16} color={colors.grey} />
-            <Text style={styles.metaText}>
-              {participantsCurrent}/{participantsMax}
-            </Text>
-          </View>
-          <View style={styles.metaItem}>
-            <Icon name="schedule" size={16} color={colors.grey} />
+            <HourIcon width={14} height={15} color={colors.grey} />
             <Text style={styles.metaText}>{timeRemaining}</Text>
           </View>
         </View>
@@ -76,6 +83,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkBackground2,
     borderRadius: 12,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#3d2a55",
   },
   imageWrap: {
     height: 100,
@@ -87,27 +96,33 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: colors.darkBackground1,
   },
   body: {
     padding: 12,
   },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    gap: 8,
+    marginBottom: 8,
+  },
   title: {
-    fontSize: 16,
-    fontWeight: "600",
+    flex: 1,
+    fontSize: 15,
+    fontWeight: "700",
     color: colors.white,
-    marginBottom: 4,
   },
   prize: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "700",
-    color: colors.primaryPurple,
-    marginBottom: 8,
+    color: "#22D3EE",
   },
   meta: {
     flexDirection: "row",
-    gap: 12,
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 12,
   },
   metaItem: {
@@ -118,6 +133,7 @@ const styles = StyleSheet.create({
   metaText: {
     fontSize: 12,
     color: colors.grey,
+    fontWeight: "600",
   },
   button: {
     backgroundColor: colors.primaryPurple,

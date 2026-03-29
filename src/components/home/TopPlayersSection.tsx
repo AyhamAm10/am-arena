@@ -1,8 +1,9 @@
 import { colors } from "@/src/theme/colors";
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { TopPlayer } from "./top-player";
 import type { TopPlayerCardState } from "./top-player";
+import { router } from "expo-router";
 
 export type TopPlayerItem = {
   id: string;
@@ -44,16 +45,23 @@ const TopPlayersSection: React.FC<Props> = ({
     <View style={styles.section}>
       <View style={styles.header}>
         <Text style={styles.title}>Top Players</Text>
-        {seasonLabel && (
-          <Text style={styles.seasonLabel}>{seasonLabel}</Text>
-        )}
+        {seasonLabel ? (
+          <View style={styles.seasonPill}>
+            <Text style={styles.seasonLabel}>{seasonLabel}</Text>
+          </View>
+        ) : null}
       </View>
       {players.map((p) => (
-        <TopPlayer
-          key={p.id}
-          instanceId={p.id}
-          byId={byId}
-        />
+        <TouchableOpacity key={p.id} onPress={() => {
+          router.push(`/profile/${p.id}`);
+        }}>
+
+          <TopPlayer
+
+            instanceId={p.id}
+            byId={byId}
+          />
+        </TouchableOpacity>
       ))}
     </View>
   );
@@ -75,10 +83,19 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: colors.white,
   },
+  seasonPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.primaryPurple,
+    backgroundColor: colors.darkBackground2,
+  },
   seasonLabel: {
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: "700",
     color: colors.primaryPurple,
+    letterSpacing: 0.3,
   },
 });
 

@@ -34,6 +34,11 @@ export interface ReelEntity {
   created_at: string;
   updated_at: string;
   user?: UserAccountDto | { id: number };
+  /** Present on GET /reel feed (enriched). */
+  liked_by_current_user?: boolean;
+  likes_count?: number;
+  comments_count?: number;
+  comments?: ReelCommentEntity[];
 }
 
 /**

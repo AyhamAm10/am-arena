@@ -22,12 +22,15 @@ type ReelsScrollState = {
   viewabilityConfig: { itemVisiblePercentThreshold: number };
 };
 
-const nullRef = null as unknown as RefObject<FlatList<ReelEntity> | null>;
+/** Ref-shaped placeholder until `State` registers the real `useRef`. */
+const flatListRefPlaceholder: RefObject<FlatList<ReelEntity> | null> = {
+  current: null,
+};
 
 const store = (): ReelsScrollState => ({
   currentIndex: 0,
   viewportHeight: 0,
-  flatListRef: nullRef,
+  flatListRef: flatListRefPlaceholder,
   onScrollBeginDrag: () => {},
   onScrollEndDrag: () => {},
   onMomentumScrollEnd: () => {},
