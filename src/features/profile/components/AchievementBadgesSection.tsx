@@ -1,65 +1,21 @@
-import type { AchievementPublic } from "@/src/api/types/user.types";
-import { useFetchAchievementCatalog } from "@/src/hooks/api/achievement/useFetchAchievementCatalog";
+import type { AchievementPublic, UserAchievementEntry } from "@/src/api/types/user.types";
 import { formatAchievementIconUrl } from "@/src/lib/utils/image-url-factory";
 import { colors } from "@/src/theme/colors";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import React, { useMemo } from "react";
+import React from "react";
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 
-type Entry = {
-  obtained_at: string;
-  achievement: AchievementPublic | null;
-};
-
-const LOCK_BORDER = "#4B5563";
-const LOCK_ICON = "#9CA3AF";
-const LOCK_LABEL = "#6B7280";
 const EARNED_LABEL = "#D1D5DB";
-const CIRCLE_FILL_LOCKED = "#2a2438";
-
-type Row = { achievement: AchievementPublic; locked: boolean };
-
-function buildDisplayRows(
-  entries: Entry[],
-  catalog: AchievementPublic[] | undefined,
-  useCatalog: boolean
-): Row[] {
-  const earned = entries
-    .map((e) => e.achievement)
-    .filter((a): a is AchievementPublic => a != null);
-  const earnedIds = new Set(earned.map((a) => a.id));
-
-  if (useCatalog && catalog != null && catalog.length > 0) {
-    const sorted = [...catalog].sort(
-      (a, b) => b.xp_reward - a.xp_reward || a.id - b.id
-    );
-    const fromCatalog: Row[] = sorted.map((a) => ({
-      achievement: a,
-      locked: !earnedIds.has(a.id),
-    }));
-    const orphaned = earned.filter((a) => !catalog.some((c) => c.id === a.id));
-    const extra: Row[] = orphaned.map((a) => ({
-      achievement: a,
-      locked: false,
-    }));
-    return [...fromCatalog, ...extra];
-  }
-
-  return earned.map((a) => ({ achievement: a, locked: false }));
-}
 
 type AchievementBadgesSectionProps = {
-  entries: Entry[];
-  /** Only on own profile — shows catalog (incl. locked) and "View All". */
+  entries: UserAchievementEntry[];
   showViewAll: boolean;
 };
 
@@ -68,21 +24,10 @@ export function AchievementBadgesSection({
   showViewAll,
 }: AchievementBadgesSectionProps) {
   const router = useRouter();
-  const { data: catalog, isLoading: catalogLoading } = useFetchAchievementCatalog(
-    { enabled: showViewAll }
+  const visibleEntries = entries.filter(
+    (entry): entry is UserAchievementEntry & { achievement: AchievementPublic } =>
+      entry.achievement != null
   );
-
-  const useCatalog =
-    showViewAll && catalog != null && catalog.length > 0;
-
-  const rows = useMemo(
-    () => buildDisplayRows(entries, catalog, useCatalog),
-    [entries, catalog, useCatalog]
-  );
-
-  const earnedCount = entries.filter((e) => e.achievement != null).length;
-  const showInitialLoader =
-    showViewAll && catalogLoading && earnedCount === 0 && rows.length === 0;
 
   return (
     <View style={styles.section}>
@@ -100,11 +45,7 @@ export function AchievementBadgesSection({
         ) : null}
       </View>
 
-      {showInitialLoader ? (
-        <View style={styles.loaderRow}>
-          <ActivityIndicator color={colors.primaryPurple} />
-        </View>
-      ) : rows.length === 0 ? (
+      {visibleEntries.length === 0 ? (
         <Text style={styles.empty}>No achievements yet.</Text>
       ) : (
         <ScrollView
@@ -112,11 +53,10 @@ export function AchievementBadgesSection({
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.rowScroll}
         >
-          {rows.map(({ achievement: a, locked }) => (
+          {visibleEntries.map(({ achievement }) => (
             <AchievementBadgeItem
-              key={`badge-${a.id}-${locked ? "locked" : "earned"}`}
-              achievement={a}
-              locked={locked}
+              key={`badge-${achievement.id}`}
+              achievement={achievement}
             />
           ))}
         </ScrollView>
@@ -126,47 +66,32 @@ export function AchievementBadgesSection({
 }
 
 function AchievementBadgeItem({
-  achievement: a,
-  locked,
+  achievement,
 }: {
   achievement: AchievementPublic;
-  locked: boolean;
 }) {
-  const accent = locked
-    ? LOCK_BORDER
-    : (a.color_theme?.trim() || colors.primaryPurple);
-  const labelColor = locked ? LOCK_LABEL : EARNED_LABEL;
-
-  const uri =
-    !locked && a.icon_url
-      ? /^https?:\/\//i.test(a.icon_url)
-        ? a.icon_url
-        : formatAchievementIconUrl(a.icon_url)
-      : null;
+  const accent = achievement.color_theme?.trim() || colors.primaryPurple;
+  const uri = achievement.icon_url
+    ? formatAchievementIconUrl(achievement.icon_url)
+    : null;
 
   return (
     <View style={styles.badgeCell}>
       <View
         style={[
           styles.badgeCircle,
-          locked
-            ? { borderColor: accent, backgroundColor: CIRCLE_FILL_LOCKED }
-            : { borderColor: accent, backgroundColor: "transparent" },
+          { borderColor: accent, backgroundColor: "transparent" },
         ]}
       >
-        {!locked ? (
-          <View
-            pointerEvents="none"
-            style={[
-              StyleSheet.absoluteFillObject,
-              { backgroundColor: accent, opacity: 0.22 },
-            ]}
-          />
-        ) : null}
+        <View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFillObject,
+            { backgroundColor: accent, opacity: 0.22 },
+          ]}
+        />
         <View style={styles.badgeCircleContent}>
-          {locked ? (
-            <Icon name="lock" size={26} color={LOCK_ICON} />
-          ) : uri ? (
+          {uri ? (
             <Image
               source={{ uri }}
               style={styles.badgeIcon}
@@ -179,8 +104,8 @@ function AchievementBadgeItem({
           )}
         </View>
       </View>
-      <Text style={[styles.badgeLabel, { color: labelColor }]} numberOfLines={2}>
-        {a.name}
+      <Text style={[styles.badgeLabel, { color: EARNED_LABEL }]} numberOfLines={2}>
+        {achievement.name}
       </Text>
     </View>
   );
@@ -209,11 +134,6 @@ const styles = StyleSheet.create({
   empty: {
     color: colors.grey,
     fontSize: 14,
-  },
-  loaderRow: {
-    minHeight: 96,
-    alignItems: "center",
-    justifyContent: "center",
   },
   rowScroll: {
     flexDirection: "row",

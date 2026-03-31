@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { MotionPressable } from '@/src/components/motion'
 import { colors } from '@/src/theme/colors'
 import { styles } from './styles'
 import { useMirror } from './store'
@@ -147,7 +148,7 @@ export function Ui() {
         {formError ? <Text style={styles.helperError}>{formError}</Text> : null}
         {apiError ? <Text style={styles.helperError}>{apiError}</Text> : null}
 
-        <TouchableOpacity
+        <MotionPressable
           style={[styles.button, (!canSubmit || isLoading) && styles.buttonDisabled]}
           onPress={onSubmit}
           disabled={!canSubmit || isLoading}
@@ -157,7 +158,7 @@ export function Ui() {
           ) : (
             <Text style={styles.buttonText}>Create Account</Text>
           )}
-        </TouchableOpacity>
+        </MotionPressable>
       </ScrollView>
     </KeyboardAvoidingView>
   )

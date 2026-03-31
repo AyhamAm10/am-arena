@@ -2,7 +2,7 @@ import axiosInstance from "../axios/axiosInstance";
 import { parseApiResponseWithMeta } from "../utils/parseApiResponseWithMeta";
 import type { ApiResponse } from "../types/api-response";
 import type { GetAchievementsQuery } from "../types/achievement.types";
-import type { AchievementPublic } from "../types/user.types";
+import type { AchievementPublic, UserAchievementEntry } from "../types/user.types";
 
 export async function getAchievements(query?: GetAchievementsQuery): Promise<{
   data: AchievementPublic[];
@@ -12,6 +12,13 @@ export async function getAchievements(query?: GetAchievementsQuery): Promise<{
     { params: query }
   );
   return parseApiResponseWithMeta(res);
+}
+
+export async function getMyAchievements(): Promise<UserAchievementEntry[]> {
+  const res = await axiosInstance.get<ApiResponse<UserAchievementEntry[]>>(
+    "/achievement/my-achievements"
+  );
+  return res.data.data;
 }
 
 export async function toggleAchievementDisplay(

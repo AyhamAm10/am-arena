@@ -356,6 +356,10 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
     justifyContent: "flex-end",
   },
+  modalBackdropHost: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   modalSheet: {
     backgroundColor: trColors.cardBg,
     borderTopLeftRadius: 16,

@@ -16,6 +16,7 @@ export default function TabsLayout() {
         <Tabs.Screen name="reels" />
         <Tabs.Screen name="channels" />
         <Tabs.Screen name="friends" />
+        <Tabs.Screen name="notifications" />
         <Tabs.Screen name="profile" />
       </Tabs>
       <TabBarShell />

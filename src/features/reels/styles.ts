@@ -190,6 +190,15 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.55)",
     justifyContent: "flex-end",
   },
+  /** Host for `AnimatedBottomSheet`: dimming comes from `SheetDimmedBackdrop`. */
+  modalBackdropHost: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  modalKeyboardHost: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   modalSheet: {
     maxHeight: "72%",
     backgroundColor: "#15101f",

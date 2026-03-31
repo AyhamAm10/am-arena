@@ -1,15 +1,16 @@
 import type { UserAchievementEntry } from "@/src/api/types/user.types";
-import { useFetchCurrentUser } from "@/src/hooks/api/auth/useFetchCurrentUser";
-import { useFetchUserProfile } from "@/src/hooks/api/profile/useFetchUserProfile";
+import { useFetchMyAchievements } from "@/src/hooks/api/achievement/useFetchMyAchievements";
 import { useToggleAchievementDisplay } from "@/src/hooks/api/achievement/useToggleAchievementDisplay";
 import { formatAchievementIconUrl } from "@/src/lib/utils/image-url-factory";
 import { colors } from "@/src/theme/colors";
+import { FadeInListRow, ScreenEnterTransition } from "@/src/components/motion";
 import { ProfileHeader } from "@/src/features/profile/components/ProfileHeader";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback } from "react";
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   StyleSheet,
   Switch,
@@ -20,75 +21,73 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AchievementsListScreen() {
   const router = useRouter();
-  const meQuery = useFetchCurrentUser();
-  const userId = meQuery.data?.id ? String(meQuery.data.id) : "";
-  const profileQuery = useFetchUserProfile(userId, { enabled: Boolean(userId) });
+  const { data, isLoading, isError } = useFetchMyAchievements();
   const toggleMutation = useToggleAchievementDisplay();
 
-  const achievements = profileQuery.data?.achievements ?? [];
-  const isLoading = meQuery.isLoading || profileQuery.isLoading;
-  const isError = meQuery.isError || profileQuery.isError;
+  const achievements = data ?? [];
 
   const handleToggle = useCallback(
-    (userAchievementId: number | undefined) => {
-      if (userAchievementId == null) return;
-      toggleMutation.mutate(userAchievementId);
+    (userAchievementId: number) => {
+      toggleMutation.mutate(userAchievementId, {
+        onError: (err) => {
+          Alert.alert("Limit reached", err.message || "You can display a maximum of 4 achievements.");
+        },
+      });
     },
     [toggleMutation]
   );
 
   const renderItem = useCallback(
-    ({ item }: { item: UserAchievementEntry }) => {
+    ({ item, index }: { item: UserAchievementEntry; index: number }) => {
       const a = item.achievement;
       if (!a) return null;
 
       const accent = a.color_theme?.trim() || colors.primaryPurple;
-      const uri = a.icon_url
-        ? /^https?:\/\//i.test(a.icon_url)
-          ? a.icon_url
-          : formatAchievementIconUrl(a.icon_url)
-        : null;
+      const uri = a.icon_url ? formatAchievementIconUrl(a.icon_url) : null;
 
       return (
-        <View style={[styles.card, { borderColor: accent }]}>
-          <View style={styles.cardTop}>
-            {uri ? (
-              <Image
-                source={{ uri }}
-                style={styles.icon}
-                contentFit="contain"
+        <FadeInListRow index={index}>
+          <View style={[styles.card, { borderColor: accent }]}>
+            <View style={styles.cardTop}>
+              {uri ? (
+                <Image
+                  source={{ uri }}
+                  style={styles.icon}
+                  contentFit="contain"
+                />
+              ) : (
+                <View
+                  style={[styles.icon, { backgroundColor: accent, opacity: 0.25 }]}
+                />
+              )}
+              <View style={styles.titleBlock}>
+                <Text style={[styles.tierLabel, { color: accent }]}>
+                  {(a.color_theme ?? "").toUpperCase()}
+                </Text>
+                <Text style={styles.name} numberOfLines={1}>
+                  {a.name}
+                </Text>
+              </View>
+              <Switch
+                value={item.displayed}
+                onValueChange={() => handleToggle(item.id)}
+                trackColor={{ false: "#3a2e48", true: accent }}
+                thumbColor={colors.white}
+                style={styles.toggle}
               />
-            ) : (
-              <View
-                style={[styles.icon, { backgroundColor: accent, opacity: 0.25 }]}
-              />
-            )}
-            <View style={styles.titleBlock}>
-              <Text style={[styles.tierLabel, { color: accent }]}>
-                {(a.color_theme ?? "").toUpperCase()}
-              </Text>
-              <Text style={styles.name} numberOfLines={1}>
-                {a.name}
-              </Text>
             </View>
-            <Switch
-              value={item.displayed !== false}
-              onValueChange={() => handleToggle(item.id)}
-              trackColor={{ false: "#3a2e48", true: accent }}
-              thumbColor={colors.white}
-              style={styles.toggle}
-            />
+            {a.description ? (
+              <Text style={styles.description}>{`"${a.description}"`}</Text>
+            ) : null}
           </View>
-          {a.description ? (
-            <Text style={styles.description}>"{a.description}"</Text>
-          ) : null}
-        </View>
+        </FadeInListRow>
       );
     },
     [handleToggle]
   );
 
   return (
+    <ScreenEnterTransition from="top" style={{ flex: 1 }}>
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
       <View style={styles.inner}>
         <ProfileHeader
@@ -107,9 +106,7 @@ export default function AchievementsListScreen() {
         ) : (
           <FlatList
             data={achievements}
-            keyExtractor={(item, idx) =>
-              item.id != null ? String(item.id) : `ach-${idx}`
-            }
+            keyExtractor={(item) => String(item.id)}
             renderItem={renderItem}
             contentContainerStyle={styles.list}
             ListEmptyComponent={
@@ -119,6 +116,7 @@ export default function AchievementsListScreen() {
         )}
       </View>
     </SafeAreaView>
+    </ScreenEnterTransition>
   );
 }
 

@@ -53,13 +53,14 @@ export interface AchievementPublic {
 export interface UserAchievementApi {
   id: number;
   obtained_at: string;
+  displayed: boolean;
   achievement: AchievementPublic | null;
 }
 
 export interface UserAchievementEntry {
-  id?: number;
+  id: number;
   obtained_at: string;
-  displayed?: boolean;
+  displayed: boolean;
   achievement: AchievementPublic | null;
 }
 

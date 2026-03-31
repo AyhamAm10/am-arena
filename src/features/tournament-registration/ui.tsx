@@ -8,15 +8,17 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
-  Modal,
-  Pressable,
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import {
+  AnimatedBottomSheet,
+  SheetDimmedBackdrop,
+  SheetSlidePanel,
+} from "@/src/components/motion";
 import { useMirror } from "./store";
 import { trColors, styles } from "./styles";
 import type { FriendOption } from "./store/api";
@@ -438,18 +440,13 @@ export function Ui() {
           ListFooterComponent={showSquadFriends ? listFooter : null}
         />
 
-      <Modal
+      <AnimatedBottomSheet
         visible={selectModalFieldId !== null}
-        transparent
-        animationType="fade"
         onRequestClose={() => setSelectModalFieldId(null)}
       >
-        <View style={styles.modalBackdrop}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            onPress={() => setSelectModalFieldId(null)}
-          />
-          <View style={styles.modalSheet}>
+        <View style={styles.modalBackdropHost}>
+          <SheetDimmedBackdrop onPress={() => setSelectModalFieldId(null)} />
+          <SheetSlidePanel style={styles.modalSheet}>
             <FlatList
               data={selectModalOptions}
               keyExtractor={(item) => item}
@@ -467,9 +464,9 @@ export function Ui() {
                 </TouchableOpacity>
               )}
             />
-          </View>
+          </SheetSlidePanel>
         </View>
-      </Modal>
+      </AnimatedBottomSheet>
     </SafeAreaView>
   );
 }

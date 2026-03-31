@@ -14,3 +14,17 @@ export interface GetChannelsQuery {
   page?: number;
   limit?: number;
 }
+
+/** GET /chat/channels/:id/messages — single message row. */
+export interface ChannelMessage {
+  id: number;
+  content: string;
+  sender_id: number;
+  sender_name: string;
+  created_at: string;
+}
+
+export interface GetMessagesQuery {
+  page?: number;
+  limit?: number;
+}

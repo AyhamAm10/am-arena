@@ -1,4 +1,5 @@
 import type { ChannelPublic } from "@/src/api/types/chat.types";
+import { FadeInListRow } from "@/src/components/motion";
 import { colors } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
@@ -93,7 +94,7 @@ export function Ui() {
   const keyExtractor = useCallback((item: ChannelPublic) => String(item.id), []);
 
   const renderItem = useCallback(
-    ({ item }: { item: ChannelPublic }) => {
+    ({ item, index }: { item: ChannelPublic; index: number }) => {
       const title = displayTitle(item);
       const icon = iconForChat(item);
       const subtitle = subtitleForChat(item);
@@ -103,50 +104,57 @@ export function Ui() {
         item.chat_type === "channel" && item.allow_user_messages;
 
       return (
-        <Pressable
-          style={[styles.card, featured && styles.cardFeatured]}
-          onPress={() => {}}
-        >
-          <View
-            style={[
-              styles.iconCircle,
-              featured && styles.iconCircleFeatured,
-            ]}
+        <FadeInListRow index={index}>
+          <Pressable
+            style={[styles.card, featured && styles.cardFeatured]}
+            onPress={() =>
+              router.push({
+                pathname: "/channel/[id]",
+                params: { id: String(item.id), title },
+              })
+            }
           >
-            <Icon
-              name={icon}
-              size={24}
-              color={featured ? channelsTheme.white : channelsTheme.accent}
-            />
-          </View>
-          <View style={styles.cardBody}>
-            <View style={styles.titleRow}>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {title}
-              </Text>
-              {featured ? (
-                <View style={styles.activePill}>
-                  <Text style={styles.activePillText}>ACTIVE</Text>
-                </View>
-              ) : null}
+            <View
+              style={[
+                styles.iconCircle,
+                featured && styles.iconCircleFeatured,
+              ]}
+            >
+              <Icon
+                name={icon}
+                size={24}
+                color={featured ? channelsTheme.white : channelsTheme.accent}
+              />
             </View>
-            <Text style={styles.cardSubtitle} numberOfLines={2}>
-              {subtitle}
-            </Text>
-          </View>
-          <View style={styles.cardMeta}>
-            {showOnline ? <View style={styles.onlineDot} /> : null}
-            <Icon
-              name="chevron-right"
-              size={22}
-              color={channelsTheme.muted}
-              style={styles.chevron}
-            />
-          </View>
-        </Pressable>
+            <View style={styles.cardBody}>
+              <View style={styles.titleRow}>
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {title}
+                </Text>
+                {featured ? (
+                  <View style={styles.activePill}>
+                    <Text style={styles.activePillText}>ACTIVE</Text>
+                  </View>
+                ) : null}
+              </View>
+              <Text style={styles.cardSubtitle} numberOfLines={2}>
+                {subtitle}
+              </Text>
+            </View>
+            <View style={styles.cardMeta}>
+              {showOnline ? <View style={styles.onlineDot} /> : null}
+              <Icon
+                name="chevron-right"
+                size={22}
+                color={channelsTheme.muted}
+                style={styles.chevron}
+              />
+            </View>
+          </Pressable>
+        </FadeInListRow>
       );
     },
-    [featuredId, filterTab]
+    [featuredId, filterTab, router]
   );
 
   const sectionIntro =

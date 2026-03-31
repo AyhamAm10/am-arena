@@ -15,6 +15,7 @@ export function useToggleAchievementDisplay(): UseMutationResult<
     mutationFn: toggleAchievementDisplay,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
+      queryClient.invalidateQueries({ queryKey: ["achievement", "my-achievements"] });
     },
   });
 }

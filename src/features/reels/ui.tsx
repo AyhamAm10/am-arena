@@ -14,16 +14,19 @@ import {
   Dimensions,
   FlatList,
   KeyboardAvoidingView,
-  Modal,
   Platform,
   Pressable,
   RefreshControl,
-  StyleSheet,
   Text,
   TextInput,
   useWindowDimensions,
   View,
 } from "react-native";
+import {
+  AnimatedBottomSheet,
+  SheetDimmedBackdrop,
+  SheetSlidePanel,
+} from "@/src/components/motion";
 import type { ReelCommentEntity, ReelEntity } from "@/src/api/types/reel.types";
 import type { UserAccountDto } from "@/src/api/types/user.types";
 import { Image } from "expo-image";
@@ -538,23 +541,18 @@ export function Ui() {
           )}
         </View>
 
-        <Modal
+        <AnimatedBottomSheet
           visible={commentReelId != null}
-          animationType="slide"
-          transparent
           onRequestClose={closeCommentsModal}
         >
-          <View style={styles.modalBackdrop}>
-            <Pressable
-              style={StyleSheet.absoluteFillObject}
-              onPress={closeCommentsModal}
-            />
+          <View style={styles.modalBackdropHost}>
+            <SheetDimmedBackdrop onPress={closeCommentsModal} />
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : undefined}
-              style={{ flex: 1, justifyContent: "flex-end" }}
+              style={styles.modalKeyboardHost}
               pointerEvents="box-none"
             >
-              <View style={styles.modalSheet}>
+              <SheetSlidePanel style={styles.modalSheet}>
                 <View style={styles.modalGrab} />
                 <View style={styles.modalHeader}>
                   <View style={styles.modalTitleRow}>
@@ -625,10 +623,10 @@ export function Ui() {
                     </Pressable>
                   </View>
                 </View>
-              </View>
+              </SheetSlidePanel>
             </KeyboardAvoidingView>
           </View>
-        </Modal>
+        </AnimatedBottomSheet>
       </View>
     </AppLayout>
   );

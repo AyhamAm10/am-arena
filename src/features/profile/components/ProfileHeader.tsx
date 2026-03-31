@@ -1,8 +1,12 @@
 import { colors } from "@/src/theme/colors";
+import {
+  AnimatedPopoverModal,
+  PopoverContent,
+  PopoverScrim,
+} from "@/src/components/motion";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Modal,
   Pressable,
   StyleSheet,
   Text,
@@ -76,19 +80,13 @@ export function ProfileHeader({
         </Pressable>
       </View>
 
-      <Modal
+      <AnimatedPopoverModal
         visible={menuOpen}
-        transparent
-        animationType="fade"
         onRequestClose={closeMenu}
       >
         <View style={styles.modalRoot} pointerEvents="box-none">
-          <Pressable
-            style={StyleSheet.absoluteFillObject}
-            onPress={closeMenu}
-            accessibilityLabel="Close menu"
-          />
-          <View
+          <PopoverScrim onPress={closeMenu} />
+          <PopoverContent
             style={[
               styles.dropdown,
               {
@@ -96,7 +94,6 @@ export function ProfileHeader({
                 right: Math.max(insets.right, 12) + 4,
               },
             ]}
-            pointerEvents="box-none"
           >
             {onEditPress ? (
               <Pressable
@@ -133,9 +130,9 @@ export function ProfileHeader({
                 </Text>
               </Pressable>
             ) : null}
-          </View>
+          </PopoverContent>
         </View>
-      </Modal>
+      </AnimatedPopoverModal>
     </View>
   );
 }

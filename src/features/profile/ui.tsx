@@ -1,11 +1,6 @@
-import type {
-  AchievementPublic,
-  TournamentHistoryItem,
-  TournamentSummary,
-} from "@/src/api/types/user.types";
 import { colors } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -22,79 +17,22 @@ import { ProfileHeader } from "./components/ProfileHeader";
 import { RecentTournamentHistory } from "./components/RecentTournamentHistory";
 import { TournamentsWonSection } from "./components/TournamentsWonSection";
 
-type AchievementRow = {
-  obtained_at: string;
-  achievement: AchievementPublic | null;
-};
-
-function deriveRankLabel(achievements: AchievementRow[]): string {
-  const list = achievements
-    .map((e) => e.achievement)
-    .filter((a): a is AchievementPublic => a != null);
-  if (list.length === 0) {
-    return "PLAYER";
-  }
-  const top = [...list].sort((a, b) => b.xp_reward - a.xp_reward)[0];
-  return top.name.toUpperCase();
-}
-
-type ProfileScreenModel = {
-  gamerName: string;
-  fullName: string;
-  profilePictureUrl: string | null;
-  xpPoints: number;
-  achievements: AchievementRow[];
-  wonTournaments: TournamentSummary[];
-  rankLabel: string;
-};
-
 export function Ui() {
   const router = useRouter();
-  const displayVariant = useMirror("displayVariant");
-  const currentUser = useMirror("currentUser");
-  const otherProfile = useMirror("otherProfile");
+  const screenModel = useMirror("screenModel");
+  const headerTitle = useMirror("headerTitle");
+  const showBack = useMirror("showBack");
+  const showViewAll = useMirror("showViewAll");
+  const showEditButton = useMirror("showEditButton");
+  const showLogoutButton = useMirror("showLogoutButton");
+  const showFriendButton = useMirror("showFriendButton");
   const isLoadingProfile = useMirror("isLoadingProfile");
   const isProfileError = useMirror("isProfileError");
-  const isSendingFriendRequest = useMirror("isSendingFriendRequest");
-  const handleAddFriend = useMirror("handleAddFriend");
   const friendAction = useMirror("friendAction");
   const handleFriendAction = useMirror("handleFriendAction");
   const isFriendActionBusy = useMirror("isFriendActionBusy");
   const logout = useMirror("logout");
   const isLoggingOut = useMirror("isLoggingOut");
-  const tournamentHistory = useMirror("tournamentHistory");
-
-  const data = useMemo((): ProfileScreenModel | null => {
-    if (displayVariant === "me" && currentUser) {
-      const achievements = (currentUser.achievements ?? []) as AchievementRow[];
-      return {
-        gamerName: currentUser.gamer_name,
-        fullName: currentUser.full_name,
-        profilePictureUrl: currentUser.profile_picture_url,
-        xpPoints: Number(currentUser.xp_points ?? 0),
-        achievements,
-        wonTournaments: [],
-        rankLabel: deriveRankLabel(achievements),
-      };
-    }
-    if (displayVariant === "other" && otherProfile) {
-      const u = otherProfile.user;
-      const achievements = (otherProfile.achievements ?? []) as AchievementRow[];
-      return {
-        gamerName: u.gamer_name,
-        fullName: u.full_name,
-        profilePictureUrl: u.profile_picture_url,
-        xpPoints: Number(u.xp_points ?? 0),
-        achievements,
-        wonTournaments: otherProfile.won_tournaments ?? [],
-        rankLabel: deriveRankLabel(achievements),
-      };
-    }
-    return null;
-  }, [displayVariant, currentUser, otherProfile]);
-
-  const headerTitle = displayVariant === "me" ? "My Profile" : "Public Profile";
-  const showBack = displayVariant === "other";
 
   return (
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
@@ -107,38 +45,30 @@ export function Ui() {
           title={headerTitle}
           showBack={showBack}
           onBack={() => router.back()}
-          onEditPress={
-            displayVariant === "me"
-              ? () => router.push("/profile/edit")
-              : undefined
-          }
-          onLogoutPress={
-            displayVariant === "me" ? () => void logout() : undefined
-          }
-          isLoggingOut={
-            displayVariant === "me" ? isLoggingOut : undefined
-          }
+          onEditPress={showEditButton ? () => router.push("/profile/edit") : undefined}
+          onLogoutPress={showLogoutButton ? () => void logout() : undefined}
+          isLoggingOut={showLogoutButton ? isLoggingOut : undefined}
         />
 
         {isLoadingProfile ? (
           <View style={styles.centered}>
             <ActivityIndicator size="large" color={colors.primaryPurple} />
           </View>
-        ) : isProfileError || !data ? (
+        ) : isProfileError || !screenModel ? (
           <View style={styles.centered}>
             <Text style={styles.errorText}>Could not load profile.</Text>
           </View>
         ) : (
           <>
             <ProfileAvatarSection
-              gamerName={data.gamerName}
-              fullName={data.fullName}
-              profilePictureUrl={data.profilePictureUrl}
-              xpPoints={data.xpPoints}
-              rankLabel={data.rankLabel}
+              gamerName={screenModel.gamerName}
+              fullName={screenModel.fullName}
+              profilePictureUrl={screenModel.profilePictureUrl}
+              xpPoints={screenModel.xpPoints}
+              rankLabel={screenModel.rankLabel}
             />
 
-            {displayVariant === "other" ? (
+            {showFriendButton ? (
               <AddFriendButton
                 action={friendAction}
                 onPress={handleFriendAction}
@@ -147,13 +77,13 @@ export function Ui() {
             ) : null}
 
             <AchievementBadgesSection
-              entries={data.achievements}
-              showViewAll={displayVariant === "me"}
+              entries={screenModel.achievements}
+              showViewAll={showViewAll}
             />
             <RecentTournamentHistory
-              items={(tournamentHistory ?? []) as TournamentHistoryItem[]}
+              items={screenModel.tournamentHistory}
             />
-            <TournamentsWonSection tournaments={data.wonTournaments} />
+            <TournamentsWonSection tournaments={screenModel.wonTournaments} />
           </>
         )}
       </ScrollView>

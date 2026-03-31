@@ -47,6 +47,7 @@ const LoggedInTopBar: React.FC = () => {
           style={styles.notifWrap}
           accessibilityRole="button"
           accessibilityLabel="Notifications"
+          onPress={() => router.push("/(tabs)/notifications" as never)}
         >
           <NotificationsIcon width={20} height={25} color={colors.white} />
           <View style={styles.notifDot} />

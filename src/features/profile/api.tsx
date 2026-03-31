@@ -44,7 +44,7 @@ function Api({ children, variant, userId }: ApiProps) {
   const meProfileId = displayVariant === "me" && currentUserId ? String(currentUserId) : "";
   const profileId = displayVariant === "me" ? meProfileId : targetId;
 
-  const otherQuery = useFetchUserProfile(profileId, {
+  const profileQuery = useFetchUserProfile(profileId, {
     enabled: Boolean(profileId),
   });
   const friendRequest = useSendFriendRequest();
@@ -107,14 +107,14 @@ function Api({ children, variant, userId }: ApiProps) {
   );
 
   const handleAddFriend = useCallback(() => {
-    const id = otherQuery.data?.user?.id;
+    const id = profileQuery.data?.user?.id;
     if (typeof id === "number") {
       void sendFriendRequest(id);
     }
-  }, [otherQuery.data?.user?.id, sendFriendRequest]);
+  }, [profileQuery.data?.user?.id, sendFriendRequest]);
 
   const handleFriendAction = useCallback(() => {
-    const id = otherQuery.data?.user?.id;
+    const id = profileQuery.data?.user?.id;
     if (typeof id !== "number") return;
     const run = async () => {
       try {
@@ -130,24 +130,21 @@ function Api({ children, variant, userId }: ApiProps) {
       }
     };
     void run();
-  }, [otherQuery.data?.user?.id, friendAction, removeFriendMut, removePendingMut, friendRequest]);
+  }, [profileQuery.data?.user?.id, friendAction, removeFriendMut, removePendingMut, friendRequest]);
 
   const isLoading =
-    (variant === "me" && (meQuery.isLoading || meQuery.isFetching)) ||
-    (needsMeForComparison && (meQuery.isLoading || meQuery.isFetching)) ||
-    (displayVariant === "other" &&
-      Boolean(targetId) &&
-      (otherQuery.isLoading || otherQuery.isFetching));
+    ((variant === "me" || needsMeForComparison) &&
+      (meQuery.isLoading || meQuery.isFetching)) ||
+    (Boolean(profileId) && (profileQuery.isLoading || profileQuery.isFetching));
 
   const isError =
-    (displayVariant === "me" && meQuery.isError) ||
-    (displayVariant === "other" && otherQuery.isError);
+    ((variant === "me" || needsMeForComparison) && meQuery.isError) ||
+    (Boolean(profileId) && profileQuery.isError);
 
   useMirrorRegistry("variant", variant, variant);
   useMirrorRegistry("displayVariant", displayVariant, displayVariant);
   useMirrorRegistry("targetUserId", variant === "other" ? targetId : null, targetId);
-  useMirrorRegistry("currentUser", meQuery.data ?? null, meQuery.dataUpdatedAt);
-  useMirrorRegistry("otherProfile", otherQuery.data ?? null, otherQuery.dataUpdatedAt);
+  useMirrorRegistry("profile", profileQuery.data ?? null, profileQuery.dataUpdatedAt);
   useMirrorRegistry("isLoadingProfile", isLoading, isLoading);
   useMirrorRegistry("isProfileError", isError, isError);
   useMirrorRegistry("sendFriendRequest", sendFriendRequest, sendFriendRequest);
@@ -160,11 +157,6 @@ function Api({ children, variant, userId }: ApiProps) {
   useMirrorRegistry("friendAction", friendAction, friendAction);
   useMirrorRegistry("handleFriendAction", handleFriendAction, handleFriendAction);
   useMirrorRegistry("isFriendActionBusy", isFriendActionBusy, isFriendActionBusy);
-  useMirrorRegistry(
-    "tournamentHistory",
-    otherQuery.data?.tournament_history ?? [],
-    otherQuery.dataUpdatedAt,
-  );
   useMirrorRegistry("logout", logout, logoutMutation.mutateAsync);
   useMirrorRegistry(
     "isLoggingOut",
