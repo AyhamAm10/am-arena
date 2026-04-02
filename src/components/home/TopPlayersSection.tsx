@@ -1,3 +1,4 @@
+import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -43,11 +44,11 @@ const TopPlayersSection: React.FC<Props> = ({
 
   return (
     <View style={styles.section}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Top Players</Text>
+      <View style={[styles.header, flexRowRtl]}>
+        <Text style={[styles.title, textRtl]}>أفضل اللاعبين</Text>
         {seasonLabel ? (
           <View style={styles.seasonPill}>
-            <Text style={styles.seasonLabel}>{seasonLabel}</Text>
+            <Text style={[styles.seasonLabel, textRtl]}>{seasonLabel}</Text>
           </View>
         ) : null}
       </View>
@@ -73,7 +74,6 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   header: {
-    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 12,

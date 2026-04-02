@@ -32,21 +32,21 @@ export function AchievementBadgesSection({
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Achievement Badges</Text>
+        <Text style={styles.sectionTitle}>شارات الإنجاز</Text>
         {showViewAll ? (
           <Pressable
             onPress={() => router.push("/profile/achievements")}
             hitSlop={10}
             accessibilityRole="button"
-            accessibilityLabel="View all achievements"
+            accessibilityLabel="عرض كل الإنجازات"
           >
-            <Text style={styles.viewAll}>View All</Text>
+            <Text style={styles.viewAll}>عرض الكل</Text>
           </Pressable>
         ) : null}
       </View>
 
       {visibleEntries.length === 0 ? (
-        <Text style={styles.empty}>No achievements yet.</Text>
+        <Text style={styles.empty}>لا توجد إنجازات بعد.</Text>
       ) : (
         <ScrollView
           horizontal

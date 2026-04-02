@@ -26,16 +26,16 @@ function formatRelativeTime(iso: string): string {
   const then = new Date(iso).getTime();
   const diffMs = now - then;
   const mins = Math.floor(diffMs / 60_000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return "الآن";
+  if (mins < 60) return `منذ ${mins} د`;
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+  if (hours < 24) return `منذ ${hours} ساعة`;
   const days = Math.floor(hours / 24);
-  if (days === 1) return "Yesterday";
-  if (days < 7) return `${days} days ago`;
+  if (days === 1) return "أمس";
+  if (days < 7) return `منذ ${days} أيام`;
   const weeks = Math.floor(days / 7);
-  if (weeks < 4) return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
-  return new Date(iso).toLocaleDateString("en-US", {
+  if (weeks < 4) return `منذ ${weeks} أسابيع`;
+  return new Date(iso).toLocaleDateString("ar", {
     month: "short",
     day: "numeric",
   });
@@ -87,14 +87,14 @@ export function RecentTournamentHistory({ items }: Props) {
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Recent Tournament History</Text>
+      <Text style={styles.sectionTitle}>سجل البطولات الأخيرة</Text>
       {items.map((item) => {
         const accent = ACCENT_COLORS[item.result];
         const amountColor = AMOUNT_COLORS[item.result];
         return (
           <View
             key={item.tournament_id}
-            style={[styles.card, { borderLeftColor: accent }]}
+            style={[styles.card, { borderStartColor: accent }]}
           >
             <View style={styles.arcOuter}>
               <ArcRing color={accent} />
@@ -117,7 +117,7 @@ export function RecentTournamentHistory({ items }: Props) {
                 {formatAmount(item)}
               </Text>
               {item.xp_reward > 0 ? (
-                <Text style={styles.xp}>+{item.xp_reward} XP</Text>
+                <Text style={styles.xp}>+{item.xp_reward} نقطة خبرة</Text>
               ) : null}
             </View>
           </View>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     paddingRight: 18,
     paddingLeft: 6,
     marginBottom: 12,
-    borderLeftWidth: 3.5,
+    borderStartWidth: 3.5,
   },
   arcOuter: {
     width: ARC_BOX,

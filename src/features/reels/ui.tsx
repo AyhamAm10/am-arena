@@ -43,9 +43,9 @@ function reelKey(item: ReelEntity, index: number) {
 }
 
 function commentAuthor(user: ReelCommentEntity["user"]): string {
-  if (!user || typeof user !== "object") return "User";
+  if (!user || typeof user !== "object") return "مستخدم";
   const u = user as UserAccountDto;
-  return (u.gamer_name || u.full_name || "").trim() || "User";
+  return (u.gamer_name || u.full_name || "").trim() || "مستخدم";
 }
 
 function commentAvatarUri(user: ReelCommentEntity["user"]): string | null {
@@ -93,9 +93,9 @@ function ReelDescriptionBlock({ description }: { description: string }) {
           hitSlop={8}
           style={styles.moreLessPressable}
           accessibilityRole="button"
-          accessibilityLabel="Expand description"
+          accessibilityLabel="توسيع الوصف"
         >
-          <Text style={styles.moreText}>more</Text>
+          <Text style={styles.moreText}>المزيد</Text>
         </Pressable>
       ) : null}
       {showLess ? (
@@ -104,9 +104,9 @@ function ReelDescriptionBlock({ description }: { description: string }) {
           hitSlop={8}
           style={styles.moreLessPressable}
           accessibilityRole="button"
-          accessibilityLabel="Collapse description"
+          accessibilityLabel="طي الوصف"
         >
-          <Text style={styles.moreText}>less</Text>
+          <Text style={styles.moreText}>أقل</Text>
         </Pressable>
       ) : null}
     </View>
@@ -231,7 +231,7 @@ function ReelFeedVideo({
         style={styles.videoTapLayer}
         onPress={onVideoPress}
         accessibilityRole="button"
-        accessibilityLabel="Play or pause video"
+        accessibilityLabel="تشغيل أو إيقاف الفيديو"
       />
     </View>
   );
@@ -351,14 +351,14 @@ export function Ui() {
           {isLoadingReels ? (
             <View style={styles.centered}>
               <ActivityIndicator size="large" color={colors.primaryPurple} />
-              <Text style={styles.muted}>Loading reels…</Text>
+              <Text style={styles.muted}>جاري تحميل الريلز…</Text>
             </View>
           ) : isReelsError ? (
             <View style={styles.centered}>
-              <Text style={styles.text}>Could not load reels.</Text>
+              <Text style={styles.text}>تعذّر تحميل الريلز.</Text>
               <Pressable onPress={() => void refreshReels()}>
                 <Text style={[styles.muted, { color: colors.primaryPurple }]}>
-                  Tap to retry
+                  اضغط لإعادة المحاولة
                 </Text>
               </Pressable>
             </View>
@@ -402,7 +402,7 @@ export function Ui() {
                       ) : (
                         <View style={styles.videoPlaceholder}>
                           <Text style={styles.videoPlaceholderText}>
-                            No video for this reel
+                            لا يوجد فيديو لهذا الريل
                           </Text>
                         </View>
                       )}
@@ -427,7 +427,7 @@ export function Ui() {
                               setCommentReelId(String(item.id ?? ""))
                             }
                             accessibilityRole="button"
-                            accessibilityLabel="Open comments"
+                            accessibilityLabel="فتح التعليقات"
                           >
                             {previewAvatarUri ? (
                               <Image
@@ -531,9 +531,9 @@ export function Ui() {
               }
               ListEmptyComponent={
                 <View style={styles.centered}>
-                  <Text style={styles.text}>No reels yet.</Text>
+                  <Text style={styles.text}>لا ريلز بعد.</Text>
                   <Text style={styles.muted}>
-                    Pull down to refresh or check back later.
+                    اسحب للتحديث أو عد لاحقاً.
                   </Text>
                 </View>
               }
@@ -556,7 +556,7 @@ export function Ui() {
                 <View style={styles.modalGrab} />
                 <View style={styles.modalHeader}>
                   <View style={styles.modalTitleRow}>
-                    <Text style={styles.modalTitle}>Comments</Text>
+                    <Text style={styles.modalTitle}>التعليقات</Text>
                     <View style={styles.modalCountBadge}>
                       <Text style={styles.modalCountText}>
                         {formatCompactCount(modalCommentCount)}
@@ -578,7 +578,7 @@ export function Ui() {
                   keyExtractor={(c) => String(c.id)}
                   ListEmptyComponent={
                     <Text style={[styles.muted, { marginVertical: 16 }]}>
-                      No comments yet.
+                      لا تعليقات بعد.
                     </Text>
                   }
                   renderItem={({ item: c }) => (
@@ -606,7 +606,7 @@ export function Ui() {
                   <View style={styles.modalInputWrap}>
                     <TextInput
                       style={styles.modalInput}
-                      placeholder="Add a comment..."
+                      placeholder="أضف تعليقاً…"
                       placeholderTextColor="#6a5f7a"
                       value={commentDraft}
                       onChangeText={setCommentDraft}
@@ -619,7 +619,7 @@ export function Ui() {
                       }
                       style={styles.modalSend}
                     >
-                      <Text style={styles.modalSendText}>SEND</Text>
+                      <Text style={styles.modalSendText}>إرسال</Text>
                     </Pressable>
                   </View>
                 </View>

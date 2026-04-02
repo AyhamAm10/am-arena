@@ -14,17 +14,17 @@ export function formatTournamentTimeRemaining(
   const now = Date.now();
   const ms = start - now;
   if (ms <= 0) {
-    return "Started";
+    return "بدأت";
   }
   const totalMin = Math.floor(ms / 60000);
   const days = Math.floor(totalMin / (60 * 24));
   const hours = Math.floor((totalMin % (60 * 24)) / 60);
   const mins = totalMin % 60;
   if (days > 0) {
-    return `${days}d ${hours}h`;
+    return `${days}ي ${hours}س`;
   }
   if (hours > 0) {
-    return `${hours}h ${mins}m`;
+    return `${hours}س ${mins}د`;
   }
-  return `${mins}m`;
+  return `${mins}د`;
 }

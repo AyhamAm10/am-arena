@@ -1,7 +1,7 @@
 export function formatNotificationTime(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleString();
+  return d.toLocaleString("ar");
 }
 
 /** Block obvious open redirects; app routes are internal paths only. */

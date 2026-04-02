@@ -15,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import type { UserNotificationDto } from "@/src/api/types/notification.types";
 import { FadeInListRow, ScreenEnterTransition } from "@/src/components/motion";
@@ -69,10 +70,15 @@ export default function NotificationsScreen() {
     <ScreenEnterTransition from="top" style={{ flex: 1 }}>
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.header}>
-        <Pressable onPress={onBack} style={styles.headerBtn} accessibilityLabel="Go back">
-          <Icon name="arrow-back" size={24} color={colors.white} />
+        <Pressable onPress={onBack} style={styles.headerBtn} accessibilityLabel="رجوع">
+          <Icon
+            name="arrow-back"
+            size={24}
+            color={colors.white}
+            style={rtlMirrorIconStyle}
+          />
         </Pressable>
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <Text style={styles.headerTitle}>الإشعارات</Text>
         <View style={styles.headerBtn} />
       </View>
 
@@ -82,7 +88,7 @@ export default function NotificationsScreen() {
         </View>
       ) : listQuery.isError ? (
         <View style={styles.center}>
-          <Text style={styles.err}>{listQuery.error?.message ?? "Failed to load"}</Text>
+          <Text style={styles.err}>{listQuery.error?.message ?? "فشل التحميل"}</Text>
         </View>
       ) : (
         <FlatList
@@ -97,7 +103,7 @@ export default function NotificationsScreen() {
             </FadeInListRow>
           )}
           ListEmptyComponent={
-            <Text style={styles.empty}>No notifications yet.</Text>
+            <Text style={styles.empty}>لا إشعارات بعد.</Text>
           }
         />
       )}

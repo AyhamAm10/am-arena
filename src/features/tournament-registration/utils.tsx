@@ -111,7 +111,7 @@ function Utils({ children }: PropsWithChildren) {
   ]);
 
   const selectedCountLabel = useMemo(
-    () => `${selectedFriendIds.length} SELECTED`,
+    () => `${selectedFriendIds.length} مُحدد`,
     [selectedFriendIds.length]
   );
 

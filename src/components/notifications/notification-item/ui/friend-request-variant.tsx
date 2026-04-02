@@ -54,7 +54,7 @@ export function createFriendRequestVariant(instanceId: string) {
             {busy === "accept" ? (
               <ActivityIndicator color={colors.white} size="small" />
             ) : (
-              <Text style={s.btnText}>Accept</Text>
+              <Text style={s.btnText}>قبول</Text>
             )}
           </MotionPressable>
           <MotionPressable
@@ -65,7 +65,7 @@ export function createFriendRequestVariant(instanceId: string) {
             {busy === "reject" ? (
               <ActivityIndicator color={colors.white} size="small" />
             ) : (
-              <Text style={s.btnText}>Reject</Text>
+              <Text style={s.btnText}>رفض</Text>
             )}
           </MotionPressable>
         </View>

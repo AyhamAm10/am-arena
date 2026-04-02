@@ -12,12 +12,7 @@ export async function register(
 ): Promise<AuthTokensResponse> {
   const res = await axiosInstance.post<ApiResponse<AuthTokensResponse>>(
     "/auth/register",
-    body,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
+    body
   );
   return parseApiResponse(res);
 }

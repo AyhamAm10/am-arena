@@ -35,8 +35,8 @@ export function Ui() {
       <View style={styles.content}>
         <View style={styles.section}>
           <SuperSub
-            title="DAILY CHALLENGE"
-            description="Win 2 Matches: +500 XP"
+            title="تحدي يومي"
+            description="فوز بمباراتين: +500 نقطة خبرة"
             progress={0.4}
           />
         </View>
@@ -91,7 +91,7 @@ export function Ui() {
                 };
               }) ?? []
             }
-            seasonLabel="Season 12"
+            seasonLabel="الموسم 12"
           />
         )}
       </View>

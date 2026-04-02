@@ -9,7 +9,7 @@ function getRankLabel(achievements: ProfileScreenModel["achievements"]): string 
     .filter((achievement): achievement is AchievementPublic => achievement != null);
 
   if (unlocked.length === 0) {
-    return "PLAYER";
+    return "لاعب";
   }
 
   const topAchievement = [...unlocked].sort(
@@ -45,7 +45,7 @@ function Utils({ children }: PropsWithChildren) {
   useMirrorRegistry("screenModel", screenModel, screenModel);
   useMirrorRegistry(
     "headerTitle",
-    isOwnProfile ? "My Profile" : "Public Profile",
+    isOwnProfile ? "ملفي الشخصي" : "ملف عام",
     isOwnProfile
   );
   useMirrorRegistry("showBack", !isOwnProfile, isOwnProfile);

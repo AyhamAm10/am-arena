@@ -1,3 +1,4 @@
+import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import React, { useMemo } from "react";
 import {
@@ -52,16 +53,16 @@ const UpcomingTournaments: React.FC<Props> = ({
 
   return (
     <View style={styles.section}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Upcoming Tournaments</Text>
+      <View style={[styles.header, flexRowRtl]}>
+        <Text style={[styles.title, textRtl]}>البطولات القادمة</Text>
         <TouchableOpacity onPress={onViewAll} disabled={!onViewAll}>
-          <Text style={styles.viewAll}>View All</Text>
+          <Text style={[styles.viewAll, textRtl]}>عرض الكل</Text>
         </TouchableOpacity>
       </View>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, flexRowRtl]}
       >
         {tournaments.map((t) => (
           <View key={t.id} style={styles.cardWrap}>
@@ -78,7 +79,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   header: {
-    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 12,
@@ -95,10 +95,10 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     gap: 12,
-    paddingRight: 16,
+    paddingHorizontal: 16,
   },
   cardWrap: {
-    marginRight: 12,
+    marginEnd: 12,
   },
 });
 

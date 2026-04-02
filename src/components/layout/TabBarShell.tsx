@@ -61,5 +61,9 @@ export function TabBarShell() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: {},
+  tabBar: {
+    width: "100%",
+    alignSelf: "stretch",
+    flexShrink: 0,
+  },
 });

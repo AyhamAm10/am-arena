@@ -209,8 +209,8 @@ function Api({ children }: PropsWithChildren) {
         await removeFriendMut.mutateAsync({ friend_user_id: friendUserId });
       } catch (e) {
         Alert.alert(
-          "Error",
-          e instanceof Error ? e.message : "Could not update friendship."
+          "خطأ",
+          e instanceof Error ? e.message : "تعذّر تحديث الصداقة."
         );
       } finally {
         setBusyRowId(null);
@@ -243,8 +243,8 @@ function Api({ children }: PropsWithChildren) {
         await acceptMut.mutateAsync({ user_id: requesterUserId });
       } catch (e) {
         Alert.alert(
-          "Error",
-          e instanceof Error ? e.message : "Could not accept request."
+          "خطأ",
+          e instanceof Error ? e.message : "تعذّر قبول الطلب."
         );
       } finally {
         setBusyRowId(null);
@@ -262,8 +262,8 @@ function Api({ children }: PropsWithChildren) {
         });
       } catch (e) {
         Alert.alert(
-          "Error",
-          e instanceof Error ? e.message : "Could not reject request."
+          "خطأ",
+          e instanceof Error ? e.message : "تعذّر رفض الطلب."
         );
       } finally {
         setBusyRowId(null);
@@ -281,8 +281,8 @@ function Api({ children }: PropsWithChildren) {
         });
       } catch (e) {
         Alert.alert(
-          "Error",
-          e instanceof Error ? e.message : "Could not cancel request."
+          "خطأ",
+          e instanceof Error ? e.message : "تعذّر إلغاء الطلب."
         );
       } finally {
         setBusyRowId(null);

@@ -51,7 +51,7 @@ export function Ui() {
     >
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled'>
         <View style={styles.topBar}>
-          <Text style={styles.title}>Join the Arena</Text>
+          <Text style={styles.title}>انضم إلى الساحة</Text>
         </View>
 
         <View style={styles.iconWrap}>
@@ -64,49 +64,49 @@ export function Ui() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.subtitle}>Upload a profile picture for the leaderboards</Text>
+        <Text style={styles.subtitle}>ارفع صورة شخصية لتظهر في لوحة المتصدرين</Text>
 
-        <Text style={styles.label}>Phone Number</Text>
+        <Text style={styles.label}>رقم الهاتف</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={phone}
             onChangeText={setPhone}
-            placeholder='+1(555)000-0000'
+            placeholder="05xxxxxxxx"
             placeholderTextColor={colors.grey}
             style={styles.input}
             keyboardType='phone-pad'
           />
         </View>
 
-        <Text style={styles.label}>Real Name</Text>
+        <Text style={styles.label}>الاسم الكامل</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={fullName}
             onChangeText={setFullName}
-            placeholder='Enter your full name'
+            placeholder="أدخل اسمك الكامل"
             placeholderTextColor={colors.grey}
             style={styles.input}
           />
         </View>
 
-        <Text style={styles.label}>Gamer Username</Text>
+        <Text style={styles.label}>اسم اللاعب</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={gamerName}
             onChangeText={setGamerName}
-            placeholder='eg. ShadowSlayer99'
+            placeholder="اسمك في اللعبة"
             placeholderTextColor={colors.grey}
             style={styles.input}
             autoCapitalize='none'
           />
         </View>
 
-        <Text style={styles.label}>Email Address</Text>
+        <Text style={styles.label}>البريد الإلكتروني</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={email}
             onChangeText={setEmail}
-            placeholder='your@email.com'
+            placeholder="أدخل بريدك الإلكتروني"
             placeholderTextColor={colors.grey}
             style={styles.input}
             keyboardType='email-address'
@@ -115,33 +115,33 @@ export function Ui() {
           />
         </View>
 
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>كلمة المرور</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={password}
             onChangeText={setPassword}
-            placeholder='******'
+            placeholder="••••••"
             placeholderTextColor={colors.grey}
             style={styles.input}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.toggleText}>{showPassword ? 'Hide' : 'Show'}</Text>
+            <Text style={styles.toggleText}>{showPassword ? "إخفاء" : "إظهار"}</Text>
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.label}>Confirm Password</Text>
+        <Text style={styles.label}>تأكيد كلمة المرور</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={confirmPassword}
             onChangeText={setConfirmPassword}
-            placeholder='******'
+            placeholder="••••••"
             placeholderTextColor={colors.grey}
             style={styles.input}
             secureTextEntry={!showConfirmPassword}
           />
           <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-            <Text style={styles.toggleText}>{showConfirmPassword ? 'Hide' : 'Show'}</Text>
+            <Text style={styles.toggleText}>{showConfirmPassword ? "إخفاء" : "إظهار"}</Text>
           </TouchableOpacity>
         </View>
 
@@ -156,7 +156,7 @@ export function Ui() {
           {isLoading ? (
             <ActivityIndicator color={colors.white} />
           ) : (
-            <Text style={styles.buttonText}>Create Account</Text>
+            <Text style={styles.buttonText}>إنشاء حساب</Text>
           )}
         </MotionPressable>
       </ScrollView>

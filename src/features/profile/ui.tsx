@@ -35,7 +35,7 @@ export function Ui() {
   const isLoggingOut = useMirror("isLoggingOut");
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -56,7 +56,7 @@ export function Ui() {
           </View>
         ) : isProfileError || !screenModel ? (
           <View style={styles.centered}>
-            <Text style={styles.errorText}>Could not load profile.</Text>
+            <Text style={styles.errorText}>تعذّر تحميل الملف الشخصي.</Text>
           </View>
         ) : (
           <>

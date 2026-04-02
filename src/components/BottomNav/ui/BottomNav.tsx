@@ -27,28 +27,28 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
       <View style={styles.bar}>
         <View style={styles.row}>
           <BottomTabItem
-            label="Home"
+            label="الرئيسية"
             Icon={HomeNavIcon}
             inactiveIconColor={INACTIVE_SLATE}
             active={activeTab === "Home"}
             onPress={() => onTabPress("Home")}
           />
           <BottomTabItem
-            label="Reels"
+            label="الريلز"
             Icon={ReelsNavIcon}
             inactiveIconColor={INACTIVE_REEL}
             active={activeTab === "Reels"}
             onPress={() => onTabPress("Reels")}
           />
           <BottomTabItem
-            label="Channels"
+            label="القنوات"
             Icon={ChannelNavIcon}
             inactiveIconColor={INACTIVE_SLATE}
             active={activeTab === "Channels"}
             onPress={() => onTabPress("Channels")}
           />
           <BottomTabItem
-            label="Friends"
+            label="الأصدقاء"
             Icon={FriendsNavIcon}
             inactiveIconColor={INACTIVE_SLATE}
             active={activeTab === "Friends"}
@@ -62,9 +62,11 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
 
 const styles = StyleSheet.create({
   outer: {
+    width: "100%",
     backgroundColor: colors.darkBackground1,
   },
   bar: {
+    width: "100%",
     backgroundColor: colors.darkBackground1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -85,8 +87,10 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "flex-end",
+    justifyContent: "space-between",
     minHeight: 52,
     paddingHorizontal: 4,
+    width: "100%",
   },
 });
 

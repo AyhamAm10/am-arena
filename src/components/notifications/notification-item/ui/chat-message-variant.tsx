@@ -32,7 +32,7 @@ export function createChatMessageVariant(instanceId: string) {
       >
         <Text style={s.title}>{item.title}</Text>
         <Text style={s.body}>{item.body}</Text>
-        <Text style={s.meta}>{formatNotificationTime(item.created_at)} · Open chat</Text>
+        <Text style={s.meta}>{formatNotificationTime(item.created_at)} · فتح المحادثة</Text>
       </MotionPressable>
     );
   };

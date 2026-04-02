@@ -30,7 +30,10 @@ export default function AchievementsListScreen() {
     (userAchievementId: number) => {
       toggleMutation.mutate(userAchievementId, {
         onError: (err) => {
-          Alert.alert("Limit reached", err.message || "You can display a maximum of 4 achievements.");
+          Alert.alert(
+            "تم بلوغ الحد",
+            err.message || "يمكن عرض 4 إنجازات كحد أقصى."
+          );
         },
       });
     },
@@ -88,10 +91,10 @@ export default function AchievementsListScreen() {
 
   return (
     <ScreenEnterTransition from="top" style={{ flex: 1 }}>
-    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.inner}>
         <ProfileHeader
-          title="Achievements"
+          title="الإنجازات"
           showBack
           onBack={() => router.back()}
         />
@@ -101,7 +104,7 @@ export default function AchievementsListScreen() {
           </View>
         ) : isError ? (
           <View style={styles.centered}>
-            <Text style={styles.muted}>Could not load achievements.</Text>
+            <Text style={styles.muted}>تعذّر تحميل الإنجازات.</Text>
           </View>
         ) : (
           <FlatList
@@ -110,7 +113,7 @@ export default function AchievementsListScreen() {
             renderItem={renderItem}
             contentContainerStyle={styles.list}
             ListEmptyComponent={
-              <Text style={styles.muted}>No achievements earned yet.</Text>
+              <Text style={styles.muted}>لم تكسب إنجازات بعد.</Text>
             }
           />
         )}

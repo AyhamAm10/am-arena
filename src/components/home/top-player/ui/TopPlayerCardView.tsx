@@ -1,4 +1,5 @@
 import { AchievementIcon } from "@/src/components/icons/figma/AchievementIcon";
+import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 import { colors } from "@/src/theme/colors";
 import React from "react";
@@ -28,7 +29,7 @@ export default function TopPlayerCardView({ card }: Props) {
   const clampedProgress = Math.min(1, Math.max(0, xpProgress));
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, flexRowRtl]}>
       <View style={styles.avatarCol}>
         <View style={[styles.rankBadge, { backgroundColor: rankBadgeColor(rank) }]}>
           <Text
@@ -50,8 +51,8 @@ export default function TopPlayerCardView({ card }: Props) {
         )}
       </View>
       <View style={styles.info}>
-        <View style={styles.nameRow}>
-          <Text style={styles.name} numberOfLines={1}>
+        <View style={[styles.nameRow, flexRowRtl]}>
+          <Text style={[styles.name, textRtl]} numberOfLines={1}>
             {name}
           </Text>
           <AchievementIcon
@@ -64,14 +65,15 @@ export default function TopPlayerCardView({ card }: Props) {
           <View
             style={[
               styles.xpBarFill,
+              progressFillRtl,
               { width: `${clampedProgress * 100}%` },
             ]}
           />
         </View>
-        <View style={styles.statsRow}>
-          <Text style={styles.tier}>{tier}</Text>
-          <Text style={styles.xpValue}>
-            {typeof xp === "number" ? xp.toLocaleString() : xp} XP
+        <View style={[styles.statsRow, flexRowRtl]}>
+          <Text style={[styles.tier, textRtl]}>{tier}</Text>
+          <Text style={[styles.xpValue, textRtl]}>
+            {typeof xp === "number" ? xp.toLocaleString("ar") : xp} نقطة خبرة
           </Text>
         </View>
       </View>
@@ -81,7 +83,6 @@ export default function TopPlayerCardView({ card }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.darkBackground2,
     borderRadius: 12,
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   rankBadge: {
     position: "absolute",
     top: -4,
-    left: -4,
+    start: -4,
     zIndex: 2,
     width: 22,
     height: 22,
@@ -136,7 +137,6 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   nameRow: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 8,
@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   statsRow: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },

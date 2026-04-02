@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo } from 'react'
+import { PropsWithChildren, useMemo, useRef } from 'react'
 import * as ImagePicker from 'expo-image-picker'
 import { useMirror, useMirrorRegistry } from './store'
 
@@ -13,6 +13,12 @@ function Utils({ children }: PropsWithChildren) {
   const confirmPassword = useMirror('confirmPassword')
   const profileImageUri = useMirror('profileImageUri')
   const setProfileImageUri = useMirror('setProfileImageUri')
+
+  const pickedImageRef = useRef<{
+    uri: string
+    mimeType: string
+    fileName: string
+  } | null>(null)
 
   const formError = useMemo(() => {
     if (!profileImageUri) {
@@ -50,7 +56,13 @@ function Utils({ children }: PropsWithChildren) {
       return
     }
 
-    setProfileImageUri(result.assets[0].uri)
+    const asset = result.assets[0]
+    pickedImageRef.current = {
+      uri: asset.uri,
+      mimeType: asset.mimeType ?? 'image/jpeg',
+      fileName: asset.fileName ?? 'profile.jpg',
+    }
+    setProfileImageUri(asset.uri)
   }
 
   const onSubmit = async () => {
@@ -64,10 +76,14 @@ function Utils({ children }: PropsWithChildren) {
     if (phone.trim()) {
       payload.append('phone', phone.trim())
     }
+    const picked = pickedImageRef.current
+    const name = picked?.fileName ?? 'profile.jpg'
+    const type = picked?.mimeType ?? 'image/jpeg'
+    const uri = picked?.uri ?? profileImageUri
     payload.append('profile_picture', {
-      uri: profileImageUri,
-      name: 'profile-image.jpg',
-      type: 'image/jpeg',
+      uri,
+      name,
+      type,
     } as any)
 
     await submit(payload)

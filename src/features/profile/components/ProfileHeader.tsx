@@ -7,12 +7,14 @@ import {
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  I18nManager,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 type ProfileHeaderProps = {
@@ -61,7 +63,12 @@ export function ProfileHeader({
             style={styles.iconBtn}
             hitSlop={8}
           >
-            <Icon name="arrow-back" size={22} color={colors.white} />
+            <Icon
+              name="arrow-back"
+              size={22}
+              color={colors.white}
+              style={rtlMirrorIconStyle}
+            />
           </Pressable>
         ) : null}
       </View>
@@ -73,7 +80,7 @@ export function ProfileHeader({
           onPress={menuEnabled ? openMenu : undefined}
           style={styles.iconBtn}
           hitSlop={8}
-          accessibilityLabel="Open menu"
+          accessibilityLabel="فتح القائمة"
           disabled={!menuEnabled}
         >
           <Icon name="more-vert" size={22} color={colors.white} />
@@ -91,7 +98,9 @@ export function ProfileHeader({
               styles.dropdown,
               {
                 top: insets.top + 52,
-                right: Math.max(insets.right, 12) + 4,
+                ...(I18nManager.isRTL
+                  ? { left: Math.max(insets.left, 12) + 4 }
+                  : { right: Math.max(insets.right, 12) + 4 }),
               },
             ]}
           >
@@ -126,7 +135,7 @@ export function ProfileHeader({
                   <Icon name="exit-to-app" size={20} color={colors.error} />
                 )}
                 <Text style={[styles.menuLabel, styles.menuLabelDanger]}>
-                  Logout
+                  تسجيل الخروج
                 </Text>
               </Pressable>
             ) : null}

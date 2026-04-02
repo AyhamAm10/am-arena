@@ -1,3 +1,4 @@
+import { overlayPillAlignRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import React from "react";
 import {
@@ -24,21 +25,21 @@ export default function LatestWinnerCard() {
           resizeMode="cover"
         >
           <View style={styles.overlay}>
-            <View style={styles.pill}>
-              <Text style={styles.pillText}>LATEST WINNER</Text>
+            <View style={[styles.pill, overlayPillAlignRtl]}>
+              <Text style={[styles.pillText, textRtl]}>آخر فائز</Text>
             </View>
-            <Text style={styles.teamName}>{teamName}</Text>
-            <Text style={styles.tournamentName}>{tournamentName}</Text>
+            <Text style={[styles.teamName, textRtl]}>{teamName}</Text>
+            <Text style={[styles.tournamentName, textRtl]}>{tournamentName}</Text>
           </View>
         </ImageBackground>
       ) : (
         <View style={[styles.imageBackground, styles.fallbackBg]}>
           <View style={styles.overlay}>
-            <View style={styles.pill}>
-              <Text style={styles.pillText}>LATEST WINNER</Text>
+            <View style={[styles.pill, overlayPillAlignRtl]}>
+              <Text style={[styles.pillText, textRtl]}>آخر فائز</Text>
             </View>
-            <Text style={styles.teamName}>{teamName}</Text>
-            <Text style={styles.tournamentName}>{tournamentName}</Text>
+            <Text style={[styles.teamName, textRtl]}>{teamName}</Text>
+            <Text style={[styles.tournamentName, textRtl]}>{tournamentName}</Text>
           </View>
         </View>
       )}
@@ -73,7 +74,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 16,
   },
   pill: {
-    alignSelf: "flex-start",
     backgroundColor: colors.primaryPurple,
     paddingHorizontal: 10,
     paddingVertical: 5,

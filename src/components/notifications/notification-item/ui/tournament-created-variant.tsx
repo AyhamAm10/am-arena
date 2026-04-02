@@ -24,7 +24,7 @@ export function createTournamentCreatedVariant(instanceId: string) {
       <MotionPressable style={s.card} onPress={go} disabled={tournamentId == null}>
         <Text style={s.title}>{item.title}</Text>
         <Text style={s.body}>{item.body}</Text>
-        <Text style={s.meta}>{formatNotificationTime(item.created_at)} · View tournament</Text>
+        <Text style={s.meta}>{formatNotificationTime(item.created_at)} · عرض البطولة</Text>
       </MotionPressable>
     );
   };

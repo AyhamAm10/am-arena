@@ -7,7 +7,7 @@ export function Ui() {
     return (
         <AppLayout>
             <View style={styles.placeholder}>
-                <Text style={styles.text}>Tournaments</Text>
+                <Text style={styles.text}>البطولات</Text>
             </View>
         </AppLayout>
     )

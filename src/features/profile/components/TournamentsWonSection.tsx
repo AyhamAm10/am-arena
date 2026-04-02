@@ -12,7 +12,7 @@ function formatTournamentDate(iso: string | null | undefined): string {
   if (!iso) return "";
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString("en-US", {
+    return d.toLocaleDateString("ar", {
       month: "long",
       day: "numeric",
       year: "numeric",
@@ -34,10 +34,10 @@ function iconForGameType(gameType: string): string {
 export function TournamentsWonSection({ tournaments }: TournamentsWonSectionProps) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Tournaments Won</Text>
+      <Text style={styles.sectionTitle}>البطولات الفائزة</Text>
 
       {tournaments.length === 0 ? (
-        <Text style={styles.empty}>No tournaments won yet.</Text>
+        <Text style={styles.empty}>لم تفز بأي بطولة بعد.</Text>
       ) : (
         <View style={styles.list}>
           {tournaments.map((t) => (
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   accent: {
     position: "absolute",
-    left: 0,
+    start: 0,
     top: 0,
     bottom: 0,
     width: 4,

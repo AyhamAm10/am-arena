@@ -22,7 +22,7 @@ export function createAchievementUnlockedVariant(instanceId: string) {
       <MotionPressable style={s.card} onPress={go}>
         <Text style={s.title}>{item.title}</Text>
         <Text style={s.body}>{item.body}</Text>
-        <Text style={s.meta}>{formatNotificationTime(item.created_at)} · Achievements</Text>
+        <Text style={s.meta}>{formatNotificationTime(item.created_at)} · الإنجازات</Text>
       </MotionPressable>
     );
   };

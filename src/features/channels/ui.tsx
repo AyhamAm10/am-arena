@@ -14,6 +14,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import { channelsTheme, styles } from "./styles";
@@ -33,17 +34,17 @@ function iconForChat(c: ChannelPublic): string {
 function subtitleForChat(c: ChannelPublic): string {
   if (c.chat_type === "direct") {
     return c.member_count <= 1
-      ? "Direct message"
-      : `${c.member_count.toLocaleString()} participants`;
+      ? "رسالة مباشرة"
+      : `${c.member_count.toLocaleString("ar")} مشارك`;
   }
-  const n = c.member_count.toLocaleString();
-  if (!c.allow_user_messages) return `Read only · ${n} members`;
-  return `${n} members active now`;
+  const n = c.member_count.toLocaleString("ar");
+  if (!c.allow_user_messages) return `للقراءة فقط · ${n} عضو`;
+  return `${n} عضو نشط الآن`;
 }
 
 function displayTitle(c: ChannelPublic): string {
   if (c.title?.trim()) return c.title.trim();
-  return c.chat_type === "direct" ? `Direct #${c.id}` : `Channel #${c.id}`;
+  return c.chat_type === "direct" ? `محادثة #${c.id}` : `قناة #${c.id}`;
 }
 
 function filterChats(list: ChannelPublic[], tab: FilterTab): ChannelPublic[] {
@@ -133,7 +134,7 @@ export function Ui() {
                 </Text>
                 {featured ? (
                   <View style={styles.activePill}>
-                    <Text style={styles.activePillText}>ACTIVE</Text>
+                    <Text style={styles.activePillText}>نشط</Text>
                   </View>
                 ) : null}
               </View>
@@ -147,7 +148,7 @@ export function Ui() {
                 name="chevron-right"
                 size={22}
                 color={channelsTheme.muted}
-                style={styles.chevron}
+                style={[styles.chevron, rtlMirrorIconStyle]}
               />
             </View>
           </Pressable>
@@ -159,17 +160,17 @@ export function Ui() {
 
   const sectionIntro =
     filterTab === "private"
-      ? "Your direct conversations"
+      ? "محادثاتك المباشرة"
       : filterTab === "tournaments"
-        ? "Join the discussion in AM Arena tournaments"
-        : "All tournament channels and private chats";
+        ? "انضم للنقاش في بطولات ساحة AM"
+        : "كل قنوات البطولات والمحادثات الخاصة";
 
   const ListHeader = (
     <>
       <View style={styles.sectionRow}>
-        <Text style={styles.sectionLabel}>ACTIVE CHANNELS</Text>
+        <Text style={styles.sectionLabel}>القنوات النشطة</Text>
         <View style={styles.liveBadge}>
-          <Text style={styles.liveBadgeText}>LIVE</Text>
+          <Text style={styles.liveBadgeText}>مباشر</Text>
         </View>
       </View>
       <Text style={styles.intro}>{sectionIntro}</Text>
@@ -180,9 +181,9 @@ export function Ui() {
     <View style={styles.tabsRow}>
       {(
         [
-          ["all", "All"],
-          ["tournaments", "Tournaments"],
-          ["private", "Private"],
+          ["all", "الكل"],
+          ["tournaments", "البطولات"],
+          ["private", "خاص"],
         ] as const
       ).map(([key, label]) => {
         const on = filterTab === key;
@@ -210,16 +211,21 @@ export function Ui() {
           style={styles.headerBtn}
           onPress={onBack}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel="رجوع"
         >
-          <Icon name="arrow-back" size={22} color={channelsTheme.accent} />
+          <Icon
+            name="arrow-back"
+            size={22}
+            color={channelsTheme.accent}
+            style={rtlMirrorIconStyle}
+          />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Channels</Text>
+        <Text style={styles.headerTitle}>القنوات</Text>
         <TouchableOpacity
           style={styles.headerBtn}
           onPress={() => setSearchOpen((v) => !v)}
           accessibilityRole="button"
-          accessibilityLabel={searchOpen ? "Close search" : "Search"}
+          accessibilityLabel={searchOpen ? "إغلاق البحث" : "بحث"}
         >
           <Icon name="search" size={22} color={channelsTheme.accent} />
         </TouchableOpacity>
@@ -231,7 +237,7 @@ export function Ui() {
             <Icon name="search" size={20} color={channelsTheme.muted} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search channels…"
+              placeholder="ابحث في القنوات…"
               placeholderTextColor={channelsTheme.muted}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -251,10 +257,10 @@ export function Ui() {
       {isChannelsError ? (
         <View style={styles.center}>
           <Text style={styles.errorText}>
-            {channelsErrorMessage ?? "Could not load chats."}
+            {channelsErrorMessage ?? "تعذّر تحميل المحادثات."}
           </Text>
           <TouchableOpacity onPress={onRefreshChannelsPress}>
-            <Text style={styles.retryText}>Tap to retry</Text>
+            <Text style={styles.retryText}>اضغط لإعادة المحاولة</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -282,8 +288,8 @@ export function Ui() {
               <View style={styles.center}>
                 <Text style={styles.mutedCenter}>
                   {searchQuery.trim()
-                    ? "No channels match your search."
-                    : "No chats in this tab yet."}
+                    ? "لا قنوات تطابق بحثك."
+                    : "لا محادثات في هذا التبويب بعد."}
                 </Text>
               </View>
             )

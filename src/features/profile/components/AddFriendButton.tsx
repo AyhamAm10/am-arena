@@ -12,9 +12,9 @@ type AddFriendButtonProps = {
 };
 
 const ACTION_CONFIG: Record<FriendAction, { icon: string; label: string }> = {
-  add: { icon: "person-add", label: "Add Friend" },
-  cancel: { icon: "close", label: "Cancel Request" },
-  remove: { icon: "person-remove", label: "Remove Friend" },
+  add: { icon: "person-add", label: "إضافة صديق" },
+  cancel: { icon: "close", label: "إلغاء الطلب" },
+  remove: { icon: "person-remove", label: "إزالة الصديق" },
 };
 
 export function AddFriendButton({
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   label: {
-    marginLeft: 10,
+    marginStart: 10,
     color: colors.white,
     fontSize: 16,
     fontWeight: "700",

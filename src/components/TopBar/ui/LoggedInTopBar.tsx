@@ -1,6 +1,7 @@
 // src/components/TopBar/ui/LoggedInTopBar.tsx
 import { CoinsIcon } from "@/src/components/icons/figma/CoinsIcon";
 import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIcon";
+import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -20,20 +21,21 @@ const LoggedInTopBar: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.left}>
+    <View style={[styles.container, flexRowRtl]}>
+      <View style={[styles.left, flexRowRtl]}>
         <View style={styles.logoCircle}>
           <Image source={LOGO} style={styles.logo} resizeMode="contain" />
         </View>
         <View style={styles.levelColumn}>
-          <View style={styles.levelRow}>
-            <Text style={styles.levelText}>LVL {level}</Text>
-            <Text style={styles.pctText}>{pct}%</Text>
+          <View style={[styles.levelRow, flexRowRtl]}>
+            <Text style={[styles.levelText, textRtl]}>مستوى {level}</Text>
+            <Text style={[styles.pctText, textRtl]}>{pct}%</Text>
           </View>
           <View style={styles.progressTrack}>
             <View
               style={[
                 styles.progressFill,
+                progressFillRtl,
                 {
                   width: `${Math.min(1, Math.max(0, levelProgress ?? 0)) * 100}%`,
                 },
@@ -42,27 +44,27 @@ const LoggedInTopBar: React.FC = () => {
           </View>
         </View>
       </View>
-      <View style={styles.right}>
+      <View style={[styles.right, flexRowRtl]}>
         <TouchableOpacity
           style={styles.notifWrap}
           accessibilityRole="button"
-          accessibilityLabel="Notifications"
+          accessibilityLabel="الإشعارات"
           onPress={() => router.push("/(tabs)/notifications" as never)}
         >
           <NotificationsIcon width={20} height={25} color={colors.white} />
           <View style={styles.notifDot} />
         </TouchableOpacity>
-        <View style={styles.walletPill}>
+        <View style={[styles.walletPill, flexRowRtl]}>
           <CoinsIcon width={12} height={12} color={colors.gold} />
-          <Text style={styles.coinsText}>
-            {Number(coins ?? 0).toLocaleString()}
+          <Text style={[styles.coinsText, textRtl]}>
+            {Number(coins ?? 0).toLocaleString("ar")}
           </Text>
         </View>
         <TouchableOpacity
           style={styles.avatarWrap}
           onPress={() => router.push("/profile")}
           accessibilityRole="button"
-          accessibilityLabel="Open profile"
+          accessibilityLabel="الملف الشخصي"
         >
           {avatarSource ? (
             <Image source={avatarSource} style={styles.avatar} />
@@ -79,7 +81,6 @@ const styles = StyleSheet.create({
   container: {
     minHeight: 60,
     backgroundColor: colors.darkBackground1,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 12,
@@ -88,7 +89,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.darkBackground2,
   },
   left: {
-    flexDirection: "row",
     alignItems: "center",
     flex: 1,
     minWidth: 0,
@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   levelRow: {
-    flexDirection: "row",
     alignItems: "baseline",
     gap: 8,
     marginBottom: 4,
@@ -142,10 +141,9 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   right: {
-    flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    marginLeft: 8,
+    marginStart: 8,
   },
   notifWrap: {
     position: "relative",
@@ -154,14 +152,13 @@ const styles = StyleSheet.create({
   notifDot: {
     position: "absolute",
     top: 2,
-    right: 2,
+    end: 2,
     width: 7,
     height: 7,
     borderRadius: 4,
     backgroundColor: colors.primaryPurple,
   },
   walletPill: {
-    flexDirection: "row",
     alignItems: "center",
     gap: 6,
     paddingHorizontal: 10,
@@ -177,7 +174,7 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   avatarWrap: {
-    marginLeft: 2,
+    marginStart: 2,
   },
   avatar: {
     width: 36,

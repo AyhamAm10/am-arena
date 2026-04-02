@@ -48,9 +48,9 @@ function Utils({ children }: PropsWithChildren) {
   const activeTab = useMirror("activeTab");
 
   const sectionTitle = useMemo(() => {
-    if (activeTab === "friends") return "ACTIVE SQUAD";
-    if (activeTab === "public") return "DISCOVER";
-    return "REQUESTS";
+    if (activeTab === "friends") return "الفريق النشط";
+    if (activeTab === "public") return "اكتشف";
+    return "الطلبات";
   }, [activeTab]);
 
   useMirrorRegistry("sectionTitle", sectionTitle, sectionTitle);

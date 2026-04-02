@@ -1,4 +1,5 @@
 // src/components/TopBar/ui/GuestTopBar.tsx
+import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -7,15 +8,15 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 const GuestTopBar: React.FC = () => {
   const router = useRouter();
   return (
-    <View style={styles.container}>
-      <Text style={styles.logo}>AM Arena</Text>
+    <View style={[styles.container, flexRowRtl]}>
+      <Text style={[styles.logo, textRtl]}>ساحة AM</Text>
       <TouchableOpacity
         style={styles.loginButton}
         onPress={() => router.push("/login")}
         accessibilityRole="button"
-        accessibilityLabel="Login or register"
+        accessibilityLabel="تسجيل الدخول أو إنشاء حساب"
       >
-        <Text style={styles.loginText}>Login / Register</Text>
+        <Text style={[styles.loginText, textRtl]}>دخول / تسجيل</Text>
       </TouchableOpacity>
     </View>
   );
@@ -25,7 +26,6 @@ const styles = StyleSheet.create({
   container: {
     height: 60,
     backgroundColor: colors.darkBackground1,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,

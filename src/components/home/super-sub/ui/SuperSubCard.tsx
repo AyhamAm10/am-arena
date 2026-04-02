@@ -1,3 +1,4 @@
+import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -17,17 +18,18 @@ export default function SuperSubCard() {
       end={{ x: 1, y: 1 }}
       style={styles.gradientBorder}
     >
-      <View style={styles.inner}>
+      <View style={[styles.inner, flexRowRtl]}>
         <View style={styles.iconCircle} />
         <View style={styles.content}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
+          <Text style={[styles.title, textRtl]}>{title}</Text>
+          <Text style={[styles.description, textRtl]}>{description}</Text>
         </View>
         <View style={styles.progressWrap}>
           <View style={styles.progressTrack}>
             <View
               style={[
                 styles.progressFill,
+                progressFillRtl,
                 { width: `${clampedProgress * 100}%` },
               ]}
             />
@@ -44,7 +46,6 @@ const styles = StyleSheet.create({
     padding: 1,
   },
   inner: {
-    flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.darkBackground2,
     borderRadius: 13,

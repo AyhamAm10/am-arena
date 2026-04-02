@@ -8,7 +8,6 @@ import {
   useRef,
 } from "react";
 import { useMirror, useMirrorRegistry } from "./store";
-import { Platform } from "react-native";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -95,7 +94,7 @@ function Utils({ children }: PropsWithChildren) {
   const formError = useMemo(() => {
     const e = email.trim();
     if (e && !EMAIL_RE.test(e)) {
-      return "Invalid email format.";
+      return "صيغة البريد الإلكتروني غير صحيحة.";
     }
     return null;
   }, [email]);
@@ -121,7 +120,7 @@ function Utils({ children }: PropsWithChildren) {
 
   const footerCaption = useMemo(() => {
     if (isLoadingUser || isUserError) return "";
-    if (!dirty) return "NO CHANGES DETECTED TO CURRENT PROFILE";
+    if (!dirty) return "لا توجد تغييرات على الملف الحالي";
     return "";
   }, [dirty, isLoadingUser, isUserError]);
 
@@ -157,16 +156,11 @@ function Utils({ children }: PropsWithChildren) {
   
     if (profileImageUri) {
       const picked = pickedImageRef.current;
-  
+
       const name = picked?.fileName || "profile.jpg";
       const type = picked?.mimeType || "image/jpeg";
-  
-      // ⚠️ أهم نقطة: ضبط الـ uri
-      let uri = profileImageUri;
-      if (Platform.OS === "ios") {
-        uri = uri.replace("file://", "");
-      }
-  
+      const uri = picked?.uri ?? profileImageUri;
+
       fd.append("profile_picture", {
         uri,
         name,

@@ -36,19 +36,19 @@ export function Ui() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled'>
-        <Text style={styles.brand}>AM Arena</Text>
+        <Text style={styles.brand}>ساحة AM</Text>
 
         <Image source={heroBanner} style={styles.heroImage} resizeMode='cover' />
 
-        <Text style={styles.welcome}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Enter your details to access your arena account</Text>
+        <Text style={styles.welcome}>أهلاً بعودتك</Text>
+        <Text style={styles.subtitle}>أدخل بياناتك للوصول إلى حسابك في الساحة</Text>
 
-        <Text style={styles.label}>Email Address</Text>
+        <Text style={styles.label}>البريد الإلكتروني</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={email}
             onChangeText={setEmail}
-            placeholder='name@example.com'
+            placeholder="أدخل بريدك الإلكتروني"
             placeholderTextColor={colors.grey}
             style={styles.input}
             keyboardType='email-address'
@@ -57,18 +57,18 @@ export function Ui() {
           />
         </View>
 
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>كلمة المرور</Text>
         <View style={styles.inputWrap}>
           <TextInput
             value={password}
             onChangeText={setPassword}
-            placeholder='********'
+            placeholder="••••••••"
             placeholderTextColor={colors.grey}
             style={styles.input}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.toggleText}>{showPassword ? 'Hide' : 'Show'}</Text>
+            <Text style={styles.toggleText}>{showPassword ? "إخفاء" : "إظهار"}</Text>
           </TouchableOpacity>
         </View>
 
@@ -82,7 +82,7 @@ export function Ui() {
           {isLoading ? (
             <ActivityIndicator color={colors.white} />
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>تسجيل الدخول</Text>
           )}
         </MotionPressable>
       </ScrollView>

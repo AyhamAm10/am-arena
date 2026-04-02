@@ -18,12 +18,10 @@ import { chatTheme, styles } from "./styles";
 
 function formatTime(iso: string): string {
   const d = new Date(iso);
-  const h = d.getHours();
-  const m = d.getMinutes();
-  const ampm = h >= 12 ? "PM" : "AM";
-  const hour = h % 12 || 12;
-  const min = m < 10 ? `0${m}` : String(m);
-  return `${hour}:${min} ${ampm}`;
+  return d.toLocaleTimeString("ar", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 export function Ui() {
@@ -51,7 +49,7 @@ export function Ui() {
           <View style={styles.messageCard}>
             <View style={styles.labelRow}>
               <Icon name="lightbulb-outline" size={16} color={chatTheme.cyan} />
-              <Text style={styles.labelText}>PRO TIP OF THE DAY</Text>
+              <Text style={styles.labelText}>نصيحة اليوم</Text>
             </View>
             <Text style={styles.messageContent}>
               &quot;{item.content}&quot;
@@ -64,7 +62,7 @@ export function Ui() {
     []
   );
 
-  const displayTitle = channelTitle || "CHANNEL CHAT";
+  const displayTitle = channelTitle || "محادثة القناة";
 
   return (
     <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
@@ -73,7 +71,7 @@ export function Ui() {
           style={styles.headerBtn}
           onPress={onBack}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel="رجوع"
         >
           <Icon name="sports-esports" size={24} color={chatTheme.cyan} />
         </TouchableOpacity>
@@ -85,7 +83,7 @@ export function Ui() {
         <TouchableOpacity
           style={styles.headerBtn}
           accessibilityRole="button"
-          accessibilityLabel="Notifications"
+          accessibilityLabel="الإشعارات"
         >
           <Icon name="notifications-none" size={24} color={chatTheme.white} />
         </TouchableOpacity>
@@ -94,10 +92,10 @@ export function Ui() {
       {isError ? (
         <View style={styles.center}>
           <Text style={styles.errorText}>
-            {errorMessage ?? "Could not load messages."}
+            {errorMessage ?? "تعذّر تحميل الرسائل."}
           </Text>
           <TouchableOpacity onPress={onRefresh}>
-            <Text style={styles.retryText}>Tap to retry</Text>
+            <Text style={styles.retryText}>اضغط لإعادة المحاولة</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -129,7 +127,7 @@ export function Ui() {
             ) : (
               <View style={styles.center}>
                 <Text style={{ color: chatTheme.muted, textAlign: "center" }}>
-                  No messages yet.
+                  لا رسائل بعد.
                 </Text>
               </View>
             )
@@ -139,7 +137,7 @@ export function Ui() {
 
       <View style={styles.footer}>
         <Icon name="lock-outline" size={16} color={chatTheme.muted} />
-        <Text style={styles.footerText}>ONLY ADMINS CAN SEND MESSAGES</Text>
+        <Text style={styles.footerText}>المشرفون فقط يمكنهم الإرسال</Text>
       </View>
     </SafeAreaView>
   );

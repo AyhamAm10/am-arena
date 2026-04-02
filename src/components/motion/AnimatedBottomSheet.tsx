@@ -113,7 +113,7 @@ export function SheetDimmedBackdrop({ onPress }: { onPress: () => void }) {
       <Pressable
         style={StyleSheet.absoluteFillObject}
         onPress={onPress}
-        accessibilityLabel="Close"
+        accessibilityLabel="إغلاق"
       />
     </Animated.View>
   );

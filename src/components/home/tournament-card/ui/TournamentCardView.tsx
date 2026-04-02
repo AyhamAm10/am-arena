@@ -1,4 +1,5 @@
 import { HourIcon } from "@/src/components/icons/figma/HourIcon";
+import { flexRowRtl, rtlMirrorViewStyle, textRtl } from "@/src/lib/rtl";
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 import { colors } from "@/src/theme/colors";
 import React from "react";
@@ -18,9 +19,9 @@ type Props = {
 function formatPrize(prize: string): string {
   const n = Number(prize);
   if (Number.isFinite(n)) {
-    return `$${n.toLocaleString()}`;
+    return `${n.toLocaleString("ar")} $`;
   }
-  return prize.startsWith("$") ? prize : `$${prize}`;
+  return prize.startsWith("$") ? prize : `${prize} $`;
 }
 
 export default function TournamentCardView({ card }: Props) {
@@ -50,19 +51,21 @@ export default function TournamentCardView({ card }: Props) {
         )}
       </View>
       <View style={styles.body}>
-        <View style={styles.titleRow}>
-          <Text style={styles.title} numberOfLines={1}>
+        <View style={[styles.titleRow, flexRowRtl]}>
+          <Text style={[styles.title, textRtl]} numberOfLines={1}>
             {title}
           </Text>
-          <Text style={styles.prize}>{formatPrize(prize)}</Text>
+          <Text style={[styles.prize, textRtl]}>{formatPrize(prize)}</Text>
         </View>
-        <View style={styles.meta}>
-          <Text style={styles.metaText}>
+        <View style={[styles.meta, flexRowRtl]}>
+          <Text style={[styles.metaText, textRtl]}>
             {participantsCurrent}/{participantsMax}
           </Text>
-          <View style={styles.metaItem}>
-            <HourIcon width={14} height={15} color={colors.grey} />
-            <Text style={styles.metaText}>{timeRemaining}</Text>
+          <View style={[styles.metaItem, flexRowRtl]}>
+            <View style={rtlMirrorViewStyle}>
+              <HourIcon width={14} height={15} color={colors.grey} />
+            </View>
+            <Text style={[styles.metaText, textRtl]}>{timeRemaining}</Text>
           </View>
         </View>
         <TouchableOpacity
@@ -70,7 +73,7 @@ export default function TournamentCardView({ card }: Props) {
           onPress={onJoinPress}
           activeOpacity={0.8}
         >
-          <Text style={styles.buttonText}>Join Now</Text>
+          <Text style={[styles.buttonText, textRtl]}>انضم الآن</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -102,7 +105,6 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   titleRow: {
-    flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 8,
@@ -120,13 +122,11 @@ const styles = StyleSheet.create({
     color: "#22D3EE",
   },
   meta: {
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
   },
   metaItem: {
-    flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },

@@ -38,7 +38,7 @@ export function createSystemMessageVariant(instanceId: string) {
         <Text style={s.body}>{item.body}</Text>
         <Text style={s.meta}>
           {formatNotificationTime(item.created_at)}
-          {item.read_at ? " · Read" : busy ? " · …" : " · Tap to mark read"}
+          {item.read_at ? " · مقروء" : busy ? " · …" : " · اضغط للتعليم كمقروء"}
         </Text>
         {busy ? <ActivityIndicator color={colors.grey} style={{ marginTop: 8 }} /> : null}
       </MotionPressable>

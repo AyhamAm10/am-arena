@@ -129,10 +129,10 @@ export function Ui() {
         const isFriend = u.friend_status === "accepted";
 
         const actionLabel = isFriend
-          ? "REMOVE FRIEND"
+          ? "إزالة الصديق"
           : outgoingPending
-            ? "CANCEL REQUEST"
-            : "ADD FRIEND";
+            ? "إلغاء الطلب"
+            : "إضافة صديق";
         const actionHandler = isFriend
           ? () => void onCancelRequest(u.id)
           : outgoingPending
@@ -166,7 +166,7 @@ export function Ui() {
                     online ? styles.statusOnlineText : styles.statusOfflineText,
                   ]}
                 >
-                  {online ? "ONLINE" : "OFFLINE"}
+                  {online ? "متصل" : "غير متصل"}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -221,7 +221,7 @@ export function Ui() {
                     online ? styles.statusOnlineText : styles.statusOfflineText,
                   ]}
                 >
-                  {online ? "ONLINE" : "OFFLINE"}
+                  {online ? "متصل" : "غير متصل"}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -233,7 +233,7 @@ export function Ui() {
               {busy ? (
                 <ActivityIndicator color={friendsColors.white} size="small" />
               ) : (
-                <Text style={styles.actionBtnText}>REMOVE FRIEND</Text>
+                <Text style={styles.actionBtnText}>إزالة الصديق</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -272,7 +272,7 @@ export function Ui() {
                   online ? styles.statusOnlineText : styles.statusOfflineText,
                 ]}
               >
-                {online ? "ONLINE" : "OFFLINE"}
+                {online ? "متصل" : "غير متصل"}
               </Text>
             </View>
           </TouchableOpacity>
@@ -291,7 +291,7 @@ export function Ui() {
               {busy ? (
                 <ActivityIndicator color={friendsColors.white} size="small" />
               ) : (
-                <Text style={styles.actionBtnText}>ACCEPT</Text>
+                <Text style={styles.actionBtnText}>قبول</Text>
               )}
             </TouchableOpacity>
             <TouchableOpacity
@@ -308,7 +308,7 @@ export function Ui() {
               {busy ? (
                 <ActivityIndicator color={friendsColors.white} size="small" />
               ) : (
-                <Text style={styles.actionBtnText}>REJECT</Text>
+                <Text style={styles.actionBtnText}>رفض</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -341,7 +341,7 @@ export function Ui() {
           />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search friends..."
+            placeholder="ابحث عن الأصدقاء…"
             placeholderTextColor={friendsColors.labelMuted}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -352,9 +352,9 @@ export function Ui() {
       <View style={styles.tabBar}>
         {(
           [
-            ["friends", "MY FRIENDS"],
-            ["public", "DISCOVER"],
-            ["requests", "REQUESTS"],
+            ["friends", "أصدقائي"],
+            ["public", "اكتشف"],
+            ["requests", "الطلبات"],
           ] as const
         ).map(([key, label]) => {
           const on = activeTab === key;
@@ -426,7 +426,7 @@ export function Ui() {
               <ActivityIndicator color={friendsColors.white} size="small" />
             ) : (
               <Text style={styles.actionBtnText}>
-                {outgoingPending ? "CANCEL REQUEST" : "ADD FRIEND"}
+                {outgoingPending ? "إلغاء الطلب" : "إضافة صديق"}
               </Text>
             )}
           </TouchableOpacity>
@@ -451,7 +451,7 @@ export function Ui() {
       ) : null}
       {activeTab === "public" ? (
         <>
-          <Text style={styles.discoverHeader}>DISCOVER SUGGESTED</Text>
+          <Text style={styles.discoverHeader}>مقترحات لك</Text>
           {isLoadingSuggested && suggestedUsers.length === 0 ? (
             <ActivityIndicator
               style={{ marginVertical: 20 }}
@@ -490,7 +490,7 @@ export function Ui() {
             </View>
           ) : empty ? (
             <View style={styles.centerMessage}>
-              <Text style={styles.mutedText}>No results.</Text>
+              <Text style={styles.mutedText}>لا نتائج.</Text>
             </View>
           ) : null
         }

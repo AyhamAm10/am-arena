@@ -39,7 +39,7 @@ export function ProfileAvatarSection({
           )}
         </View>
         <View style={styles.levelPill}>
-          <Text style={styles.levelPillText}>LVL {level}</Text>
+          <Text style={styles.levelPillText}>مستوى {level}</Text>
         </View>
       </View>
 
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   rankText: {
-    marginLeft: 6,
+    marginStart: 6,
     color: colors.primaryPurple,
     fontSize: 13,
     fontWeight: "700",

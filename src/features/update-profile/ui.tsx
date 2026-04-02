@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import { colors, styles } from "./styles";
@@ -52,7 +53,7 @@ export function Ui() {
 
   if (showInitialSpinner) {
     return (
-      <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+      <SafeAreaView style={styles.safe} edges={["top"]}>
         <View style={styles.loadingBox}>
           <ActivityIndicator size="large" color={themeColors.primaryPurple} />
         </View>
@@ -62,11 +63,11 @@ export function Ui() {
 
   if (isUserError) {
     return (
-      <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+      <SafeAreaView style={styles.safe} edges={["top"]}>
         <View style={styles.loadingBox}>
-          <Text style={styles.errorBanner}>Could not load profile.</Text>
+          <Text style={styles.errorBanner}>تعذّر تحميل الملف الشخصي.</Text>
           <Pressable onPress={() => router.back()}>
-            <Text style={{ color: colors.neonCyan }}>Go back</Text>
+            <Text style={{ color: colors.neonCyan }}>رجوع</Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -74,7 +75,7 @@ export function Ui() {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <KeyboardAvoidingView
         style={styles.keyboard}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -91,11 +92,16 @@ export function Ui() {
               onPress={() => router.back()}
               hitSlop={8}
             >
-              <Icon name="arrow-back" size={22} color="#FFFFFF" />
+              <Icon
+                name="arrow-back"
+                size={22}
+                color="#FFFFFF"
+                style={rtlMirrorIconStyle}
+              />
             </Pressable>
             <View style={styles.headerCenter}>
-              <Text style={styles.brandTitle}>AETHER ARENA</Text>
-              <Text style={styles.editLabel}>EDIT PROFILE</Text>
+              <Text style={styles.brandTitle}>إيثير آرينا</Text>
+              <Text style={styles.editLabel}>تعديل الملف</Text>
             </View>
             <View style={{ width: 44, alignItems: "flex-end" }}>
               {headerThumbSource ? (
@@ -142,12 +148,12 @@ export function Ui() {
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
               <Icon name="person" size={16} color={colors.labelMuted} />
-              <Text style={styles.labelText}>FULL NAME</Text>
+              <Text style={styles.labelText}>الاسم الكامل</Text>
             </View>
             <TextInput
               value={fullName}
               onChangeText={setFullName}
-              placeholder="Full name"
+              placeholder="الاسم الكامل"
               placeholderTextColor={colors.labelMuted}
               style={styles.input}
               autoCapitalize="words"
@@ -157,12 +163,12 @@ export function Ui() {
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
               <Text style={[styles.labelText, { fontSize: 14 }]}>#</Text>
-              <Text style={styles.labelText}>GAMER NAME</Text>
+              <Text style={styles.labelText}>اسم اللاعب</Text>
             </View>
             <TextInput
               value={gamerName}
               onChangeText={setGamerName}
-              placeholder="Gamer name"
+              placeholder="اسم اللاعب"
               placeholderTextColor={colors.labelMuted}
               style={[styles.input, styles.inputGamer]}
               autoCapitalize="none"
@@ -172,7 +178,7 @@ export function Ui() {
               <View style={styles.usernameAvailable}>
                 <Icon name="check-circle" size={16} color={colors.successGreen} />
                 <Text style={styles.usernameAvailableText}>
-                  USERNAME AVAILABLE!
+                  الاسم متاح!
                 </Text>
               </View>
             ) : null}
@@ -181,12 +187,12 @@ export function Ui() {
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
               <Icon name="email" size={16} color={colors.labelMuted} />
-              <Text style={styles.labelText}>EMAIL ADDRESS</Text>
+              <Text style={styles.labelText}>البريد الإلكتروني</Text>
             </View>
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="Email"
+              placeholder="البريد الإلكتروني"
               placeholderTextColor={colors.labelMuted}
               style={styles.input}
               keyboardType="email-address"
@@ -197,12 +203,12 @@ export function Ui() {
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
               <Icon name="phone" size={16} color={colors.labelMuted} />
-              <Text style={styles.labelText}>PHONE NUMBER</Text>
+              <Text style={styles.labelText}>رقم الهاتف</Text>
             </View>
             <TextInput
               value={phone}
               onChangeText={setPhone}
-              placeholder="Phone"
+              placeholder="رقم الهاتف"
               placeholderTextColor={colors.labelMuted}
               style={styles.input}
               keyboardType="phone-pad"
@@ -232,7 +238,7 @@ export function Ui() {
                       !canSubmit && styles.saveBtnTextDisabled,
                     ]}
                   >
-                    SAVE CHANGES
+                    حفظ التغييرات
                   </Text>
                 </>
               )}

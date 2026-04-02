@@ -126,7 +126,10 @@ function Api({ children, variant, userId }: ApiProps) {
           await friendRequest.mutateAsync({ friend_user_id: id });
         }
       } catch (e) {
-        Alert.alert("Error", e instanceof Error ? e.message : "Action failed.");
+        Alert.alert(
+          "خطأ",
+          e instanceof Error ? e.message : "فشلت العملية."
+        );
       }
     };
     void run();

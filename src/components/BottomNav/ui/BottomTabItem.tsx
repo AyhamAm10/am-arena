@@ -1,3 +1,4 @@
+import { writingRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import React, { useEffect, type ComponentType } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
@@ -95,7 +96,7 @@ const BottomTabItem: React.FC<Props> = ({
           </View>
         </Animated.View>
       </View>
-      <Animated.Text style={[styles.label, labelStyle]}>
+      <Animated.Text style={[styles.label, labelStyle, writingRtl]}>
         {label.toUpperCase()}
       </Animated.Text>
     </TouchableOpacity>

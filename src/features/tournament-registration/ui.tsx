@@ -19,6 +19,8 @@ import {
   SheetDimmedBackdrop,
   SheetSlidePanel,
 } from "@/src/components/motion";
+import { rtlMirrorIconStyle } from "@/src/lib/rtl";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import { trColors, styles } from "./styles";
 import type { FriendOption } from "./store/api";
@@ -36,9 +38,9 @@ function teamSizeFromGameType(type: PubgGameType | undefined): number {
 }
 
 function gameTypeLabel(type: PubgGameType | undefined): string {
-  if (type === "duo") return "DUO";
-  if (type === "squad") return "SQUAD";
-  return "SOLO";
+  if (type === "duo") return "ثنائي";
+  if (type === "squad") return "فريق";
+  return "فردي";
 }
 
 function formatStartSubtitle(
@@ -47,13 +49,13 @@ function formatStartSubtitle(
 ): string {
   const t = gameTypeLabel(type);
   const n = teamSizeFromGameType(type);
-  const mode = `${n}V${n}`;
-  let datePart = "DATE TBA";
+  const mode = `${n}ضد${n}`;
+  let datePart = "الموعد لاحقاً";
   if (startDate) {
     const d = new Date(startDate);
     if (!Number.isNaN(d.getTime())) {
       datePart = d
-        .toLocaleString("en-US", {
+        .toLocaleString("ar", {
           month: "short",
           day: "numeric",
           hour: "2-digit",
@@ -61,9 +63,8 @@ function formatStartSubtitle(
           timeZone: "UTC",
           timeZoneName: "short",
         })
-        .toUpperCase()
-        .replace(",", " •");
-      datePart = `STARTING ${datePart}`;
+        .replace(/،/g, " •");
+      datePart = `يبدأ ${datePart}`;
     }
   }
   return `${t} • ${mode} • ${datePart}`;
@@ -230,9 +231,14 @@ export function Ui() {
           style={styles.backButton}
           onPress={() => router.back()}
         >
-          <Text style={styles.backIcon}>{"<"}</Text>
+          <Icon
+            name="arrow-back"
+            size={24}
+            color={trColors.white}
+            style={rtlMirrorIconStyle}
+          />
         </TouchableOpacity>
-        <Text style={styles.pageTitle}>Join Tournament</Text>
+        <Text style={styles.pageTitle}>الانضمام للبطولة</Text>
         <View style={styles.backButtonSpacer} />
       </View>
 
@@ -245,7 +251,7 @@ export function Ui() {
           />
           <View style={styles.heroImageOverlayTop} pointerEvents="none">
             <View style={styles.heroPubgPill}>
-              <Text style={styles.heroPubgText}>PUBG MOBILE</Text>
+              <Text style={styles.heroPubgText}>ببجي موبايل</Text>
             </View>
           </View>
           <LinearGradient
@@ -254,7 +260,7 @@ export function Ui() {
             end={{ x: 1, y: 0 }}
             style={styles.heroLiveBadge}
           >
-            <Text style={styles.heroLiveText}>LIVE QUALIFIERS</Text>
+            <Text style={styles.heroLiveText}>تصفيات مباشرة</Text>
           </LinearGradient>
         </View>
         <View style={styles.heroBody}>
@@ -265,7 +271,7 @@ export function Ui() {
             {formatStartSubtitle(gameType, tournament?.start_date ?? null)}
           </Text>
           <View style={styles.progressRow}>
-            <Text style={styles.progressLabel}>PLAYER COUNT</Text>
+            <Text style={styles.progressLabel}>عدد اللاعبين</Text>
             <Text style={styles.progressCount}>
               {filledPlayers} / {maxPlayers}
             </Text>
@@ -279,7 +285,7 @@ export function Ui() {
             />
           </View>
           <Text style={styles.progressSub}>
-            {remainingPct}% SLOTS REMAINING
+            {remainingPct}% مقاعد متبقية
           </Text>
         </View>
       </View>
@@ -306,7 +312,7 @@ export function Ui() {
             ) : (
               <>
                 <Text style={{ fontSize: 18 }}>🎮</Text>
-                <Text style={styles.joinButtonText}>JOIN TOURNAMENT</Text>
+                <Text style={styles.joinButtonText}>انضم للبطولة</Text>
               </>
             )}
           </LinearGradient>
@@ -316,7 +322,7 @@ export function Ui() {
       {registrationFields.map((f) => renderDynamicField(f))}
 
       <View style={styles.fieldBlock}>
-        <Text style={styles.fieldLabel}>TEAM SIZE</Text>
+        <Text style={styles.fieldLabel}>حجم الفريق</Text>
         <View style={styles.selectField}>
           <Text style={styles.selectFieldText}>
             {String(teamSizeFromGameType(gameType))}
@@ -338,8 +344,8 @@ export function Ui() {
             ) : null}
           </View>
           <Text style={styles.termsText}>
-            I agree to the Tournament Rules and the Code of Conduct. I confirm
-            that all team members are over 16 years of age.
+            أوافق على قواعد البطولة ومدونة السلوك. أؤكد أن جميع أعضاء الفريق فوق
+            16 عاماً.
           </Text>
         </TouchableOpacity>
       </View>
@@ -349,7 +355,7 @@ export function Ui() {
           <View style={styles.inviteHeader}>
             <View style={styles.inviteTitleRow}>
               <Text style={{ color: trColors.cyan, fontSize: 18 }}>👤+</Text>
-              <Text style={styles.inviteTitle}>Invite Friends</Text>
+              <Text style={styles.inviteTitle}>دعوة الأصدقاء</Text>
             </View>
             <View style={styles.selectedBadge}>
               <Text style={styles.selectedBadgeText}>{selectedCountLabel}</Text>
@@ -359,7 +365,7 @@ export function Ui() {
             <Text style={{ color: trColors.labelMuted }}>🔍</Text>
             <TextInput
               style={styles.searchInput}
-              placeholder="Search friends..."
+              placeholder="ابحث عن الأصدقاء…"
               placeholderTextColor={trColors.labelMuted}
               value={friendSearch}
               onChangeText={setFriendSearch}
@@ -374,7 +380,7 @@ export function Ui() {
     <>
       <TouchableOpacity style={styles.viewAllFriends} activeOpacity={0.8}>
         <Text style={styles.viewAllFriendsText}>
-          VIEW ALL FRIENDS ({friendsTotalCount})
+          عرض كل الأصدقاء ({friendsTotalCount})
         </Text>
       </TouchableOpacity>
       {isFetchingMoreFriends ? (
@@ -419,7 +425,7 @@ export function Ui() {
                 <View style={styles.friendTextWrap}>
                   <Text style={styles.friendName}>{item.name}</Text>
                   <Text style={styles.friendStatus}>
-                    {item.status || "ONLINE"}
+                    {item.status || "متصل"}
                   </Text>
                 </View>
                 <View

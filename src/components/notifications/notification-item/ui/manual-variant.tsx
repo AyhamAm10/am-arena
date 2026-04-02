@@ -15,7 +15,7 @@ export function createManualVariant(instanceId: string) {
     const actionLabel =
       getStr(item?.data ?? null, "actionLabel") ||
       getStr(item?.data ?? null, "action_label") ||
-      "Open";
+      "فتح";
 
     const go = useCallback(() => {
       if (!isSafeInternalRoute(route)) return;
