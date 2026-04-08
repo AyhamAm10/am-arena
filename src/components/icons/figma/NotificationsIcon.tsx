@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -11,7 +12,7 @@ type Props = {
 export function NotificationsIcon({
   width = 20,
   height = 25,
-  color = "#94A3B8",
+  color = colors.grey,
 }: Props) {
   return (
     <Svg width={width} height={height} viewBox="0 0 16 20" fill="none">

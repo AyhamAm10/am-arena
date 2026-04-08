@@ -1,4 +1,3 @@
-import { colors as themeColors } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
 import React from "react";
@@ -16,7 +15,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
-import { colors, styles } from "./styles";
+import { colors } from "@/src/theme/colors";
+import { styles } from "./styles";
 
 export function Ui() {
   const router = useRouter();
@@ -55,7 +55,7 @@ export function Ui() {
     return (
       <SafeAreaView style={styles.safe} edges={["top"]}>
         <View style={styles.loadingBox}>
-          <ActivityIndicator size="large" color={themeColors.primaryPurple} />
+          <ActivityIndicator size="large" color={colors.primaryPurple} />
         </View>
       </SafeAreaView>
     );
@@ -67,7 +67,7 @@ export function Ui() {
         <View style={styles.loadingBox}>
           <Text style={styles.errorBanner}>تعذّر تحميل الملف الشخصي.</Text>
           <Pressable onPress={() => router.back()}>
-            <Text style={{ color: colors.neonCyan }}>رجوع</Text>
+            <Text style={{ color: colors.neonBlue }}>رجوع</Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -95,7 +95,7 @@ export function Ui() {
               <Icon
                 name="arrow-back"
                 size={22}
-                color="#FFFFFF"
+                color={colors.white}
                 style={rtlMirrorIconStyle}
               />
             </Pressable>
@@ -114,7 +114,7 @@ export function Ui() {
                 <View
                   style={[
                     styles.headerAvatar,
-                    { backgroundColor: colors.inputBg },
+                    { backgroundColor: colors.darkBackground2 },
                   ]}
                 />
               )}
@@ -133,7 +133,7 @@ export function Ui() {
                 <View style={styles.avatarImage} />
               )}
               <Pressable style={styles.cameraFab} onPress={pickImage}>
-                <Icon name="photo-camera" size={22} color="#FFFFFF" />
+                <Icon name="photo-camera" size={22} color={colors.white} />
               </Pressable>
             </View>
           </View>
@@ -147,14 +147,14 @@ export function Ui() {
 
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
-              <Icon name="person" size={16} color={colors.labelMuted} />
+              <Icon name="person" size={16} color={colors.grey} />
               <Text style={styles.labelText}>الاسم الكامل</Text>
             </View>
             <TextInput
               value={fullName}
               onChangeText={setFullName}
               placeholder="الاسم الكامل"
-              placeholderTextColor={colors.labelMuted}
+              placeholderTextColor={colors.grey}
               style={styles.input}
               autoCapitalize="words"
             />
@@ -169,14 +169,14 @@ export function Ui() {
               value={gamerName}
               onChangeText={setGamerName}
               placeholder="اسم اللاعب"
-              placeholderTextColor={colors.labelMuted}
+              placeholderTextColor={colors.grey}
               style={[styles.input, styles.inputGamer]}
               autoCapitalize="none"
               autoCorrect={false}
             />
             {showUsernameAvailable ? (
               <View style={styles.usernameAvailable}>
-                <Icon name="check-circle" size={16} color={colors.successGreen} />
+                <Icon name="check-circle" size={16} color={colors.neonBlue} />
                 <Text style={styles.usernameAvailableText}>
                   الاسم متاح!
                 </Text>
@@ -186,14 +186,14 @@ export function Ui() {
 
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
-              <Icon name="email" size={16} color={colors.labelMuted} />
+              <Icon name="email" size={16} color={colors.grey} />
               <Text style={styles.labelText}>البريد الإلكتروني</Text>
             </View>
             <TextInput
               value={email}
               onChangeText={setEmail}
               placeholder="البريد الإلكتروني"
-              placeholderTextColor={colors.labelMuted}
+              placeholderTextColor={colors.grey}
               style={styles.input}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -202,14 +202,14 @@ export function Ui() {
 
           <View style={styles.fieldBlock}>
             <View style={styles.labelRow}>
-              <Icon name="phone" size={16} color={colors.labelMuted} />
+              <Icon name="phone" size={16} color={colors.grey} />
               <Text style={styles.labelText}>رقم الهاتف</Text>
             </View>
             <TextInput
               value={phone}
               onChangeText={setPhone}
               placeholder="رقم الهاتف"
-              placeholderTextColor={colors.labelMuted}
+              placeholderTextColor={colors.grey}
               style={styles.input}
               keyboardType="phone-pad"
             />
@@ -222,14 +222,14 @@ export function Ui() {
               disabled={!canSubmit || isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color="#FFFFFF" />
+                <ActivityIndicator color={colors.white} />
               ) : (
                 <>
                   <Icon
                     name="save"
                     size={22}
                     color={
-                      canSubmit ? "#FFFFFF" : colors.disabledBtnText
+                      canSubmit ? colors.white : colors.grey
                     }
                   />
                   <Text

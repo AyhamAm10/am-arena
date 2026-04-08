@@ -4,7 +4,7 @@ import { colors } from '@/src/theme/colors'
 export const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#0c0715',
+    backgroundColor: colors.screenBackground,
   },
   content: {
     flexGrow: 1,
@@ -32,11 +32,11 @@ export const styles = StyleSheet.create({
     borderRadius: 82,
     borderWidth: 1,
     borderStyle: 'dashed',
-    borderColor: '#4b1f86',
+    borderColor: colors.primaryPurple,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1a1030',
-    shadowColor: '#7025f6',
+    backgroundColor: colors.darkBackground1,
+    shadowColor: colors.primaryPurple,
     shadowOpacity: 0.45,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 8 },
@@ -62,10 +62,10 @@ export const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1a0f2a',
+    backgroundColor: colors.darkBackground2,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: '#2b1842',
+    borderColor: colors.darkBackground1,
     paddingHorizontal: 14,
     marginBottom: 10,
   },

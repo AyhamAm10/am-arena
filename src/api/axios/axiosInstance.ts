@@ -1,3 +1,4 @@
+import "./setupAxiosWeb";
 import axios from "axios";
 import { requestInterceptor } from "./requestInterceptor";
 import { responseInterceptor } from "./responseInterceptor";

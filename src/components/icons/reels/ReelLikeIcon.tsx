@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -11,7 +12,7 @@ type Props = {
 export function ReelLikeIcon({
   width = 20,
   height = 18,
-  color = "#FFFFFF",
+  color = colors.white,
 }: Props) {
   return (
     <Svg width={width} height={height} viewBox="0 0 20 18" fill="none">

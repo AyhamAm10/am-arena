@@ -607,7 +607,7 @@ export function Ui() {
                     <TextInput
                       style={styles.modalInput}
                       placeholder="أضف تعليقاً…"
-                      placeholderTextColor="#6a5f7a"
+                      placeholderTextColor={colors.grey}
                       value={commentDraft}
                       onChangeText={setCommentDraft}
                       editable={!isAddingComment}

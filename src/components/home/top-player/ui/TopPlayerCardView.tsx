@@ -11,7 +11,7 @@ type Props = {
 };
 
 function medalColorForRank(rank: number): string {
-  if (rank === 1) return "#FFD700";
+  if (rank === 1) return colors.gold;
   if (rank === 2) return "#C0C0C0";
   if (rank === 3) return "#CD7F32";
   return colors.primaryPurple;
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     gap: 12,
     borderWidth: 1,
-    borderColor: "#3d2a55",
+    borderColor: colors.darkBackground1,
   },
   avatarCol: {
     position: "relative",
@@ -173,6 +173,6 @@ const styles = StyleSheet.create({
   xpValue: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#22D3EE",
+    color: colors.neonBlue,
   },
 });

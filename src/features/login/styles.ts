@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.darkBackground2,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: '#3a2451',
+    borderColor: colors.darkBackground1,
     paddingHorizontal: 14,
     marginBottom: 8,
   },

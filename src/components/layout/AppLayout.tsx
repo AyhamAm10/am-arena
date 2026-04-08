@@ -2,7 +2,8 @@
 import { useHeaderUser } from "@/src/hooks/auth/useHeaderUser";
 import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TopBar } from "../TopBar";
+import { colors } from '@/src/theme/colors';
+import { TopBar } from '../TopBar';
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -20,7 +21,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
     header.avatarUri != null ? { uri: header.avatarUri } : undefined;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#191021" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.screenBackground }}>
       <TopBar
         type={header.isLoggedIn ? "auth" : "unAuth"}
         avatarSource={avatarSource}

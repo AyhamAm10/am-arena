@@ -3,11 +3,11 @@ import { StyleSheet } from "react-native";
 
 /** Channels screen — dark purple, neon purple accents (Figma-aligned). */
 export const channelsTheme = {
-  bg: "#120c18",
-  cardBg: "#1e1528",
-  cardBorder: "#2d2440",
-  muted: "#9B8FB8",
-  white: "#FFFFFF",
+  bg: colors.screenBackground,
+  cardBg: colors.darkBackground1,
+  cardBorder: colors.darkBackground1,
+  muted: colors.grey,
+  white: colors.white,
   accent: colors.primaryPurple,
   liveBg: colors.primaryPurple,
   online: "#22C55E",
@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingBottom: 4,
     borderBottomWidth: 1,
-    borderBottomColor: "#2a2035",
+    borderBottomColor: colors.darkBackground2,
   },
   tabBtn: {
     flex: 1,
@@ -145,13 +145,13 @@ export const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#261834",
+    backgroundColor: colors.darkBackground2,
     alignItems: "center",
     justifyContent: "center",
     marginRight: 14,
   },
   iconCircleFeatured: {
-    backgroundColor: "rgba(127, 13, 242, 0.35)",
+    backgroundColor: "rgba(111, 45, 189, 0.35)",
   },
   cardBody: {
     flex: 1,

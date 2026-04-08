@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -11,7 +12,7 @@ type Props = {
 export function ReelCommentIcon({
   width = 20,
   height = 20,
-  color = "#FFFFFF",
+  color = colors.white,
 }: Props) {
   return (
     <Svg width={width} height={height} viewBox="0 0 20 20" fill="none">

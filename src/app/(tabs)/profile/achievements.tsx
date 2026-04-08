@@ -74,7 +74,7 @@ export default function AchievementsListScreen() {
               <Switch
                 value={item.displayed}
                 onValueChange={() => handleToggle(item.id)}
-                trackColor={{ false: "#3a2e48", true: accent }}
+                trackColor={{ false: colors.darkBackground1, true: accent }}
                 thumbColor={colors.white}
                 style={styles.toggle}
               />

@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 
-const EARNED_LABEL = "#D1D5DB";
+
 
 type AchievementBadgesSectionProps = {
   entries: UserAchievementEntry[];
@@ -104,7 +104,7 @@ function AchievementBadgeItem({
           )}
         </View>
       </View>
-      <Text style={[styles.badgeLabel, { color: EARNED_LABEL }]} numberOfLines={2}>
+      <Text style={[styles.badgeLabel, { color: colors.grey }]} numberOfLines={2}>
         {achievement.name}
       </Text>
     </View>

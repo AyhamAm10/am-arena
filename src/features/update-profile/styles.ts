@@ -1,26 +1,10 @@
+﻿import { colors } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
-
-/** Edit Profile screen — matches Aether Arena mock (dark purple, cyan accents). */
-export const colors = {
-  screenBg: "#0F0C1D",
-  inputBg: "#1B1528",
-  labelMuted: "#9B8FB8",
-  brandPurple: "#A855F7",
-  neonCyan: "#22D3EE",
-  successGreen: "#4ADE80",
-  disabledBtn: "#2A1F3D",
-  disabledBtnText: "#6B5F7A",
-  activeTab: "#22D3EE",
-  inactiveTab: "#E8E8E8",
-  captionGrey: "#6B6578",
-  ringGlow: "#06B6D4",
-  cameraBtn: "#9333EA",
-};
 
 export const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: colors.screenBg,
+    backgroundColor: colors.screenBackground,
   },
   keyboard: {
     flex: 1,
@@ -43,7 +27,7 @@ export const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#2D1B4E",
+    backgroundColor: colors.darkBackground1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -58,13 +42,13 @@ export const styles = StyleSheet.create({
   brandTitle: {
     fontSize: 17,
     fontWeight: "800",
-    color: colors.brandPurple,
+    color: colors.primaryPurple,
     letterSpacing: 0.5,
   },
   editLabel: {
     fontSize: 11,
     fontWeight: "600",
-    color: colors.labelMuted,
+    color: colors.grey,
     letterSpacing: 1,
   },
   headerAvatar: {
@@ -72,7 +56,7 @@ export const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     borderWidth: 2,
-    borderColor: colors.ringGlow,
+    borderColor: colors.neonBlue,
   },
   avatarBlock: {
     alignItems: "center",
@@ -84,19 +68,19 @@ export const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: colors.ringGlow,
+    shadowColor: colors.neonBlue,
     shadowOpacity: 0.85,
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 0 },
     elevation: 16,
     borderWidth: 3,
-    borderColor: colors.ringGlow,
+    borderColor: colors.neonBlue,
   },
   avatarImage: {
     width: 184,
     height: 184,
     borderRadius: 92,
-    backgroundColor: colors.inputBg,
+    backgroundColor: colors.darkBackground2,
   },
   cameraFab: {
     position: "absolute",
@@ -105,11 +89,11 @@ export const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: colors.cameraBtn,
+    backgroundColor: colors.primaryPurple,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 3,
-    borderColor: colors.screenBg,
+    borderColor: colors.screenBackground,
   },
   fieldBlock: {
     marginBottom: 18,
@@ -123,21 +107,21 @@ export const styles = StyleSheet.create({
   labelText: {
     fontSize: 11,
     fontWeight: "700",
-    color: colors.labelMuted,
+    color: colors.grey,
     letterSpacing: 0.8,
   },
   input: {
-    backgroundColor: colors.inputBg,
+    backgroundColor: colors.darkBackground2,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 15,
-    color: "#FFFFFF",
+    color: colors.white,
     borderWidth: 1,
-    borderColor: "#2A2238",
+    borderColor: colors.darkBackground1,
   },
   inputGamer: {
-    color: colors.neonCyan,
+    color: colors.neonBlue,
     fontWeight: "600",
   },
   usernameAvailable: {
@@ -149,17 +133,17 @@ export const styles = StyleSheet.create({
   usernameAvailableText: {
     fontSize: 11,
     fontWeight: "800",
-    color: colors.successGreen,
+    color: colors.neonBlue,
     letterSpacing: 0.6,
   },
   errorBanner: {
-    color: "#F87171",
+    color: colors.error,
     fontSize: 13,
     marginBottom: 12,
     textAlign: "center",
   },
   formError: {
-    color: "#F87171",
+    color: colors.error,
     fontSize: 12,
     marginBottom: 8,
   },
@@ -172,28 +156,28 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
-    backgroundColor: colors.cameraBtn,
+    backgroundColor: colors.primaryPurple,
     paddingVertical: 16,
     borderRadius: 12,
   },
   saveBtnDisabled: {
-    backgroundColor: colors.disabledBtn,
+    backgroundColor: colors.darkBackground2,
   },
   saveBtnText: {
     fontSize: 14,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: colors.white,
     letterSpacing: 1,
   },
   saveBtnTextDisabled: {
-    color: colors.disabledBtnText,
+    color: colors.grey,
   },
   footerCaption: {
     marginTop: 12,
     textAlign: "center",
     fontSize: 10,
     fontWeight: "600",
-    color: colors.captionGrey,
+    color: colors.grey,
     letterSpacing: 0.8,
   },
   loadingBox: {

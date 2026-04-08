@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -13,7 +14,7 @@ export function FriendsNavIcon({
   size = 25,
   width: w,
   height: h,
-  color = "#64748B",
+  color = colors.grey,
 }: Props) {
   const width = w ?? size;
   const height = h ?? (size * 28) / 25;

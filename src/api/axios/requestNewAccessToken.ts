@@ -1,3 +1,4 @@
+import "./setupAxiosWeb";
 import axios from "axios";
 import { apiUrl } from "./api-url";
 import type { ApiResponse } from "../types/api-response";

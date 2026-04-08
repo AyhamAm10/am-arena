@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     backgroundColor: colors.darkBackground2,
     borderWidth: 1,
-    borderColor: "#3d3450",
+    borderColor: colors.darkBackground1,
   },
 });
 

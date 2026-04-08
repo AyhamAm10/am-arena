@@ -1,16 +1,20 @@
+import { colors as c } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
 
-/** Tournament registration — matches Aether Arena mock (#110B1D, purple / cyan). */
+/** Tournament registration — theme-aligned. */
 export const trColors = {
-  bg: "#110B1D",
-  cardBg: "#1A1225",
-  inputBg: "#231830",
-  labelMuted: "#8B7FA3",
-  cyan: "#06B6D4",
-  purple: "#A855F7",
-  purpleDeep: "#7C3AED",
-  white: "#FFFFFF",
-  progressTrack: "#2D2438",
+  bg: c.screenBackground,
+  cardBg: c.darkBackground1,
+  inputBg: c.darkBackground2,
+  labelMuted: c.grey,
+  cyan: c.neonBlue,
+  purple: c.primaryPurple,
+  purpleDeep: c.primaryPurple,
+  white: c.white,
+  progressTrack: c.darkBackground2,
+  borderLine: c.darkBackground1,
+  avatarPlaceholder: c.darkBackground1,
+  selectRing: c.grey,
 };
 
 export const styles = StyleSheet.create({
@@ -70,7 +74,7 @@ export const styles = StyleSheet.create({
   heroImage: {
     width: "100%",
     height: 168,
-    backgroundColor: "#0a0612",
+    backgroundColor: trColors.bg,
   },
   heroImageOverlayTop: {
     ...StyleSheet.absoluteFillObject,
@@ -195,7 +199,7 @@ export const styles = StyleSheet.create({
     backgroundColor: trColors.inputBg,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#332944",
+    borderColor: trColors.borderLine,
     paddingHorizontal: 14,
     paddingVertical: 14,
     color: trColors.white,
@@ -205,7 +209,7 @@ export const styles = StyleSheet.create({
     backgroundColor: trColors.inputBg,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#332944",
+    borderColor: trColors.borderLine,
     paddingHorizontal: 14,
     paddingVertical: 14,
     flexDirection: "row",
@@ -227,7 +231,7 @@ export const styles = StyleSheet.create({
     height: 22,
     borderRadius: 4,
     borderWidth: 2,
-    borderColor: "#4B3D63",
+    borderColor: trColors.selectRing,
     backgroundColor: trColors.inputBg,
     alignItems: "center",
     justifyContent: "center",
@@ -260,7 +264,7 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
   selectedBadge: {
-    backgroundColor: "#0E7490",
+    backgroundColor: trColors.cyan,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
@@ -277,7 +281,7 @@ export const styles = StyleSheet.create({
     backgroundColor: trColors.inputBg,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#332944",
+    borderColor: trColors.borderLine,
     paddingHorizontal: 12,
     marginBottom: 12,
     gap: 8,
@@ -296,7 +300,7 @@ export const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#332944",
+    borderColor: trColors.borderLine,
   },
   friendRowBlocked: {
     opacity: 0.55,
@@ -305,7 +309,7 @@ export const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 10,
-    backgroundColor: "#3D3450",
+    backgroundColor: trColors.avatarPlaceholder,
     marginRight: 12,
   },
   friendTextWrap: {
@@ -327,7 +331,7 @@ export const styles = StyleSheet.create({
     height: 26,
     borderRadius: 13,
     borderWidth: 2,
-    borderColor: "#5B4D72",
+    borderColor: trColors.selectRing,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -371,7 +375,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#332944",
+    borderBottomColor: trColors.borderLine,
   },
   modalOptionText: {
     color: trColors.white,

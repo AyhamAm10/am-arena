@@ -33,7 +33,7 @@ const springConfig = {
 const BottomTabItem: React.FC<Props> = ({
   label,
   Icon,
-  inactiveIconColor = "#64748B",
+  inactiveIconColor = colors.grey,
   active,
   onPress,
 }) => {

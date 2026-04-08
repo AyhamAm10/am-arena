@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 6,
     borderWidth: 1,
-    borderColor: "#3D2F55",
+    borderColor: colors.darkBackground1,
     shadowColor: "#000",
     shadowOpacity: 0.35,
     shadowRadius: 12,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   menuDivider: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: "#3D2F55",
+    backgroundColor: colors.darkBackground1,
     marginHorizontal: 12,
   },
 });

@@ -1,18 +1,19 @@
+import { colors as c } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
 
 /** Friends screen — Aether Arena mock (deep purple, cyan tabs, cards). */
 export const friendsColors = {
-  bg: "#120c1a",
-  cardBg: "#1e1529",
-  inputBg: "#1e1529",
-  tabInactive: "#9B8FB8",
-  tabActive: "#22D3EE",
-  labelMuted: "#8B7FA3",
-  white: "#FFFFFF",
+  bg: c.screenBackground,
+  cardBg: c.darkBackground1,
+  inputBg: c.darkBackground2,
+  tabInactive: c.grey,
+  tabActive: c.neonBlue,
+  labelMuted: c.grey,
+  white: c.white,
   online: "#22C55E",
-  offline: "#6B7280",
-  brandPurple: "#A855F7",
-  pillTrack: "#261a35",
+  offline: c.grey,
+  brandPurple: c.primaryPurple,
+  pillTrack: c.darkBackground2,
 };
 
 export const styles = StyleSheet.create({
@@ -30,7 +31,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "#2d2440",
+    borderColor: c.darkBackground1,
   },
   searchIcon: {
     marginRight: 10,
@@ -93,7 +94,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: "#2d2440",
+    borderColor: c.darkBackground1,
   },
   avatarWrap: {
     position: "relative",
@@ -103,7 +104,7 @@ export const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "#2d2440",
+    backgroundColor: c.darkBackground1,
   },
   statusDot: {
     position: "absolute",
@@ -145,9 +146,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 8,
-    backgroundColor: "#2a1f3d",
+    backgroundColor: c.darkBackground2,
     borderWidth: 1,
-    borderColor: "#3d3450",
+    borderColor: c.primaryPurple,
   },
   actionBtnText: {
     color: friendsColors.white,
@@ -163,12 +164,12 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   acceptBtn: {
-    backgroundColor: "#0e3d32",
+    backgroundColor: c.darkBackground2,
     borderColor: friendsColors.online,
   },
   rejectBtn: {
-    backgroundColor: "#3d1f24",
-    borderColor: "#9f4a54",
+    backgroundColor: c.darkBackground2,
+    borderColor: c.error,
   },
   discoverHeader: {
     marginTop: 20,
@@ -189,7 +190,7 @@ export const styles = StyleSheet.create({
     backgroundColor: friendsColors.cardBg,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#2d2440",
+    borderColor: c.darkBackground1,
     alignItems: "center",
     justifyContent: "center",
     padding: 12,
@@ -198,14 +199,14 @@ export const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#2d2440",
+    backgroundColor: c.darkBackground1,
     marginBottom: 12,
   },
   suggestedBar: {
     width: "80%",
     height: 10,
     borderRadius: 4,
-    backgroundColor: "#2d2440",
+    backgroundColor: c.darkBackground1,
   },
   suggestedGamerName: {
     fontSize: 13,
@@ -220,7 +221,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   errorText: {
-    color: "#f87171",
+    color: c.error,
     fontSize: 14,
     marginBottom: 8,
     textAlign: "center",

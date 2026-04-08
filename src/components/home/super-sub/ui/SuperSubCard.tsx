@@ -13,7 +13,7 @@ export default function SuperSubCard() {
 
   return (
     <LinearGradient
-      colors={["#22D3EE", "#A855F7"]}
+      colors={[colors.neonBlue, colors.primaryPurple]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradientBorder}

@@ -22,13 +22,13 @@ export const styles = StyleSheet.create({
   },
   muted: {
     fontSize: 14,
-    color: "#c4b8d8",
+    color: colors.grey,
     textAlign: "center",
     marginTop: 8,
   },
   reelPageFull: {
     alignSelf: "center",
-    backgroundColor: "#0a0710",
+    backgroundColor: colors.screenBackground,
     overflow: "hidden",
   },
   videoShell: {
@@ -56,10 +56,10 @@ export const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#1a1424",
+    backgroundColor: colors.darkBackground1,
   },
   videoPlaceholderText: {
-    color: "#8B7FA3",
+    color: colors.grey,
     fontSize: 14,
   },
   /** Title, description, single comment preview — bottom-aligned with action column; does not cover the video center. */
@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
   reelDescription: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#E8E2F2",
+    color: colors.white,
     textShadowColor: "rgba(0,0,0,0.5)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
@@ -121,7 +121,7 @@ export const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: "#2a2438",
+    backgroundColor: colors.darkBackground2,
     overflow: "hidden",
   },
   commentPreviewMeta: {
@@ -135,7 +135,7 @@ export const styles = StyleSheet.create({
   },
   commentPreviewBody: {
     fontSize: 13,
-    color: "#c4b8d8",
+    color: colors.grey,
     marginTop: 2,
     lineHeight: 17,
   },
@@ -174,7 +174,7 @@ export const styles = StyleSheet.create({
   progressTrack: {
     height: 3,
     width: "100%",
-    backgroundColor: "#1a1a1a",
+    backgroundColor: colors.darkBackground2,
   },
   progressFill: {
     height: "100%",
@@ -183,7 +183,7 @@ export const styles = StyleSheet.create({
   footerStrip: {
     height: 12,
     width: "100%",
-    backgroundColor: "#0e0a14",
+    backgroundColor: colors.screenBackground,
   },
   modalBackdrop: {
     flex: 1,
@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
   },
   modalSheet: {
     maxHeight: "72%",
-    backgroundColor: "#15101f",
+    backgroundColor: colors.darkBackground1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     paddingBottom: 8,
@@ -211,7 +211,7 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "#4a4458",
+    backgroundColor: colors.grey,
     marginTop: 8,
     marginBottom: 12,
   },
@@ -235,7 +235,7 @@ export const styles = StyleSheet.create({
     color: colors.white,
   },
   modalCountBadge: {
-    backgroundColor: "#2a2438",
+    backgroundColor: colors.darkBackground2,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,
@@ -243,7 +243,7 @@ export const styles = StyleSheet.create({
   modalCountText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#c4b8d8",
+    color: colors.grey,
   },
   modalClose: {
     padding: 8,
@@ -276,18 +276,18 @@ export const styles = StyleSheet.create({
   commentTime: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#8B7FA3",
+    color: colors.grey,
   },
   commentBody: {
     fontSize: 14,
-    color: "#c4b8d8",
+    color: colors.grey,
     lineHeight: 20,
   },
   commentAvatar: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#2a2438",
+    backgroundColor: colors.darkBackground2,
     marginRight: 10,
   },
   commentRowInner: {
@@ -313,7 +313,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#3d3450",
+    borderColor: colors.darkBackground1,
     borderRadius: 22,
     paddingLeft: 14,
     paddingRight: 4,

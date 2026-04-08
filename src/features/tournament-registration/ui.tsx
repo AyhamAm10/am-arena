@@ -255,7 +255,7 @@ export function Ui() {
             </View>
           </View>
           <LinearGradient
-            colors={[trColors.purple, "#EC4899"]}
+            colors={[trColors.purple, trColors.cyan]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.heroLiveBadge}
@@ -302,7 +302,7 @@ export function Ui() {
           onPress={() => void onConfirmJoin()}
         >
           <LinearGradient
-            colors={["#2563EB", trColors.cyan]}
+            colors={[trColors.purple, trColors.cyan]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.joinButton}

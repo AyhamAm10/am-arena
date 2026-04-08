@@ -2,15 +2,15 @@ import { colors } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
 
 export const chatTheme = {
-  bg: "#0d0a14",
-  headerBg: "#1a1028",
-  cardBg: "#1a1028",
-  cardBorder: "#2d2440",
-  cyan: "#00E5FF",
-  white: "#FFFFFF",
-  muted: "#9B8FB8",
+  bg: colors.screenBackground,
+  headerBg: colors.darkBackground1,
+  cardBg: colors.darkBackground1,
+  cardBorder: colors.darkBackground1,
+  cyan: colors.neonBlue,
+  white: colors.white,
+  muted: colors.grey,
   accent: colors.primaryPurple,
-  footerBg: "#1a1028",
+  footerBg: colors.darkBackground1,
 };
 
 export const styles = StyleSheet.create({

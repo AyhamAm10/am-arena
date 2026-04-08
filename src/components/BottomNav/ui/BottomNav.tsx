@@ -8,9 +8,6 @@ import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomTabItem from "./BottomTabItem";
 
-/** Inactive tab icon fills from `src/assets/*-icon.svg` */
-const INACTIVE_SLATE = "#64748B";
-const INACTIVE_REEL = "#94A3B8";
 
 type Props = {
   activeTab: string | null;
@@ -29,28 +26,28 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
           <BottomTabItem
             label="الرئيسية"
             Icon={HomeNavIcon}
-            inactiveIconColor={INACTIVE_SLATE}
+            inactiveIconColor={colors.grey}
             active={activeTab === "Home"}
             onPress={() => onTabPress("Home")}
           />
           <BottomTabItem
             label="الريلز"
             Icon={ReelsNavIcon}
-            inactiveIconColor={INACTIVE_REEL}
+            inactiveIconColor={colors.neonBlue}
             active={activeTab === "Reels"}
             onPress={() => onTabPress("Reels")}
           />
           <BottomTabItem
             label="القنوات"
             Icon={ChannelNavIcon}
-            inactiveIconColor={INACTIVE_SLATE}
+            inactiveIconColor={colors.grey}
             active={activeTab === "Channels"}
             onPress={() => onTabPress("Channels")}
           />
           <BottomTabItem
             label="الأصدقاء"
             Icon={FriendsNavIcon}
-            inactiveIconColor={INACTIVE_SLATE}
+            inactiveIconColor={colors.grey}
             active={activeTab === "Friends"}
             onPress={() => onTabPress("Friends")}
           />

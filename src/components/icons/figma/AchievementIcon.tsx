@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -11,7 +12,7 @@ type Props = {
 export function AchievementIcon({
   width = 18,
   height = 22,
-  color = "#EAB308",
+  color = colors.gold,
 }: Props) {
   return (
     <Svg width={width} height={height} viewBox="0 0 14 18" fill="none">

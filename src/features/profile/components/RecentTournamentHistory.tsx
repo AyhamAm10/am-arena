@@ -12,13 +12,13 @@ type Props = {
 const ACCENT_COLORS: Record<TournamentHistoryItem["result"], string> = {
   won: "#22C55E",
   lost: "#F59E0B",
-  free: "#7F0DF2",
+  free: colors.primaryPurple,
 };
 
 const AMOUNT_COLORS: Record<TournamentHistoryItem["result"], string> = {
   won: "#22C55E",
   lost: "#22C55E",
-  free: "#9CA3AF",
+  free: colors.grey,
 };
 
 function formatRelativeTime(iso: string): string {
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   xp: {
-    color: "#F59E0B",
+    color: colors.gold,
     fontSize: 12,
     fontWeight: "600",
     marginTop: 2,

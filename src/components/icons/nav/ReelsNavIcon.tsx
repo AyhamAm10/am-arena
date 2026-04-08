@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -14,7 +15,7 @@ export function ReelsNavIcon({
   size = 29,
   width: w,
   height: h,
-  color = "#94A3B8",
+  color = colors.neonBlue,
 }: Props) {
   const width = w ?? size;
   const height = h ?? (size * 34) / 29;

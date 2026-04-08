@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#3d2a55",
+    borderColor: colors.darkBackground1,
   },
   imageWrap: {
     height: 100,
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   prize: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#22D3EE",
+    color: colors.neonBlue,
   },
   meta: {
     alignItems: "center",

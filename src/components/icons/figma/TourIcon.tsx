@@ -1,3 +1,4 @@
+import { colors } from '@/src/theme/colors';
 import React from "react";
 import Svg, { Path } from "react-native-svg";
 
@@ -6,7 +7,7 @@ type Props = {
   color?: string;
 };
 
-export function TourIcon({ size = 25, color = "#7F0DF2" }: Props) {
+export function TourIcon({ size = 25, color = colors.primaryPurple }: Props) {
   const height = (size * 28) / 25;
   return (
     <Svg width={size} height={height} viewBox="0 0 25 28" fill="none">

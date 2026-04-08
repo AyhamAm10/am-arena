@@ -1,4 +1,4 @@
-import { overlayPillAlignRtl, textRtl } from "@/src/lib/rtl";
+﻿import { overlayPillAlignRtl, textRtl } from "@/src/lib/rtl";
 import { colors } from "@/src/theme/colors";
 import React from "react";
 import {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     backgroundColor: colors.darkBackground2,
     borderWidth: 1,
-    borderColor: "#2d2440",
+    borderColor: colors.darkBackground1,
   },
   imageBackground: {
     height: 200,
