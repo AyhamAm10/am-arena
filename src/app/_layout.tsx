@@ -62,6 +62,14 @@ export default function RootLayout() {
                 options={{ ...stackChrome, animation: pushFromRight }}
               />
               <Stack.Screen
+                name="tournament/[id]/registration"
+                options={{ ...stackChrome, animation: pushFromRight }}
+              />
+              <Stack.Screen
+                name="tournament/[id]/details"
+                options={{ ...stackChrome, animation: pushFromRight }}
+              />
+              <Stack.Screen
                 name="channel/[id]"
                 options={{ ...stackChrome, animation: pushFromLeft }}
               />

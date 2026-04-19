@@ -19,7 +19,7 @@ import {
   SheetDimmedBackdrop,
   SheetSlidePanel,
 } from "@/src/components/motion";
-import { rtlMirrorIconStyle } from "@/src/lib/rtl";
+import { rtlMirrorIconStyle, textRtl } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import { trColors, styles } from "./styles";
@@ -28,6 +28,7 @@ import {
   getDefaultFieldValue,
   resolvedFieldValue,
 } from "./utils";
+import { colors_V2 } from "@/src/theme/colors";
 
 const fallbackMap = require("../../assets/pubg.jpg");
 
@@ -102,6 +103,7 @@ export function Ui() {
   const setTermsAccepted = useMirror("setTermsAccepted");
   const friendSearch = useMirror("friendSearch");
   const setFriendSearch = useMirror("setFriendSearch");
+  const levelGateMessage = useMirror("levelGateMessage") as string | null;
 
   const [selectModalFieldId, setSelectModalFieldId] = useState<number | null>(
     null
@@ -255,7 +257,7 @@ export function Ui() {
             </View>
           </View>
           <LinearGradient
-            colors={[trColors.purple, trColors.cyan]}
+            colors={[trColors.purple, colors_V2.gradientEnd]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.heroLiveBadge}
@@ -290,33 +292,41 @@ export function Ui() {
         </View>
       </View>
 
-      <View
-        style={[
-          styles.joinButtonWrap,
-          (!canSubmit || isSubmitting) && styles.joinButtonDisabled,
-        ]}
-      >
-        <TouchableOpacity
-          activeOpacity={0.9}
-          disabled={!canSubmit || isSubmitting}
-          onPress={() => void onConfirmJoin()}
+      <View style={styles.joinButtonSection}>
+        <View
+          style={[
+            styles.joinButtonWrap,
+            (!canSubmit || isSubmitting) && styles.joinButtonDisabled,
+          ]}
         >
-          <LinearGradient
-            colors={[trColors.purple, trColors.cyan]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={styles.joinButton}
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel="انضم للبطولة"
+            accessibilityState={{ disabled: !canSubmit || isSubmitting }}
+            accessibilityHint={
+              levelGateMessage && !canSubmit ? levelGateMessage : undefined
+            }
+            activeOpacity={0.9}
+            disabled={!canSubmit || isSubmitting}
+            onPress={() => void onConfirmJoin()}
           >
-            {isSubmitting ? (
-              <ActivityIndicator color={trColors.white} />
-            ) : (
-              <>
-                <Text style={{ fontSize: 18 }}>🎮</Text>
+            <LinearGradient
+              colors={[trColors.purple, colors_V2.gradientEnd]}
+              start={{ x: 0, y: 0.5 }}
+              end={{ x: 1, y: 0.5 }}
+              style={styles.joinButton}
+            >
+              {isSubmitting ? (
+                <ActivityIndicator color={trColors.white} />
+              ) : (
                 <Text style={styles.joinButtonText}>انضم للبطولة</Text>
-              </>
-            )}
-          </LinearGradient>
-        </TouchableOpacity>
+              )}
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+        {levelGateMessage ? (
+          <Text style={[styles.levelGateHint, textRtl]}>{levelGateMessage}</Text>
+        ) : null}
       </View>
 
       {registrationFields.map((f) => renderDynamicField(f))}
@@ -354,7 +364,6 @@ export function Ui() {
         <>
           <View style={styles.inviteHeader}>
             <View style={styles.inviteTitleRow}>
-              <Text style={{ color: trColors.cyan, fontSize: 18 }}>👤+</Text>
               <Text style={styles.inviteTitle}>دعوة الأصدقاء</Text>
             </View>
             <View style={styles.selectedBadge}>
@@ -362,7 +371,7 @@ export function Ui() {
             </View>
           </View>
           <View style={styles.searchRow}>
-            <Text style={{ color: trColors.labelMuted }}>🔍</Text>
+            <Icon name="search" size={18} color={trColors.labelMuted} />
             <TextInput
               style={styles.searchInput}
               placeholder="ابحث عن الأصدقاء…"

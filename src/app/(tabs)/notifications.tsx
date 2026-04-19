@@ -19,6 +19,7 @@ import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import type { UserNotificationDto } from "@/src/api/types/notification.types";
 import { FadeInListRow, ScreenEnterTransition } from "@/src/components/motion";
+import { markNotificationRead } from "@/src/api/services/notification.api";
 
 const LIST_QUERY = { page: 1, limit: 50 } as const;
 
@@ -35,6 +36,10 @@ function toItemState(
     read_at: n.read_at,
     created_at: n.created_at,
     onInvalidate,
+    markAsRead: async (notificationId: number) => {
+      await markNotificationRead(notificationId);
+      onInvalidate();
+    },
   };
 }
 

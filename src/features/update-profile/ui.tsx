@@ -122,7 +122,12 @@ export function Ui() {
           </View>
 
           <View style={styles.avatarBlock}>
-            <View style={styles.ringOuter}>
+            <Pressable
+              style={styles.ringOuter}
+              onPress={() => void pickImage()}
+              accessibilityRole="button"
+              accessibilityLabel="تغيير الصورة الشخصية"
+            >
               {mainAvatarSource ? (
                 <Image
                   source={mainAvatarSource}
@@ -132,10 +137,13 @@ export function Ui() {
               ) : (
                 <View style={styles.avatarImage} />
               )}
-              <Pressable style={styles.cameraFab} onPress={pickImage}>
+              <Pressable
+                style={styles.cameraFab}
+                onPress={() => void pickImage()}
+              >
                 <Icon name="photo-camera" size={22} color={colors.white} />
               </Pressable>
-            </View>
+            </Pressable>
           </View>
 
           {apiError ? (

@@ -1,5 +1,7 @@
+import type { AuthRegisterBody } from '@/src/api/types/auth.types'
+
 type ApiState = {
-  submit: (body: FormData) => Promise<void>
+  submit: (body: AuthRegisterBody) => Promise<void>
   isLoading: boolean
   error: string | null
 }

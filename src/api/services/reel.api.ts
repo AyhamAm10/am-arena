@@ -9,6 +9,7 @@ import type {
   ReelCommentEntity,
   ReelEntity,
   ReelLikeEntity,
+  MentionableUser,
 } from "../types/reel.types";
 import { parseApiResponseWithMeta } from "../utils/parseApiResponseWithMeta";
 import type { ApiPaginationMeta } from "../types/pubg-tournament.types";
@@ -67,4 +68,11 @@ export async function removeReelLike(reelId: string): Promise<void> {
     `/reel/${reelId}/like`
   );
   parseApiResponse(res);
+}
+
+export async function searchTagUsers(query: string, limit = 10): Promise<MentionableUser[]> {
+  const res = await axiosInstance.get<ApiResponse<MentionableUser[]>>("/reel/tag-users/search", {
+    params: { query, limit },
+  });
+  return parseApiResponse(res);
 }

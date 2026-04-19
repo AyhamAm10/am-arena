@@ -28,3 +28,11 @@ export async function toggleAchievementDisplay(
     `/achievement/user-achievement/${userAchievementId}/toggle-display`
   );
 }
+
+export async function setActiveAchievement(
+  userAchievementId: number
+): Promise<void> {
+  await axiosInstance.patch("/achievement/user-achievement/active", {
+    user_achievement_id: userAchievementId,
+  });
+}

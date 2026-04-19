@@ -3,6 +3,8 @@ export type NotificationItemType =
   | "CHAT_MESSAGE"
   | "TOURNAMENT_CREATED"
   | "ACHIEVEMENT_UNLOCKED"
+  | "REEL_HIGHLIGHT"
+  | "GLOBAL_POLL"
   | "SYSTEM_MESSAGE"
   | "MANUAL";
 

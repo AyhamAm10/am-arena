@@ -4,6 +4,7 @@ import { ApiResponse } from "../types/api-response";
 import type {
   GetBestUsersQuery,
   GetSearchUsersQuery,
+  UpdateProfileBody,
   UserProfileResponse,
   UserPublicSummary,
 } from "../types/user.types";
@@ -41,12 +42,8 @@ export async function searchUsers(query: GetSearchUsersQuery): Promise<{
   return parseApiResponseWithMeta(res);
 }
 
-/**
- * Update profile with multipart FormData (field `profile_picture` = RN file `{ uri, name, type }`).
- * Uses `axiosInstance` so `requestInterceptor` strips default JSON Content-Type and sets boundary for FormData.
- */
 export async function updateProfile(
-  body: FormData
+  body: UpdateProfileBody
 ): Promise<UserProfileResponse> {
   const res = await axiosInstance.post<ApiResponse<UserProfileResponse>>(
     "/user/profile",

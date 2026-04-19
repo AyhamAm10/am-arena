@@ -2,6 +2,7 @@
 
 import type { FriendEntityResponse } from "./friend.types";
 import type {
+  AchievementPublic,
   UserAccountDto,
   UserAchievementApi,
   UserRole,
@@ -19,6 +20,8 @@ export interface LoginUserResponse {
   full_name: string;
   gamer_name: string;
   is_active: boolean;
+  avatarUrl?: string | null;
+  avatarPublicId?: string | null;
   achievements?: UserAchievementApi[];
 }
 
@@ -29,6 +32,7 @@ export interface LoginUserResponse {
 export interface CurrentUserResponse extends UserAccountDto {
   achievements?: UserAchievementApi[];
   friends?: FriendEntityResponse[];
+  selected_achievement?: AchievementPublic | null;
 }
 
 export interface AuthRegisterBody {
@@ -37,7 +41,8 @@ export interface AuthRegisterBody {
   email: string;
   password: string;
   phone?: string;
-  profile_picture_url?: string;
+  avatarUrl?: string | null;
+  avatarPublicId?: string | null;
 }
 
 export interface AuthLoginBody {

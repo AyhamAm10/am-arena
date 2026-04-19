@@ -1,5 +1,5 @@
 import { writingRtl } from "@/src/lib/rtl";
-import { colors } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
 import React, { useEffect, type ComponentType } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
@@ -33,7 +33,7 @@ const springConfig = {
 const BottomTabItem: React.FC<Props> = ({
   label,
   Icon,
-  inactiveIconColor = colors.grey,
+  inactiveIconColor = colors_V2.slate,
   active,
   onPress,
 }) => {
@@ -65,7 +65,7 @@ const BottomTabItem: React.FC<Props> = ({
     color: interpolateColor(
       progress.value,
       [0, 1],
-      [inactiveIconColor, colors.white]
+      [inactiveIconColor, "#FFFFFF"]
     ),
     transform: [
       {
@@ -92,12 +92,15 @@ const BottomTabItem: React.FC<Props> = ({
           pointerEvents="none"
         >
           <View style={[styles.fab, styles.fabActive]}>
-            <Icon size={ACTIVE_ICON_SIZE} color={colors.white} />
+            <Icon size={ACTIVE_ICON_SIZE} color="#FFFFFF" />
           </View>
         </Animated.View>
       </View>
-      <Animated.Text style={[styles.label, labelStyle, writingRtl]}>
-        {label.toUpperCase()}
+      <Animated.Text
+        style={[styles.label, labelStyle, writingRtl]}
+        numberOfLines={1}
+      >
+        {label}
       </Animated.Text>
     </TouchableOpacity>
   );
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   iconSlot: {
-    height: 58,
+    height: 50,
     width: "100%",
     alignItems: "center",
     justifyContent: "flex-end",
@@ -132,15 +135,15 @@ const styles = StyleSheet.create({
     marginTop: -32,
   },
   fab: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: colors.primaryPurple,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: colors_V2.purple,
     alignItems: "center",
     justifyContent: "center",
     ...Platform.select({
       ios: {
-        shadowColor: colors.primaryPurple,
+        shadowColor: colors_V2.purple,
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.55,
         shadowRadius: 12,
@@ -162,10 +165,10 @@ const styles = StyleSheet.create({
     }),
   },
   label: {
-    fontSize: 10,
+    fontSize: 8,
     marginTop: 4,
     fontWeight: "700",
-    letterSpacing: 0.6,
+    letterSpacing: 0.3,
   },
 });
 

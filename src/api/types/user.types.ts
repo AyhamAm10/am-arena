@@ -1,6 +1,7 @@
 /** Mirrors OpenAPI User*, AchievementPublic, TournamentSummary, UserProfileResponse */
 
 import type { ApiPaginationMeta } from "./pubg-tournament.types";
+import type { AchievementLogicType, AchievementType } from "./achievement.types";
 
 export type UserRole = "user" | "admin" | "super_admin";
 
@@ -12,7 +13,8 @@ export interface UserAccountDto {
   id: number;
   full_name: string;
   gamer_name: string;
-  profile_picture_url: string | null;
+  avatarUrl: string | null;
+  avatarPublicId?: string | null;
   email: string;
   phone: string;
   role: UserRole;
@@ -27,7 +29,8 @@ export interface UserPublicSummary {
   id: number;
   full_name: string;
   gamer_name: string;
-  profile_picture_url: string | null;
+  avatarUrl: string | null;
+  avatarPublicId?: string | null;
   xp_points: number;
   coins: number | string;
   role: UserRole;
@@ -44,6 +47,13 @@ export interface AchievementPublic {
   color_theme: string | null;
   icon_url: string;
   xp_reward: number;
+  type: AchievementType;
+  logic_type: AchievementLogicType;
+  target: number | null;
+  current?: number;
+  percentage?: number;
+  is_obtained?: boolean;
+  displayed?: boolean;
 }
 
 /**
@@ -84,13 +94,16 @@ export interface UserProfilePublic {
   id: number;
   full_name: string;
   gamer_name: string;
-  profile_picture_url: string | null;
+  avatarUrl: string | null;
+  avatarPublicId?: string | null;
   xp_points: number;
   coins: number | string;
   role: UserRole;
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  selected_achievement?: AchievementPublic | null;
+  friend_status?: "accepted" | "pending" | "blocked" | null;
 }
 
 export interface TournamentHistoryItem {
@@ -107,6 +120,10 @@ export interface TournamentHistoryItem {
 
 export interface UserProfileResponse {
   user: UserProfilePublic;
+  stats?: {
+    titles_count: number;
+    tournaments_participated_count: number;
+  };
   achievements: UserAchievementEntry[];
   won_tournaments: TournamentSummary[];
   tournament_history?: TournamentHistoryItem[];
@@ -129,22 +146,18 @@ export interface GetSearchUsersQuery {
  * RN multipart part for `profile_picture` (e.g. `FormData.append('profile_picture', { uri, name, type })`).
  * Same pattern as registration; field name matches backend multer.
  */
-export type ProfilePictureFormPart = {
-  uri: string;
-  name: string;
-  type: string;
+export type AvatarFields = {
+  avatarUrl: string | null;
+  avatarPublicId: string | null;
 };
 
-/**
- * Fields for PATCH /user/profile (multipart). Append strings and optional `profile_picture` to FormData.
- */
-export type UpdateProfileFormFields = Partial<{
+export type UpdateProfileBody = Partial<{
   full_name: string;
   gamer_name: string;
   email: string;
   phone: string;
-  profile_picture: ProfilePictureFormPart;
-}>;
+}> &
+  Partial<AvatarFields>;
 
 export type PaginatedBestUsers = {
   data: UserPublicSummary[];

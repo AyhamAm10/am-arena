@@ -5,6 +5,7 @@ import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
+import { navigateFromNotificationPayload } from "./notification-navigation";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -21,34 +22,7 @@ function navigateFromPushData(
   data: Record<string, unknown> | undefined
 ) {
   if (!data || typeof data !== "object") return;
-  const t = data.type;
-  if (t === "CHAT_MESSAGE") {
-    const chatId = data.chatId;
-    if (typeof chatId === "number" || typeof chatId === "string") {
-      router.push({
-        pathname: "/channel/[id]",
-        params: { id: String(chatId), title: String(data.title ?? "") },
-      } as never);
-    }
-    return;
-  }
-  if (t === "TOURNAMENT_CREATED") {
-    const id = data.tournamentId;
-    if (typeof id === "number" || typeof id === "string") {
-      router.push(`/tournament/${id}` as never);
-    }
-    return;
-  }
-  if (t === "ACHIEVEMENT_UNLOCKED") {
-    router.push("/profile/achievements" as never);
-    return;
-  }
-  if (t === "MANUAL") {
-    const route = typeof data.route === "string" ? data.route.trim() : "";
-    if (route.startsWith("/") && !route.includes("..") && !route.startsWith("//")) {
-      router.push(route as never);
-    }
-  }
+  navigateFromNotificationPayload(router, String(data.type ?? ""), data);
 }
 
 async function ensureAndroidChannel() {

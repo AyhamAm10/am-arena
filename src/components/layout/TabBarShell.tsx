@@ -5,8 +5,9 @@ import { StyleSheet, View } from "react-native";
 /** Maps visible tab ids to Expo Router paths inside (tabs). */
 const TAB_ROUTES: Record<string, string> = {
   Home: "/",
-  Reels: "/reels",
-  Channels: "/channels",
+  ArenaSpace: "/arena-space",
+  Tournaments: "/tournaments",
+  Achievements: "/achievements",
   Friends: "/friends",
 };
 
@@ -21,12 +22,12 @@ export function getMainTabFromSegments(segments: string[]): string | null {
   for (let i = segments.length - 1; i >= 0; i--) {
     const s = segments[i];
     switch (s) {
+      case "arena-space":
+        return "ArenaSpace";
       case "tournaments":
-        return null;
-      case "reels":
-        return "Reels";
-      case "channels":
-        return "Channels";
+        return "Tournaments";
+      case "achievements":
+        return "Achievements";
       case "friends":
         return "Friends";
       case "index":

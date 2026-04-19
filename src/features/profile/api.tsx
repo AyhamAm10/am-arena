@@ -55,13 +55,13 @@ function Api({ children, variant, userId }: ApiProps) {
 
   const acceptedFriends = useFetchFriendsInfinite({
     status: "accepted",
-    limit: 200,
+    limit: 100,
     enabled: Boolean(currentUserId) && displayVariant === "other" && Boolean(viewedUserId),
   });
   const outgoingPending = useFetchFriendsInfinite({
     status: "pending",
     direction: "outgoing",
-    limit: 200,
+    limit: 100,
     enabled: Boolean(currentUserId) && displayVariant === "other" && Boolean(viewedUserId),
   });
 

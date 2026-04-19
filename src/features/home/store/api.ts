@@ -8,6 +8,8 @@ import { TopPlayerItem } from "@/src/components/home";
 type ApiState = {
     tournaments: PubgGame[] | undefined
     IsLoadingTournaments: boolean
+    superTournaments: PubgGame[] | undefined
+    IsLoadingSuperTournaments: boolean
     bestPlayers: UserPublicSummary[] | undefined
     IsLoadingBestPlayers: boolean
     latestWinners: HeroContent[] | undefined
@@ -16,7 +18,9 @@ type ApiState = {
 
 const store = (): ApiState => ({
     tournaments: undefined,
-    IsLoadingTournaments: false,    
+    IsLoadingTournaments: false,
+    superTournaments: undefined,
+    IsLoadingSuperTournaments: false,
     bestPlayers: undefined,
     IsLoadingBestPlayers: false,
     latestWinners: undefined,

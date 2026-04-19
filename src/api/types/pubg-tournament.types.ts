@@ -1,4 +1,12 @@
+import type { PollResponse } from "./poll.types";
+
 export type PubgGameType = "solo" | "duo" | "squad";
+
+/** Sanitized winner row from list/detail API (no full user object). */
+export interface PubgTournamentWinnerSummary {
+  id: number;
+  gamer_name: string;
+}
 
 export interface Game {
     id: number;
@@ -23,14 +31,20 @@ export interface PubgTournamentDetail {
   start_date?: string | null;
   end_date?: string | null;
   is_active?: boolean;
+  is_super?: boolean;
+  Xp_condition?: number;
+  /** Decoded from super tournament description when listing super tournaments. */
+  min_xp_required?: number;
   game_type?: string;
   game_ref_id?: number;
   created_at?: string;
   updated_at?: string;
   game: Game;
   registration_fields?: RegistrationField[];
-  /** Populated on list endpoint: current registration count. */
   registered_count?: number;
+  /** Present on inactive tournament list items when API loads winners relation. */
+  winners?: PubgTournamentWinnerSummary[];
+  polls?: PollResponse[];
 }
 
 /** @deprecated Use PubgTournamentDetail — kept for gradual migration */
@@ -68,6 +82,7 @@ export interface GetPubgTournamentsQuery {
     page?: number;
     limit?: number;
     is_active?: boolean;
+    is_super?: boolean;
 }
 
 export interface ApiPaginationMeta {

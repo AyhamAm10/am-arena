@@ -16,7 +16,7 @@ function mapFriendRecordToOption(record: FriendEntityResponse): FriendOption | n
   const nestedName = friendUser?.gamer_name ?? userUser?.gamer_name ?? "";
   const nestedId = friendUser?.id ?? userUser?.id;
   const avatar =
-    friendUser?.profile_picture_url ?? userUser?.profile_picture_url ?? undefined;
+    friendUser?.avatarUrl ?? userUser?.avatarUrl ?? undefined;
 
   const id = nestedId ?? record.friend_user_id ?? record.user_id;
   const name = nestedName;

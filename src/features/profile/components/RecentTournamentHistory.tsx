@@ -1,24 +1,19 @@
 import type { TournamentHistoryItem } from "@/src/api/types/user.types";
 import { TourIcon } from "@/src/components/icons/figma/TourIcon";
-import { colors } from "@/src/theme/colors";
+import { flexRowRtl, textRtl, writingRtl } from "@/src/lib/rtl";
+import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Svg, { Circle } from "react-native-svg";
 
 type Props = {
   items: TournamentHistoryItem[];
+  isOwnProfile: boolean;
 };
 
 const ACCENT_COLORS: Record<TournamentHistoryItem["result"], string> = {
-  won: "#22C55E",
-  lost: "#F59E0B",
-  free: colors.primaryPurple,
-};
-
-const AMOUNT_COLORS: Record<TournamentHistoryItem["result"], string> = {
-  won: "#22C55E",
-  lost: "#22C55E",
-  free: colors.grey,
+  won: colors_V2.skyBlue,
+  lost: colors_V2.gold,
+  free: colors_V2.lavenderLight,
 };
 
 function formatRelativeTime(iso: string): string {
@@ -47,78 +42,47 @@ function formatAmount(item: TournamentHistoryItem): string {
   return `-$${item.amount.toFixed(2)}`;
 }
 
-const ARC_BOX = 58;
-const ARC_STROKE = 3;
-const ARC_RADIUS = (ARC_BOX - ARC_STROKE) / 2;
-const ARC_CIRCUMFERENCE = 2 * Math.PI * ARC_RADIUS;
-const ARC_DEGREES = 280;
-const ARC_DASH = ARC_CIRCUMFERENCE * (ARC_DEGREES / 360);
-const ARC_GAP = ARC_CIRCUMFERENCE - ARC_DASH;
-const ARC_ROTATION = 90 + (360 - ARC_DEGREES) / 2;
-
-const ICON_SIZE = 42;
-
-function ArcRing({ color }: { color: string }) {
-  const center = ARC_BOX / 2;
-  return (
-    <Svg
-      width={ARC_BOX}
-      height={ARC_BOX}
-      style={StyleSheet.absoluteFill}
-    >
-      <Circle
-        cx={center}
-        cy={center}
-        r={ARC_RADIUS}
-        stroke={color}
-        strokeWidth={ARC_STROKE}
-        strokeLinecap="round"
-        strokeDasharray={`${ARC_DASH} ${ARC_GAP}`}
-        rotation={ARC_ROTATION}
-        origin={`${center}, ${center}`}
-        fill="none"
-      />
-    </Svg>
-  );
-}
-
-export function RecentTournamentHistory({ items }: Props) {
+export function RecentTournamentHistory({ items, isOwnProfile }: Props) {
   if (items.length === 0) return null;
 
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>سجل البطولات الأخيرة</Text>
+      <View style={[styles.sectionHeader, flexRowRtl]}>
+        <Text style={[styles.sectionTitle, writingRtl]}>
+          {isOwnProfile ? "إدارة بطولاتي" : "آخر البطولات المشاركة"}
+        </Text>
+        {isOwnProfile ? (
+          <Text style={[styles.sectionCaption, writingRtl]}>إدارة الظهور</Text>
+        ) : null}
+      </View>
       {items.map((item) => {
         const accent = ACCENT_COLORS[item.result];
-        const amountColor = AMOUNT_COLORS[item.result];
         return (
           <View
             key={item.tournament_id}
             style={[styles.card, { borderStartColor: accent }]}
           >
-            <View style={styles.arcOuter}>
-              <ArcRing color={accent} />
-              <View style={styles.iconCircle}>
-                <TourIcon size={20} color={accent} />
-              </View>
+            <View style={[styles.iconWrap, { backgroundColor: `${accent}18` }]}>
+              <TourIcon size={18} color={accent} />
             </View>
-
             <View style={styles.textCol}>
-              <Text style={styles.title} numberOfLines={1}>
+              <Text style={[styles.title, textRtl]} numberOfLines={1}>
                 {item.title}
               </Text>
-              <Text style={styles.subtitle}>
-                {formatRelativeTime(item.registered_at)}
+              <Text style={[styles.subtitle, writingRtl]}>
+                {item.result === "won"
+                  ? "فوز"
+                  : item.result === "lost"
+                    ? "مشاركة"
+                    : "مجانية"}{" "}
+                • {formatRelativeTime(item.registered_at)}
               </Text>
             </View>
-
-            <View style={styles.rightCol}>
-              <Text style={[styles.amount, { color: amountColor }]}>
-                {formatAmount(item)}
+            <View style={styles.metaCol}>
+              <Text style={[styles.metaTop, textRtl]}>
+                {item.xp_reward > 0 ? `+${item.xp_reward} XP` : formatAmount(item)}
               </Text>
-              {item.xp_reward > 0 ? (
-                <Text style={styles.xp}>+{item.xp_reward} نقطة خبرة</Text>
-              ) : null}
+              <View style={styles.metaDot} />
             </View>
           </View>
         );
@@ -129,65 +93,68 @@ export function RecentTournamentHistory({ items }: Props) {
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 24,
+    marginBottom: 28,
+  },
+  sectionHeader: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 14,
   },
   sectionTitle: {
-    color: colors.white,
-    fontSize: 20,
+    color: colors_V2.lilac,
+    fontSize: 18,
     fontWeight: "700",
-    marginBottom: 16,
+  },
+  sectionCaption: {
+    color: colors_V2.slate,
+    fontSize: 11,
+    fontWeight: "600",
   },
   card: {
-    flexDirection: "row",
+    ...flexRowRtl,
     alignItems: "center",
-    backgroundColor: colors.darkBackground2,
-    borderRadius: 50,
-    paddingVertical: 10,
-    paddingRight: 18,
-    paddingLeft: 6,
+    backgroundColor: colors_V2.card,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     marginBottom: 12,
-    borderStartWidth: 3.5,
+    borderStartWidth: 3,
   },
-  arcOuter: {
-    width: ARC_BOX,
-    height: ARC_BOX,
+  iconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 10,
-  },
-  iconCircle: {
-    width: ICON_SIZE,
-    height: ICON_SIZE,
-    borderRadius: ICON_SIZE / 2,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    alignItems: "center",
-    justifyContent: "center",
+    marginStart: 10,
   },
   textCol: {
     flex: 1,
-    marginRight: 8,
   },
   title: {
-    color: colors.white,
-    fontSize: 16,
+    color: colors_V2.lilac,
+    fontSize: 15,
     fontWeight: "700",
   },
   subtitle: {
-    color: colors.grey,
+    color: colors_V2.slate,
     fontSize: 12,
     marginTop: 3,
   },
-  rightCol: {
-    alignItems: "flex-end",
+  metaCol: {
+    alignItems: "center",
+    gap: 8,
+    marginStart: 12,
   },
-  amount: {
-    fontSize: 16,
-    fontWeight: "700",
-  },
-  xp: {
-    color: colors.gold,
-    fontSize: 12,
+  metaTop: {
+    color: colors_V2.dustyLavender,
+    fontSize: 11,
     fontWeight: "600",
-    marginTop: 2,
+  },
+  metaDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "rgba(255,255,255,0.8)",
   },
 });

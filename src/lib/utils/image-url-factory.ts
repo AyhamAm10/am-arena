@@ -34,7 +34,10 @@ export function formatAchievementIconUrl(path: string): string {
 export function formatImageUrl(path: string): string {
   if (!path) return "";
 
-  const normalized = path.replace(/\\/g, "/");
+  const trimmed = path.trim();
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+
+  const normalized = trimmed.replace(/\\/g, "/");
 
   let fileName = normalized.replace(/^public\/uploads\//, "");
   // Backend `imageUrl()` stores paths like `image/123-photo.png` — avoid `/image/image/...`

@@ -1,6 +1,6 @@
 import {
+  EliteSquad,
   LatestWinner,
-  SuperSub,
   TopPlayersSection,
   UpcomingTournaments,
 } from "@/src/components/home";
@@ -10,7 +10,7 @@ import { UserPublicSummary } from "@/src/api/types/user.types";
 import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
 import { formatTournamentTimeRemaining } from "@/src/lib/utils/tournament-time-remaining";
 import { tierLabelFromXp } from "@/src/lib/utils/tier-from-xp";
-import { colors } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -26,6 +26,8 @@ export function Ui() {
   const router = useRouter();
   const tournaments = useMirror("tournaments");
   const isLoading = useMirror("IsLoadingTournaments");
+  const superTournaments = useMirror("superTournaments");
+  const isLoadingSuper = useMirror("IsLoadingSuperTournaments");
   const bestPlayers = useMirror("bestPlayers");
   const isLoadingBestPlayers = useMirror("IsLoadingBestPlayers");
   const latestWinners = useMirror("latestWinners");
@@ -33,13 +35,23 @@ export function Ui() {
   return (
     <AppLayout>
       <View style={styles.content}>
+        {/* Elite Squad - Super Tournaments */}
         <View style={styles.section}>
-          <SuperSub
-            title="تحدي يومي"
-            description="فوز بمباراتين: +500 نقطة خبرة"
-            progress={0.4}
-          />
+          {isLoadingSuper && !superTournaments?.length ? (
+            <View style={styles.loaderSection}>
+              <ActivityIndicator size="large" color={colors_V2.purple} />
+            </View>
+          ) : (
+            <EliteSquad
+              superTournaments={superTournaments ?? []}
+              onJoinPress={(id) => {
+                router.push(`/tournament/${id}/details` as never);
+              }}
+            />
+          )}
         </View>
+
+        {/* Season Champion */}
         <View style={styles.section}>
           <LatestWinner
             teamName={latestWinners?.[0]?.title ?? ""}
@@ -47,9 +59,11 @@ export function Ui() {
             imageSource={latestWinners?.[0]?.image || undefined}
           />
         </View>
+
+        {/* Live Brackets */}
         {isLoading && !tournaments?.length ? (
           <View style={styles.loaderSection}>
-            <ActivityIndicator size="large" color={colors.primaryPurple} />
+            <ActivityIndicator size="large" color={colors_V2.purple} />
           </View>
         ) : (
           <UpcomingTournaments
@@ -63,16 +77,18 @@ export function Ui() {
                 timeRemaining: formatTournamentTimeRemaining(game.start_date),
                 imageSource: game.game.image,
                 onJoinPress: () => {
-                  router.push(`/tournament/${game.id}` as never);
+                  router.push(`/tournament/${game.id}/details` as never);
                 },
               })) ?? []
             }
             onViewAll={() => router.push("/tournaments" as never)}
           />
         )}
+
+        {/* Hall of Fame */}
         {isLoadingBestPlayers && !bestPlayers?.length ? (
           <View style={styles.loaderSection}>
-            <ActivityIndicator color={colors.primaryPurple} />
+            <ActivityIndicator color={colors_V2.purple} />
           </View>
         ) : (
           <TopPlayersSection
@@ -83,7 +99,7 @@ export function Ui() {
                 return {
                   id: player.id.toString(),
                   rank: index + 1,
-                  avatarSource: player.profile_picture_url || undefined,
+                  avatarSource: player.avatarUrl || undefined,
                   name: player.gamer_name,
                   tier: tierLabelFromXp(xp),
                   xp,
@@ -91,7 +107,6 @@ export function Ui() {
                 };
               }) ?? []
             }
-            seasonLabel="الموسم 12"
           />
         )}
       </View>

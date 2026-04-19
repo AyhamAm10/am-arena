@@ -3,12 +3,13 @@ import { parseApiResponse } from "../axios/apiResponseParser";
 import { ApiResponse } from "../types/api-response";
 import type {
   AuthLoginBody,
+  AuthRegisterBody,
   AuthTokensResponse,
   CurrentUserResponse,
 } from "../types/auth.types";
 
 export async function register(
-  body: FormData
+  body: AuthRegisterBody
 ): Promise<AuthTokensResponse> {
   const res = await axiosInstance.post<ApiResponse<AuthTokensResponse>>(
     "/auth/register",

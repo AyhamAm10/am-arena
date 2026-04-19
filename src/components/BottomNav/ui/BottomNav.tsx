@@ -1,8 +1,9 @@
-import { ChannelNavIcon } from "@/src/components/icons/nav/ChannelNavIcon";
+import { AchievementsNavIcon } from "@/src/components/icons/nav/AchievementsNavIcon";
+import { ArenaSpaceNavIcon } from "@/src/components/icons/nav/ArenaSpaceNavIcon";
 import { FriendsNavIcon } from "@/src/components/icons/nav/FriendsNavIcon";
-import { HomeNavIcon } from "@/src/components/icons/nav/HomeNavIcon";
-import { ReelsNavIcon } from "@/src/components/icons/nav/ReelsNavIcon";
-import { colors } from "@/src/theme/colors";
+import { HomeNavIconV2 } from "@/src/components/icons/nav/HomeNavIconV2";
+import { TournamentsNavIcon } from "@/src/components/icons/nav/TournamentsNavIcon";
+import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,29 +26,36 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
         <View style={styles.row}>
           <BottomTabItem
             label="الرئيسية"
-            Icon={HomeNavIcon}
-            inactiveIconColor={colors.grey}
+            Icon={HomeNavIconV2}
+            inactiveIconColor={colors_V2.skyBlue}
             active={activeTab === "Home"}
             onPress={() => onTabPress("Home")}
           />
           <BottomTabItem
-            label="الريلز"
-            Icon={ReelsNavIcon}
-            inactiveIconColor={colors.neonBlue}
-            active={activeTab === "Reels"}
-            onPress={() => onTabPress("Reels")}
+            label="الساحة"
+            Icon={ArenaSpaceNavIcon}
+            inactiveIconColor={colors_V2.slate}
+            active={activeTab === "ArenaSpace"}
+            onPress={() => onTabPress("ArenaSpace")}
           />
           <BottomTabItem
-            label="القنوات"
-            Icon={ChannelNavIcon}
-            inactiveIconColor={colors.grey}
-            active={activeTab === "Channels"}
-            onPress={() => onTabPress("Channels")}
+            label="البطولات"
+            Icon={TournamentsNavIcon}
+            inactiveIconColor={colors_V2.slate}
+            active={activeTab === "Tournaments"}
+            onPress={() => onTabPress("Tournaments")}
+          />
+          <BottomTabItem
+            label="الإنجازات"
+            Icon={AchievementsNavIcon}
+            inactiveIconColor={colors_V2.slate}
+            active={activeTab === "Achievements"}
+            onPress={() => onTabPress("Achievements")}
           />
           <BottomTabItem
             label="الأصدقاء"
             Icon={FriendsNavIcon}
-            inactiveIconColor={colors.grey}
+            inactiveIconColor={colors_V2.slate}
             active={activeTab === "Friends"}
             onPress={() => onTabPress("Friends")}
           />
@@ -60,15 +68,15 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
 const styles = StyleSheet.create({
   outer: {
     width: "100%",
-    backgroundColor: colors.darkBackground1,
+    backgroundColor: colors_V2.background,
   },
   bar: {
     width: "100%",
-    backgroundColor: colors.darkBackground1,
+    backgroundColor: colors_V2.background,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderTopWidth: 1,
-    borderTopColor: colors.darkBackground2,
+    borderTopColor: colors_V2.card,
     paddingTop: 10,
     overflow: "visible",
     ...Platform.select({

@@ -11,3 +11,15 @@ export function computeLevelAndProgress(xp: number): {
   const progress = (safe % 500) / 500;
   return { level: Math.min(level, 999), progress };
 }
+
+/**
+ * Minimum player level implied by a total-XP gate (e.g. tournament `Xp_condition`).
+ * Uses the same formula as {@link computeLevelAndProgress}: level = floor(xp/500)+1 (capped).
+ * Returns 0 when xp ≤ 0 (no gate / not set).
+ */
+export function requiredLevelFromXpThreshold(xp: number): number {
+  const safe = Number.isFinite(xp) ? Math.max(0, Math.trunc(xp)) : 0;
+  if (safe <= 0) return 0;
+  const { level } = computeLevelAndProgress(safe);
+  return level;
+}

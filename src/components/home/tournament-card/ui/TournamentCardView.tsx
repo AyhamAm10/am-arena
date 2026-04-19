@@ -1,14 +1,15 @@
 import { HourIcon } from "@/src/components/icons/figma/HourIcon";
-import { flexRowRtl, rtlMirrorViewStyle, textRtl } from "@/src/lib/rtl";
+import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
-import { colors } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
+  ImageBackground,
 } from "react-native";
 import type { TournamentCardState } from "../state/init";
 
@@ -19,9 +20,9 @@ type Props = {
 function formatPrize(prize: string): string {
   const n = Number(prize);
   if (Number.isFinite(n)) {
-    return `${n.toLocaleString("ar")} $`;
+    return `$${n.toLocaleString()}`;
   }
-  return prize.startsWith("$") ? prize : `${prize} $`;
+  return prize.startsWith("$") ? prize : `$${prize}`;
 }
 
 export default function TournamentCardView({ card }: Props) {
@@ -37,113 +38,170 @@ export default function TournamentCardView({ card }: Props) {
     onJoinPress,
   } = card;
 
+  const progressPct = participantsMax > 0
+    ? Math.min(1, participantsCurrent / participantsMax)
+    : 0;
+
   return (
-    <View style={styles.container}>
-      <View style={styles.imageWrap}>
-        {imageSource ? (
-          <Image
-            source={{ uri: formatImageUrl(imageSource) }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ) : (
-          <View style={styles.imagePlaceholder} />
-        )}
-      </View>
-      <View style={styles.body}>
-        <View style={[styles.titleRow, flexRowRtl]}>
-          <Text style={[styles.title, textRtl]} numberOfLines={1}>
-            {title}
-          </Text>
-          <Text style={[styles.prize, textRtl]}>{formatPrize(prize)}</Text>
-        </View>
-        <View style={[styles.meta, flexRowRtl]}>
-          <Text style={[styles.metaText, textRtl]}>
-            {participantsCurrent}/{participantsMax}
-          </Text>
-          <View style={[styles.metaItem, flexRowRtl]}>
-            <View style={rtlMirrorViewStyle}>
-              <HourIcon width={14} height={15} color={colors.grey} />
-            </View>
-            <Text style={[styles.metaText, textRtl]}>{timeRemaining}</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={onJoinPress}
-          activeOpacity={0.8}
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onJoinPress}
+      activeOpacity={0.85}
+    >
+      {imageSource ? (
+        <ImageBackground
+          source={{ uri: formatImageUrl(imageSource) }}
+          style={styles.imageWrap}
+          imageStyle={styles.image}
+          resizeMode="cover"
         >
-          <Text style={[styles.buttonText, textRtl]}>انضم الآن</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <LinearGradient
+            colors={["rgba(26,14,37,0.05)", "rgba(26,14,37,0.62)", "rgba(26,14,37,0.96)"]}
+            style={styles.overlay}
+          >
+            <View style={styles.badgesRow}>
+              <View style={styles.typeBadge}>
+                <Text style={styles.typeBadgeText}>SQUAD</Text>
+              </View>
+              <View style={styles.liveBadge}>
+                <Text style={styles.liveBadgeText}>
+                  {timeRemaining ? timeRemaining : "قريباً"}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.body}>
+              <Text style={[styles.title, textRtl]} numberOfLines={2}>
+                {title}
+              </Text>
+
+              <View style={styles.progressSection}>
+                <View style={[styles.progressHeader, flexRowRtl]}>
+                  <Text style={[styles.progressLabel, textRtl]}>REGISTRATIONS</Text>
+                  <Text style={styles.progressCount}>
+                    {participantsCurrent}/{participantsMax}
+                  </Text>
+                </View>
+                <View style={styles.progressTrack}>
+                  <View
+                    style={[styles.progressFill, { width: `${Math.max(8, progressPct * 100)}%` }]}
+                  />
+                </View>
+              </View>
+            </View>
+          </LinearGradient>
+        </ImageBackground>
+      ) : (
+        <LinearGradient
+          colors={[colors_V2.card, colors_V2.background]}
+          style={styles.imageWrap}
+        />
+      )}
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: 220,
-    backgroundColor: colors.darkBackground2,
-    borderRadius: 12,
+    width: 248,
+    backgroundColor: colors_V2.card,
+    borderRadius: 18,
     overflow: "hidden",
-    borderWidth: 1,
-    borderColor: colors.darkBackground1,
   },
   imageWrap: {
-    height: 100,
-    backgroundColor: colors.darkBackground1,
+    minHeight: 188,
+    backgroundColor: colors_V2.background,
+    position: "relative",
   },
   image: {
-    width: "100%",
-    height: "100%",
+    borderRadius: 18,
   },
-  imagePlaceholder: {
+  badgesRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 6,
+  },
+  overlay: {
     flex: 1,
-    backgroundColor: colors.darkBackground1,
+    justifyContent: "space-between",
+    padding: 14,
+  },
+  liveBadge: {
+    backgroundColor: colors_V2.purple,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  liveBadgeText: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: colors_V2.lilac,
+    letterSpacing: 0.4,
+  },
+  typeBadge: {
+    backgroundColor: colors_V2.skyBlue,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  typeBadgeText: {
+    fontSize: 9,
+    fontWeight: "900",
+    color: colors_V2.background,
+    letterSpacing: 0.5,
   },
   body: {
-    padding: 12,
-  },
-  titleRow: {
-    alignItems: "flex-start",
-    justifyContent: "space-between",
-    gap: 8,
-    marginBottom: 8,
+    gap: 10,
+    justifyContent: "flex-end",
   },
   title: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: "700",
-    color: colors.white,
+    fontSize: 18,
+    fontWeight: "900",
+    color: colors_V2.lilac,
+    lineHeight: 24,
   },
-  prize: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: colors.neonBlue,
+  progressSection: {
+    gap: 6,
+  },
+  progressHeader: {
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  progressLabel: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: colors_V2.skyBlue,
+    letterSpacing: 0.9,
+  },
+  progressCount: {
+    fontSize: 13,
+    fontWeight: "900",
+    color: colors_V2.lilac,
+  },
+  progressTrack: {
+    height: 5,
+    backgroundColor: colors_V2.background,
+    borderRadius: 999,
+    overflow: "hidden",
+  },
+  progressFill: {
+    height: "100%",
+    backgroundColor: colors_V2.gradientEnd,
+    borderRadius: 999,
   },
   meta: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 12,
+    gap: 6,
   },
   metaItem: {
     alignItems: "center",
     gap: 4,
   },
   metaText: {
-    fontSize: 12,
-    color: colors.grey,
+    fontSize: 11,
+    color: colors_V2.slate,
     fontWeight: "600",
-  },
-  button: {
-    backgroundColor: colors.primaryPurple,
-    paddingVertical: 10,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: colors.white,
   },
 });

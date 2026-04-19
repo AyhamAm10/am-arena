@@ -1,4 +1,4 @@
-import { colors } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { writingRtl } from "@/src/lib/rtl";
 import { useMirror } from "./store";
 import { AchievementBadgesSection } from "./components/AchievementBadgesSection";
 import { AddFriendButton } from "./components/AddFriendButton";
@@ -34,6 +35,11 @@ export function Ui() {
   const logout = useMirror("logout");
   const isLoggingOut = useMirror("isLoggingOut");
 
+  const onBack = () => {
+    if (router.canGoBack()) router.back();
+    else router.replace("/");
+  };
+
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView
@@ -44,19 +50,22 @@ export function Ui() {
         <ProfileHeader
           title={headerTitle}
           showBack={showBack}
-          onBack={() => router.back()}
+          onBack={onBack}
           onEditPress={showEditButton ? () => router.push("/profile/edit") : undefined}
           onLogoutPress={showLogoutButton ? () => void logout() : undefined}
+          onViewAllAchievementsPress={
+            showViewAll ? () => router.push("/profile/achievements") : undefined
+          }
           isLoggingOut={showLogoutButton ? isLoggingOut : undefined}
         />
 
         {isLoadingProfile ? (
           <View style={styles.centered}>
-            <ActivityIndicator size="large" color={colors.primaryPurple} />
+            <ActivityIndicator size="large" color={colors_V2.purple} />
           </View>
         ) : isProfileError || !screenModel ? (
           <View style={styles.centered}>
-            <Text style={styles.errorText}>تعذّر تحميل الملف الشخصي.</Text>
+            <Text style={[styles.errorText, writingRtl]}>تعذّر تحميل الملف الشخصي.</Text>
           </View>
         ) : (
           <>
@@ -65,7 +74,11 @@ export function Ui() {
               fullName={screenModel.fullName}
               profilePictureUrl={screenModel.profilePictureUrl}
               xpPoints={screenModel.xpPoints}
-              rankLabel={screenModel.rankLabel}
+              level={screenModel.level}
+              selectedTitle={screenModel.selectedTitle}
+              selectedAchievement={screenModel.selectedAchievement}
+              titlesCount={screenModel.titlesCount}
+              tournamentsParticipatedCount={screenModel.tournamentsParticipatedCount}
             />
 
             {showFriendButton ? (
@@ -77,13 +90,17 @@ export function Ui() {
             ) : null}
 
             <AchievementBadgesSection
-              entries={screenModel.achievements}
+              entries={screenModel.earnedTitles}
               showViewAll={showViewAll}
             />
             <RecentTournamentHistory
-              items={screenModel.tournamentHistory}
+              items={screenModel.participatedTournaments}
+              isOwnProfile={!showFriendButton}
             />
-            <TournamentsWonSection tournaments={screenModel.wonTournaments} />
+            <TournamentsWonSection
+              tournaments={screenModel.wonTournaments}
+              isOwnProfile={!showFriendButton}
+            />
           </>
         )}
       </ScrollView>
@@ -94,15 +111,15 @@ export function Ui() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: colors.darkBackground1,
+    backgroundColor: colors_V2.background,
   },
   scroll: {
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 18,
     paddingBottom: 32,
-    paddingTop: 4,
+    paddingTop: 8,
   },
   centered: {
     minHeight: 200,
@@ -110,7 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   errorText: {
-    color: colors.grey,
+    color: colors_V2.slate,
     fontSize: 16,
+    textAlign: "center",
   },
 });

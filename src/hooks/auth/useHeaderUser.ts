@@ -13,6 +13,10 @@ export type HeaderUserState = {
   levelProgress: number;
   coins: number;
   avatarUri: string | null;
+  achievementColor: string | null;
+  achievementIconUrl: string | null;
+  /** `selected_achievement.name` from GET /auth/current-user (no hardcoded rank label). */
+  achievementName: string | null;
 };
 
 /**
@@ -35,6 +39,9 @@ export function useHeaderUser(): HeaderUserState {
         levelProgress: 0,
         coins: 0,
         avatarUri: null,
+        achievementColor: null,
+        achievementIconUrl: null,
+        achievementName: null,
       };
     }
 
@@ -43,9 +50,15 @@ export function useHeaderUser(): HeaderUserState {
     const coinsRaw = user?.coins;
     const coins =
       typeof coinsRaw === "string" ? Number(coinsRaw) || 0 : Number(coinsRaw ?? 0);
-    const avatarUri = user?.profile_picture_url
-      ? formatImageUrl(user.profile_picture_url)
+    const avatarUri = user?.avatarUrl
+      ? formatImageUrl(user.avatarUrl)
       : null;
+    const achievementColor = user?.selected_achievement?.color_theme ?? null;
+    const achievementIconUrl = user?.selected_achievement?.icon_url
+      ? formatImageUrl(user.selected_achievement.icon_url)
+      : null;
+    const rawName = user?.selected_achievement?.name?.trim();
+    const achievementName = rawName && rawName.length > 0 ? rawName : null;
 
     return {
       isLoggedIn,
@@ -55,6 +68,9 @@ export function useHeaderUser(): HeaderUserState {
       levelProgress: progress,
       coins,
       avatarUri,
+      achievementColor,
+      achievementIconUrl,
+      achievementName,
     };
   }, [isLoggedIn, user, query.isLoading]);
 }

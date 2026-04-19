@@ -13,6 +13,13 @@ function Api({ children }: PropsWithChildren) {
         is_active: true,
     });
 
+    const { data: superData, isLoading: isLoadingSuper, dataUpdatedAt: dataUpdatedAtSuper, isFetching: isFetchingSuper } = useGetPubgTournaments({
+        page: 1,
+        limit: 10,
+        is_active: true,
+        is_super: true,
+    });
+
     const { data: bestPlayers, isLoading: isLoadingBestPlayers, dataUpdatedAt: dataUpdatedAtBestPlayers, isFetching: isFetchingBestPlayers } = useFetchBestPlayers({
         page: 1,
         limit: 10,
@@ -27,6 +34,8 @@ function Api({ children }: PropsWithChildren) {
     useMirrorRegistry("IsLoadingLatestWinners", isLoadingLatestWinners, isFetchingLatestWinners);
     useMirrorRegistry("tournaments", data , dataUpdatedAt);
     useMirrorRegistry("IsLoadingTournaments", isLoading, isFetching);
+    useMirrorRegistry("superTournaments", superData, dataUpdatedAtSuper);
+    useMirrorRegistry("IsLoadingSuperTournaments", isLoadingSuper, isFetchingSuper);
     useMirrorRegistry("bestPlayers", bestPlayers?.data, dataUpdatedAtBestPlayers);
     useMirrorRegistry("IsLoadingBestPlayers", isLoadingBestPlayers, isFetchingBestPlayers);
 

@@ -1,0 +1,28 @@
+import React from "react";
+import Svg, { Path } from "react-native-svg";
+import { colors_V2 } from "@/src/theme/colors";
+
+type Props = {
+  size?: number;
+  width?: number;
+  height?: number;
+  color?: string;
+};
+
+export function ArenaSpaceNavIcon({
+  size = 18,
+  width: w,
+  height: h,
+  color = colors_V2.slate,
+}: Props) {
+  const width = w ?? size;
+  const height = h ?? size;
+  return (
+    <Svg width={width} height={height} viewBox="0 0 18 18" fill="none">
+      <Path
+        d="M0 7.7745V-3.8147e-05H7.77454V7.7745H0ZM0 17.4927V9.71814H7.77454V17.4927H0ZM9.71817 7.7745V-3.8147e-05H17.4927V7.7745H9.71817ZM9.71817 17.4927V9.71814H17.4927V17.4927H9.71817ZM1.94363 5.83087H5.8309V1.9436H1.94363V5.83087ZM11.6618 5.83087H15.5491V1.9436H11.6618V5.83087ZM11.6618 15.549H15.5491V11.6618H11.6618V15.549ZM1.94363 15.549H5.8309V11.6618H1.94363V15.549Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}

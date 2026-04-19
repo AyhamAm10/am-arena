@@ -1,7 +1,7 @@
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 import type { UserPublicSummary } from "@/src/api/types/user.types";
 import { AppLayout } from "@/src/components/layout";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import {
   ActivityIndicator,
@@ -19,6 +19,7 @@ import { friendsColors, styles } from "./styles";
 import { requesterIdFromIncomingRow } from "./utils";
 
 export function Ui() {
+  const params = useLocalSearchParams<{ tab?: string; focusUserId?: string }>();
   const router = useRouter();
   const activeTab = useMirror("activeTab");
   const setActiveTab = useMirror("setActiveTab");
@@ -58,12 +59,35 @@ export function Ui() {
   const pendingOutgoingUserIds = useMirror("pendingOutgoingUserIds");
   const suggestedUsers = useMirror("suggestedUsers");
   const isLoadingSuggested = useMirror("isLoadingSuggested");
+  const focusUserId = Number(params.focusUserId ?? 0);
+
+  React.useEffect(() => {
+    const tab = (params.tab || "").toLowerCase();
+    if (tab === "requests" && activeTab !== "requests") {
+      setActiveTab("requests");
+      return;
+    }
+    if (tab === "public" && activeTab !== "public") {
+      setActiveTab("public");
+      return;
+    }
+    if (tab === "friends" && activeTab !== "friends") {
+      setActiveTab("friends");
+    }
+  }, [activeTab, params.tab, setActiveTab]);
 
   const listData = useMemo((): (FriendListItem | UserPublicSummary)[] => {
     if (activeTab === "friends") return friendsListItems;
-    if (activeTab === "requests") return requestsListItems;
+    if (activeTab === "requests") {
+      if (!Number.isFinite(focusUserId) || focusUserId <= 0) return requestsListItems;
+      return [...requestsListItems].sort((a, b) => {
+        if (a.user.id === focusUserId) return -1;
+        if (b.user.id === focusUserId) return 1;
+        return 0;
+      });
+    }
     return publicListItems;
-  }, [activeTab, friendsListItems, requestsListItems, publicListItems]);
+  }, [activeTab, focusUserId, friendsListItems, requestsListItems, publicListItems]);
 
   const sectionCount =
     activeTab === "friends"
@@ -120,8 +144,8 @@ export function Ui() {
       if (activeTab === "public") {
         const u = item as UserPublicSummary;
         const online = u.is_active;
-        const uri = u.profile_picture_url
-          ? formatImageUrl(u.profile_picture_url)
+        const uri = u.avatarUrl
+          ? formatImageUrl(u.avatarUrl)
           : null;
         const busy = busyFriendId === u.id;
         const outgoingPending =
@@ -188,8 +212,8 @@ export function Ui() {
       const fi = item as FriendListItem;
       const u = fi.user;
       const online = u.is_active;
-      const uri = u.profile_picture_url
-        ? formatImageUrl(u.profile_picture_url)
+      const uri = u.avatarUrl
+        ? formatImageUrl(u.avatarUrl)
         : null;
       const busy = busyFriendId === u.id;
 
@@ -394,8 +418,8 @@ export function Ui() {
           </View>
         );
       }
-      const uri = u.profile_picture_url
-        ? formatImageUrl(u.profile_picture_url)
+      const uri = u.avatarUrl
+        ? formatImageUrl(u.avatarUrl)
         : null;
       const busy = busyFriendId === u.id;
       const outgoingPending = pendingOutgoingUserIds.includes(u.id);

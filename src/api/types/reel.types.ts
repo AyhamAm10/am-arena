@@ -15,6 +15,7 @@ export interface GetReelsQuery {
 
 export interface AddCommentBody {
   comment: string;
+  mentioned_user_ids?: number[];
 }
 
 export interface GetCommentsQuery {
@@ -63,4 +64,12 @@ export interface ReelLikeEntity {
   created_at: string;
   reel?: { id: number };
   user?: UserAccountDto | { id: number };
+}
+
+export interface MentionableUser {
+  id: number;
+  gamer_name: string;
+  full_name: string;
+  avatarUrl: string | null;
+  avatarPublicId?: string | null;
 }

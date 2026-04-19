@@ -9,6 +9,7 @@ export type NotificationItemState = {
   read_at: string | null;
   created_at: string;
   onInvalidate?: () => void;
+  markAsRead?: (notificationId: number) => Promise<void>;
 };
 
 type InitState = {

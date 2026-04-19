@@ -13,7 +13,9 @@ export default function TabsLayout() {
           }}
         >
           <Tabs.Screen name="index" />
+          <Tabs.Screen name="arena-space" />
           <Tabs.Screen name="tournaments" />
+          <Tabs.Screen name="achievements" />
           <Tabs.Screen name="reels" />
           <Tabs.Screen name="channels" />
           <Tabs.Screen name="friends" />

@@ -7,6 +7,9 @@ type InitState = {
     level?: number;
     levelProgress?: number;
     coins?: number;
+    achievementColor?: string | null;
+    achievementIconUrl?: string | null;
+    achievementName?: string | null;
 };
 
 const store = (): InitState => ({
@@ -15,6 +18,9 @@ const store = (): InitState => ({
     level: 24,
     levelProgress: 0.75,
     coins: 1450,
+    achievementColor: null,
+    achievementIconUrl: null,
+    achievementName: null,
 });
 
 export { store as InitState };

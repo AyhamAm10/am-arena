@@ -1,5 +1,6 @@
 export { SuperSub } from "./super-sub";
 export { LatestWinner } from "./latest-winner";
+export { EliteSquad } from "./elite-squad";
 export { TournamentCard } from "./tournament-card";
 export { default as UpcomingTournaments } from "./UpcomingTournaments";
 export { TopPlayer } from "./top-player";

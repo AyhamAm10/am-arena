@@ -1,5 +1,5 @@
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
-import { colors } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
 import React, { useMemo } from "react";
 import {
   ScrollView,
@@ -17,7 +17,7 @@ export type TournamentItem = {
   prize: string;
   participantsCurrent: number;
   participantsMax: number;
-  timeRemaining?: string ;
+  timeRemaining?: string;
   imageSource?: TournamentCardState["imageSource"];
   onJoinPress?: () => void;
 };
@@ -54,7 +54,7 @@ const UpcomingTournaments: React.FC<Props> = ({
   return (
     <View style={styles.section}>
       <View style={[styles.header, flexRowRtl]}>
-        <Text style={[styles.title, textRtl]}>البطولات القادمة</Text>
+        <Text style={[styles.title, textRtl]}>المباريات المباشرة</Text>
         <TouchableOpacity onPress={onViewAll} disabled={!onViewAll}>
           <Text style={[styles.viewAll, textRtl]}>عرض الكل</Text>
         </TouchableOpacity>
@@ -84,21 +84,23 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.white,
+    fontSize: 16,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 1,
   },
   viewAll: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.primaryPurple,
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors_V2.lavender,
+    letterSpacing: 0.5,
   },
   scrollContent: {
     gap: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 0,
   },
   cardWrap: {
-    marginEnd: 12,
+    marginEnd: 0,
   },
 });
 

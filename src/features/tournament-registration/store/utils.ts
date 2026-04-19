@@ -2,6 +2,7 @@ import type { FriendOption } from "./api";
 
 type TournamentRegistrationUtils = {
   selectedCountLabel: string;
+  levelGateMessage: string | null;
   canSubmit: boolean;
   onConfirmJoin: () => Promise<void>;
   onFriendsListEndReached: () => void;
@@ -12,6 +13,7 @@ type TournamentRegistrationUtils = {
 
 const store = (): TournamentRegistrationUtils => ({
   selectedCountLabel: "0 SELECTED",
+  levelGateMessage: null,
   canSubmit: false,
   onConfirmJoin: async () => {},
   onFriendsListEndReached: () => {},

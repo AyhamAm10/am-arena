@@ -1,6 +1,8 @@
 import { PropsWithChildren, useMemo, useRef } from 'react'
 import * as ImagePicker from 'expo-image-picker'
 import { useMirror, useMirrorRegistry } from './store'
+import { uploadImageToCloudinary } from '@/src/lib/cloudinary/upload-image'
+import type { AuthRegisterBody } from '@/src/api/types/auth.types'
 
 function Utils({ children }: PropsWithChildren) {
   const submit = useMirror('submit')
@@ -47,7 +49,7 @@ function Utils({ children }: PropsWithChildren) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
     })
@@ -60,7 +62,7 @@ function Utils({ children }: PropsWithChildren) {
     pickedImageRef.current = {
       uri: asset.uri,
       mimeType: asset.mimeType ?? 'image/jpeg',
-      fileName: asset.fileName ?? 'profile.jpg',
+      fileName: asset.fileName ?? 'avatar.jpg',
     }
     setProfileImageUri(asset.uri)
   }
@@ -68,23 +70,23 @@ function Utils({ children }: PropsWithChildren) {
   const onSubmit = async () => {
     if (!canSubmit) return
 
-    const payload = new FormData()
-    payload.append('full_name', fullName.trim())
-    payload.append('gamer_name', gamerName.trim())
-    payload.append('email', email.trim())
-    payload.append('password', password)
+    const payload: AuthRegisterBody = {
+      full_name: fullName.trim(),
+      gamer_name: gamerName.trim(),
+      email: email.trim(),
+      password,
+    }
     if (phone.trim()) {
-      payload.append('phone', phone.trim())
+      payload.phone = phone.trim()
     }
     const picked = pickedImageRef.current
-    const name = picked?.fileName ?? 'profile.jpg'
-    const type = picked?.mimeType ?? 'image/jpeg'
-    const uri = picked?.uri ?? profileImageUri
-    payload.append('profile_picture', {
-      uri,
-      name,
-      type,
-    } as any)
+    const uploaded = await uploadImageToCloudinary({
+      uri: picked?.uri ?? profileImageUri,
+      fileName: picked?.fileName ?? 'profile.jpg',
+      mimeType: picked?.mimeType ?? 'image/jpeg',
+    })
+    payload.avatarUrl = uploaded.avatarUrl
+    payload.avatarPublicId = uploaded.avatarPublicId
 
     await submit(payload)
   }

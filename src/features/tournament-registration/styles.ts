@@ -1,20 +1,20 @@
-import { colors as c } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
 
 /** Tournament registration — theme-aligned. */
 export const trColors = {
-  bg: c.screenBackground,
-  cardBg: c.darkBackground1,
-  inputBg: c.darkBackground2,
-  labelMuted: c.grey,
-  cyan: c.neonBlue,
-  purple: c.primaryPurple,
-  purpleDeep: c.primaryPurple,
-  white: c.white,
-  progressTrack: c.darkBackground2,
-  borderLine: c.darkBackground1,
-  avatarPlaceholder: c.darkBackground1,
-  selectRing: c.grey,
+  bg: colors_V2.background,
+  cardBg: colors_V2.card,
+  inputBg: "#2A1D35",
+  labelMuted: colors_V2.slate,
+  cyan: colors_V2.skyBlue,
+  purple: colors_V2.purple,
+  purpleDeep: colors_V2.gradientStart,
+  white: colors_V2.lilac,
+  progressTrack: "#23172E",
+  borderLine: "#4C3A5A",
+  avatarPlaceholder: "#2F223B",
+  selectRing: colors_V2.dustyLavender,
 };
 
 export const styles = StyleSheet.create({
@@ -61,19 +61,19 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
   pageTitle: {
-    color: trColors.white,
-    fontSize: 17,
-    fontWeight: "700",
+    color: colors_V2.lilac,
+    fontSize: 18,
+    fontWeight: "800",
   },
   heroCard: {
-    borderRadius: 14,
+    borderRadius: 22,
     overflow: "hidden",
     backgroundColor: trColors.cardBg,
     marginBottom: 20,
   },
   heroImage: {
     width: "100%",
-    height: 168,
+    height: 248,
     backgroundColor: trColors.bg,
   },
   heroImageOverlayTop: {
@@ -83,13 +83,13 @@ export const styles = StyleSheet.create({
     paddingTop: 10,
   },
   heroPubgPill: {
-    backgroundColor: "rgba(0,0,0,0.55)",
+    backgroundColor: "rgba(147,204,255,0.22)",
     paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 6,
+    paddingVertical: 6,
+    borderRadius: 8,
   },
   heroPubgText: {
-    color: trColors.white,
+    color: colors_V2.skyBlue,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 1,
@@ -100,30 +100,31 @@ export const styles = StyleSheet.create({
     left: 12,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: trColors.purple,
+    borderRadius: 10,
+    backgroundColor: "transparent",
   },
   heroLiveText: {
-    color: trColors.white,
-    fontSize: 10,
+    color: colors_V2.background,
+    fontSize: 11,
     fontWeight: "800",
     letterSpacing: 0.8,
   },
   heroBody: {
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+    gap: 10,
+    marginTop: -4,
   },
   heroTitle: {
-    color: trColors.white,
-    fontSize: 17,
-    fontWeight: "800",
+    color: colors_V2.lilac,
+    fontSize: 28,
+    fontWeight: "900",
     letterSpacing: 0.4,
-    lineHeight: 22,
+    lineHeight: 34,
   },
   heroSubtitle: {
-    color: trColors.cyan,
-    fontSize: 12,
+    color: colors_V2.dustyLavender,
+    fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.5,
   },
@@ -140,9 +141,9 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   progressCount: {
-    color: trColors.white,
-    fontSize: 12,
-    fontWeight: "700",
+    color: colors_V2.lilac,
+    fontSize: 13,
+    fontWeight: "800",
   },
   progressTrack: {
     height: 8,
@@ -158,16 +159,25 @@ export const styles = StyleSheet.create({
   },
   progressSub: {
     marginTop: 6,
-    color: trColors.purple,
-    fontSize: 10,
+    color: colors_V2.gold,
+    fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.6,
     textAlign: "center",
   },
+  joinButtonSection: {
+    marginBottom: 18,
+    gap: 8,
+  },
   joinButtonWrap: {
     borderRadius: 12,
     overflow: "hidden",
-    marginBottom: 18,
+  },
+  levelGateHint: {
+    color: colors_V2.gold,
+    fontSize: 12,
+    fontWeight: "600",
+    lineHeight: 17,
   },
   joinButton: {
     flexDirection: "row",
@@ -180,9 +190,9 @@ export const styles = StyleSheet.create({
     opacity: 0.45,
   },
   joinButtonText: {
-    color: trColors.white,
-    fontSize: 14,
-    fontWeight: "800",
+    color: colors_V2.background,
+    fontSize: 15,
+    fontWeight: "900",
     letterSpacing: 1.2,
   },
   fieldBlock: {
@@ -270,7 +280,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
   },
   selectedBadgeText: {
-    color: trColors.white,
+    color: colors_V2.background,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.5,
@@ -316,7 +326,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   friendName: {
-    color: trColors.white,
+    color: colors_V2.lilac,
     fontSize: 16,
     fontWeight: "700",
   },
@@ -378,7 +388,7 @@ export const styles = StyleSheet.create({
     borderBottomColor: trColors.borderLine,
   },
   modalOptionText: {
-    color: trColors.white,
+    color: colors_V2.lilac,
     fontSize: 16,
   },
 });

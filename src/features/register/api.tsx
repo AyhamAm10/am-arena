@@ -1,11 +1,12 @@
 import { useRegisterUser } from '@/src/hooks/api/auth/useRegisterUser'
+import type { AuthRegisterBody } from '@/src/api/types/auth.types'
 import { PropsWithChildren } from 'react'
 import { useMirrorRegistry } from './store'
 
 function Api({ children }: PropsWithChildren) {
   const { mutateAsync, isPending, error } = useRegisterUser()
 
-  const submit = async (body: FormData) => {
+  const submit = async (body: AuthRegisterBody) => {
     await mutateAsync(body)
   }
 

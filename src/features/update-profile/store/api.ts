@@ -1,5 +1,7 @@
+import type { UpdateProfileBody } from "@/src/api/types/user.types";
+
 type ApiState = {
-  submit: (body: FormData) => Promise<void>;
+  submit: (body: UpdateProfileBody) => Promise<void>;
   isLoading: boolean;
   error: string | null;
 };

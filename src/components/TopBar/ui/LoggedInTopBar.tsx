@@ -1,8 +1,8 @@
-// src/components/TopBar/ui/LoggedInTopBar.tsx
-import { CoinsIcon } from "@/src/components/icons/figma/CoinsIcon";
+import { ChatIcon } from "@/src/components/icons/figma/ChatIcon";
 import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIcon";
-import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
-import { colors } from "@/src/theme/colors";
+import { flexRowRtl, textRtl } from "@/src/lib/rtl";
+import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -13,65 +13,78 @@ const LOGO = require("../../../assets/main_Logo.png");
 const LoggedInTopBar: React.FC = () => {
   const router = useRouter();
   const avatarSource = useMirror("avatarSource");
-  const level = useMirror("level");
-  const levelProgress = useMirror("levelProgress");
-  const coins = useMirror("coins");
-  const pct = Math.round(
-    Math.min(1, Math.max(0, levelProgress ?? 0)) * 100
-  );
+  const achievementColor = useMirror("achievementColor") as string | null;
+  const achievementIconUrl = useMirror("achievementIconUrl") as string | null;
+  const achievementName = useMirror("achievementName") as string | null | undefined;
+
+  const borderColor = achievementColor || colors_V2.purple;
+  const titleLabel =
+    typeof achievementName === "string" && achievementName.trim().length > 0
+      ? achievementName.trim()
+      : null;
 
   return (
-    <View style={[styles.container, flexRowRtl]}>
-      <View style={[styles.left, flexRowRtl]}>
-        <View style={styles.logoCircle}>
+    <View style={styles.container}>
+      <View style={styles.logoRow}>
+        <View style={styles.logoWrap}>
           <Image source={LOGO} style={styles.logo} resizeMode="contain" />
         </View>
-        <View style={styles.levelColumn}>
-          <View style={[styles.levelRow, flexRowRtl]}>
-            <Text style={[styles.levelText, textRtl]}>مستوى {level}</Text>
-            <Text style={[styles.pctText, textRtl]}>{pct}%</Text>
-          </View>
-          <View style={styles.progressTrack}>
-            <View
-              style={[
-                styles.progressFill,
-                progressFillRtl,
-                {
-                  width: `${Math.min(1, Math.max(0, levelProgress ?? 0)) * 100}%`,
-                },
-              ]}
-            />
-          </View>
-        </View>
+        <Text style={[styles.logoText, textRtl]}>NEON KINETIC</Text>
       </View>
-      <View style={[styles.right, flexRowRtl]}>
+
+      <View style={[styles.userRow, flexRowRtl]}>
         <TouchableOpacity
-          style={styles.notifWrap}
-          accessibilityRole="button"
-          accessibilityLabel="الإشعارات"
-          onPress={() => router.push("/(tabs)/notifications" as never)}
-        >
-          <NotificationsIcon width={20} height={25} color={colors.white} />
-          <View style={styles.notifDot} />
-        </TouchableOpacity>
-        <View style={[styles.walletPill, flexRowRtl]}>
-          <CoinsIcon width={12} height={12} color={colors.gold} />
-          <Text style={[styles.coinsText, textRtl]}>
-            {Number(coins ?? 0).toLocaleString("ar")}
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={styles.avatarWrap}
-          onPress={() => router.push("/profile")}
+          style={styles.avatarContainer}
           accessibilityRole="button"
           accessibilityLabel="الملف الشخصي"
+          onPress={() => router.push("/(tabs)/profile" as never)}
+          activeOpacity={0.85}
         >
-          {avatarSource ? (
-            <Image source={avatarSource} style={styles.avatar} />
-          ) : (
-            <View style={styles.avatarPlaceholder} />
-          )}
+          <View style={[styles.avatarBorder, { borderColor }]}>
+            {avatarSource ? (
+              <Image source={avatarSource} style={styles.avatar} />
+            ) : (
+              <View style={styles.avatarPlaceholder} />
+            )}
+          </View>
+          {achievementIconUrl ? (
+            <View style={styles.achievementBadge}>
+              <Image
+                source={{ uri: achievementIconUrl }}
+                style={styles.achievementIcon}
+                resizeMode="contain"
+              />
+            </View>
+          ) : null}
         </TouchableOpacity>
+
+        <View style={[styles.userInfo, flexRowRtl]}>
+          {titleLabel ? (
+            <Text style={[styles.rankText, textRtl]} numberOfLines={2}>
+              {titleLabel}
+            </Text>
+          ) : null}
+        </View>
+
+        <View style={[styles.actionsRow, flexRowRtl]}>
+          <TouchableOpacity
+            style={styles.actionBtn}
+            accessibilityRole="button"
+            accessibilityLabel="الإشعارات"
+            onPress={() => router.push("/(tabs)/notifications" as never)}
+          >
+            <NotificationsIcon width={20} height={22} color={colors_V2.lavender} />
+            <View style={styles.notifDot} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.actionBtn}
+            accessibilityRole="button"
+            accessibilityLabel="الدردشة"
+            onPress={() => router.push("/(tabs)/channels" as never)}
+          >
+            <ChatIcon width={20} height={20} color={colors_V2.lavender} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -79,73 +92,93 @@ const LoggedInTopBar: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: 60,
-    backgroundColor: colors.darkBackground1,
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.darkBackground2,
+    backgroundColor: colors_V2.background,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 12,
   },
-  left: {
+  logoRow: {
+    flexDirection: "row",
     alignItems: "center",
-    flex: 1,
-    minWidth: 0,
-    gap: 10,
+    gap: 8,
+    marginBottom: 12,
   },
-  logoCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.darkBackground2,
+  logoWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: colors_V2.card,
     alignItems: "center",
     justifyContent: "center",
     overflow: "hidden",
   },
   logo: {
-    width: 28,
-    height: 28,
+    width: 22,
+    height: 22,
   },
-  levelColumn: {
-    flex: 1,
-    minWidth: 0,
+  logoText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: colors_V2.lavender,
+    letterSpacing: 1.5,
+  },
+  userRow: {
+    alignItems: "center",
+    gap: 12,
+  },
+  avatarContainer: {
+    position: "relative",
+    alignItems: "center",
+  },
+  avatarBorder: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 3,
+    alignItems: "center",
     justifyContent: "center",
-  },
-  levelRow: {
-    alignItems: "baseline",
-    gap: 8,
-    marginBottom: 4,
-  },
-  levelText: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: colors.white,
-  },
-  pctText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: colors.primaryPurple,
-  },
-  progressTrack: {
-    height: 6,
-    width: "100%",
-    maxWidth: 160,
-    backgroundColor: colors.darkBackground2,
-    borderRadius: 3,
     overflow: "hidden",
   },
-  progressFill: {
-    height: "100%",
-    backgroundColor: colors.primaryPurple,
-    borderRadius: 3,
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  right: {
+  avatarPlaceholder: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors_V2.card,
+  },
+  achievementBadge: {
+    position: "absolute",
+    bottom: -6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors_V2.background,
     alignItems: "center",
-    gap: 10,
-    marginStart: 8,
+    justifyContent: "center",
   },
-  notifWrap: {
+  achievementIcon: {
+    width: 14,
+    height: 14,
+  },
+  userInfo: {
+    flex: 1,
+    gap: 4,
+  },
+  rankText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors_V2.dustyLavender,
+    letterSpacing: 0.5,
+  },
+  actionsRow: {
+    gap: 16,
+    alignItems: "center",
+  },
+  actionBtn: {
     position: "relative",
     padding: 4,
   },
@@ -156,38 +189,7 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: colors.primaryPurple,
-  },
-  walletPill: {
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.primaryPurple,
-    backgroundColor: colors.darkBackground2,
-  },
-  coinsText: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: colors.white,
-  },
-  avatarWrap: {
-    marginStart: 2,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-  },
-  avatarPlaceholder: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.darkBackground2,
-    borderWidth: 1,
-    borderColor: colors.darkBackground1,
+    backgroundColor: colors_V2.gold,
   },
 });
 

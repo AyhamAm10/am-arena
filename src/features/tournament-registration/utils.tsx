@@ -2,6 +2,12 @@ import type {
   RegisterForTournamentBody,
   TournamentRegistrationField,
 } from "@/src/api/types/pubg-tournament-registration.types";
+import { useHeaderUser } from "@/src/hooks/auth/useHeaderUser";
+import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
+import {
+  requiredLevelForTournament,
+  xpThresholdFromTournament,
+} from "@/src/lib/utils/tournament-xp-gate";
 import { type PropsWithChildren, useMemo } from "react";
 import { useMirror, useMirrorRegistry } from "./store";
 
@@ -51,6 +57,10 @@ function fieldSatisfied(
 }
 
 function Utils({ children }: PropsWithChildren) {
+  const header = useHeaderUser();
+  const userXp = Number(header.user?.xp_points ?? 0);
+  const { level: userLevel } = computeLevelAndProgress(userXp);
+
   const tournamentId = useMirror("tournamentId");
   const tournament = useMirror("tournament");
   const selectedFriendIds = useMirror("selectedFriendIds");
@@ -67,6 +77,35 @@ function Utils({ children }: PropsWithChildren) {
 
   const showSquadFriends = tournament?.game?.type === "squad";
   const maxSelectableFriends = showSquadFriends ? 3 : 0;
+
+  const xpThreshold = tournament ? xpThresholdFromTournament(tournament) : 0;
+  const levelRequired = tournament ? requiredLevelForTournament(tournament) : 0;
+  const hasXpGate = xpThreshold > 0;
+  const xpGateResolved =
+    !hasXpGate || (!header.isUserLoading && header.isLoggedIn);
+  const meetsXpGate =
+    !hasXpGate || (header.isLoggedIn && userXp >= xpThreshold);
+  const canJoinByLevel = meetsXpGate && xpGateResolved;
+
+  const levelGateMessage = useMemo(() => {
+    if (!tournament || !hasXpGate) return null;
+    if (header.isUserLoading) return "جاري التحقق من المستوى المطلوب…";
+    if (!header.isLoggedIn) {
+      return `المستوى المطلوب: ${levelRequired}. سجّل الدخول للانضمام — يُشترط الوصول إلى هذا المستوى على الأقل.`;
+    }
+    if (!meetsXpGate) {
+      return `المستوى المطلوب: ${levelRequired}. مستواك الحالي: ${userLevel}. ارفع مستواك للانضمام.`;
+    }
+    return null;
+  }, [
+    tournament,
+    hasXpGate,
+    header.isUserLoading,
+    header.isLoggedIn,
+    meetsXpGate,
+    levelRequired,
+    userLevel,
+  ]);
 
   const filteredFriends = useMemo(() => {
     const q = friendSearch.trim().toLowerCase();
@@ -96,6 +135,9 @@ function Utils({ children }: PropsWithChildren) {
     if (!tournamentId || isSubmitting) {
       return false;
     }
+    if (!canJoinByLevel) {
+      return false;
+    }
     if (!termsAccepted) {
       return false;
     }
@@ -103,6 +145,7 @@ function Utils({ children }: PropsWithChildren) {
       fieldSatisfied(field, resolvedFieldValue(field, fieldValues))
     );
   }, [
+    canJoinByLevel,
     fieldValues,
     isSubmitting,
     registrationFields,
@@ -133,6 +176,7 @@ function Utils({ children }: PropsWithChildren) {
   };
 
   useMirrorRegistry("selectedCountLabel", selectedCountLabel, selectedCountLabel);
+  useMirrorRegistry("levelGateMessage", levelGateMessage, levelGateMessage);
   useMirrorRegistry("canSubmit", canSubmit, canSubmit);
   useMirrorRegistry("onFriendsListEndReached", onFriendsListEndReached, onFriendsListEndReached);
   useMirrorRegistry("onConfirmJoin", onConfirmJoin, onConfirmJoin);

@@ -1,4 +1,5 @@
 import type {
+  AchievementPublic,
   TournamentHistoryItem,
   TournamentSummary,
   UserAchievementEntry,
@@ -9,10 +10,15 @@ export type ProfileScreenModel = {
   fullName: string;
   profilePictureUrl: string | null;
   xpPoints: number;
+  selectedTitle: string | null;
+  selectedAchievement: AchievementPublic | null;
+  titlesCount: number;
+  tournamentsParticipatedCount: number;
   achievements: UserAchievementEntry[];
+  earnedTitles: UserAchievementEntry[];
   wonTournaments: TournamentSummary[];
-  tournamentHistory: TournamentHistoryItem[];
-  rankLabel: string;
+  participatedTournaments: TournamentHistoryItem[];
+  level: number;
 };
 
 type ProfileUtilsState = {

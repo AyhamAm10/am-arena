@@ -1,5 +1,5 @@
-import { flexRowRtl, textRtl } from "@/src/lib/rtl";
-import { colors } from "@/src/theme/colors";
+import { textRtl } from "@/src/lib/rtl";
+import { colors_V2 } from "@/src/theme/colors";
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { TopPlayer } from "./top-player";
@@ -44,21 +44,19 @@ const TopPlayersSection: React.FC<Props> = ({
 
   return (
     <View style={styles.section}>
-      <View style={[styles.header, flexRowRtl]}>
-        <Text style={[styles.title, textRtl]}>أفضل اللاعبين</Text>
-        {seasonLabel ? (
-          <View style={styles.seasonPill}>
-            <Text style={[styles.seasonLabel, textRtl]}>{seasonLabel}</Text>
-          </View>
-        ) : null}
+      <View style={styles.header}>
+        <Text style={[styles.title, textRtl]}>قاعة الشهرة</Text>
       </View>
       {players.map((p) => (
-        <TouchableOpacity key={p.id} onPress={() => {
-          router.push(`/profile/${p.id}`);
-        }}>
-
+        <TouchableOpacity
+          key={p.id}
+          style={styles.cardPressable}
+          activeOpacity={0.85}
+          onPress={() => {
+            router.push(`/profile/${p.id}`);
+          }}
+        >
           <TopPlayer
-
             instanceId={p.id}
             byId={byId}
           />
@@ -73,29 +71,18 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 24,
   },
+  cardPressable: {
+    alignSelf: "stretch",
+    width: "100%",
+  },
   header: {
-    justifyContent: "space-between",
-    alignItems: "center",
     marginBottom: 12,
   },
   title: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.white,
-  },
-  seasonPill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: colors.primaryPurple,
-    backgroundColor: colors.darkBackground2,
-  },
-  seasonLabel: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: colors.primaryPurple,
-    letterSpacing: 0.3,
+    fontSize: 16,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    letterSpacing: 1,
   },
 });
 

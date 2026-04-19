@@ -1,11 +1,13 @@
 import type { TournamentSummary } from "@/src/api/types/user.types";
-import { colors } from "@/src/theme/colors";
+import { flexRowRtl, textRtl, writingRtl } from "@/src/lib/rtl";
+import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 type TournamentsWonSectionProps = {
   tournaments: TournamentSummary[];
+  isOwnProfile: boolean;
 };
 
 function formatTournamentDate(iso: string | null | undefined): string {
@@ -31,13 +33,18 @@ function iconForGameType(gameType: string): string {
   return "emoji-events";
 }
 
-export function TournamentsWonSection({ tournaments }: TournamentsWonSectionProps) {
+export function TournamentsWonSection({
+  tournaments,
+  isOwnProfile,
+}: TournamentsWonSectionProps) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>البطولات الفائزة</Text>
+      <Text style={[styles.sectionTitle, writingRtl]}>
+        {isOwnProfile ? "آخر البطولات الفائزة" : "بطولات فاز بها"}
+      </Text>
 
       {tournaments.length === 0 ? (
-        <Text style={styles.empty}>لم تفز بأي بطولة بعد.</Text>
+        <Text style={[styles.empty, writingRtl]}>لا توجد بطولات فاز بها بعد.</Text>
       ) : (
         <View style={styles.list}>
           {tournaments.map((t) => (
@@ -47,18 +54,20 @@ export function TournamentsWonSection({ tournaments }: TournamentsWonSectionProp
                 <Icon
                   name={iconForGameType(t.game_type)}
                   size={22}
-                  color={colors.primaryPurple}
+                  color={colors_V2.gold}
                 />
               </View>
               <View style={styles.textCol}>
-                <Text style={styles.tTitle} numberOfLines={2}>
+                <Text style={[styles.tTitle, textRtl]} numberOfLines={2}>
                   {t.title}
                 </Text>
-                <Text style={styles.tDate}>
+                <Text style={[styles.tDate, writingRtl]}>
                   {formatTournamentDate(t.end_date ?? t.start_date)}
                 </Text>
               </View>
-              <Icon name="monetization-on" size={22} color={colors.gold} />
+              <View style={styles.trailingWrap}>
+                <Icon name="emoji-events" size={20} color={colors_V2.gold} />
+              </View>
             </View>
           ))}
         </View>
@@ -72,22 +81,22 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    color: colors.white,
+    color: colors_V2.lilac,
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 14,
   },
   empty: {
-    color: colors.grey,
+    color: colors_V2.slate,
     fontSize: 14,
   },
   list: {},
   row: {
     marginBottom: 10,
-    flexDirection: "row",
+    ...flexRowRtl,
     alignItems: "center",
-    backgroundColor: colors.darkBackground2,
-    borderRadius: 14,
+    backgroundColor: colors_V2.card,
+    borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 12,
     overflow: "hidden",
@@ -98,23 +107,31 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 4,
-    backgroundColor: colors.primaryPurple,
+    backgroundColor: colors_V2.gold,
   },
   iconWrap: {
-    marginLeft: 8,
-    marginRight: 10,
+    width: 42,
+    height: 42,
+    borderRadius: 8,
+    backgroundColor: "rgba(233, 196, 0, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginStart: 10,
   },
   textCol: {
     flex: 1,
   },
   tTitle: {
-    color: colors.white,
+    color: colors_V2.lilac,
     fontSize: 15,
     fontWeight: "600",
   },
   tDate: {
-    color: colors.grey,
+    color: colors_V2.slate,
     fontSize: 12,
     marginTop: 4,
+  },
+  trailingWrap: {
+    marginStart: 12,
   },
 });

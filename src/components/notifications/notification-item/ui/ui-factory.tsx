@@ -8,6 +8,9 @@ import { createManualVariant } from "./manual-variant";
 import { createSystemMessageVariant } from "./system-message-variant";
 import { createTournamentCreatedVariant } from "./tournament-created-variant";
 import { notificationCardStyles as s } from "./styles";
+import { createReelHighlightVariant } from "./reel-highlight-variant";
+import { createGlobalPollVariant } from "./global-poll-variant";
+import { ReadBadge, notificationCardStateStyle } from "./common";
 
 type Props = {
   instanceId: string;
@@ -31,6 +34,10 @@ export default function UiFactory({ instanceId }: Props) {
         return createSystemMessageVariant(instanceId);
       case "MANUAL":
         return createManualVariant(instanceId);
+      case "REEL_HIGHLIGHT":
+        return createReelHighlightVariant(instanceId);
+      case "GLOBAL_POLL":
+        return createGlobalPollVariant(instanceId);
       default:
         return null;
     }
@@ -42,9 +49,10 @@ export default function UiFactory({ instanceId }: Props) {
 
   if (!Body) {
     return (
-      <View style={s.card}>
+      <View style={notificationCardStateStyle(item.read_at)}>
         <Text style={s.title}>{item.title}</Text>
         <Text style={s.body}>{item.body}</Text>
+        <ReadBadge readAt={item.read_at} />
       </View>
     );
   }

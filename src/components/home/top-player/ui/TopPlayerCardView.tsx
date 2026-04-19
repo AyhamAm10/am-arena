@@ -1,7 +1,6 @@
-import { AchievementIcon } from "@/src/components/icons/figma/AchievementIcon";
 import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
-import { colors } from "@/src/theme/colors";
+import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import type { TopPlayerCardState } from "../state/init";
@@ -10,70 +9,71 @@ type Props = {
   card: TopPlayerCardState | undefined;
 };
 
-function medalColorForRank(rank: number): string {
-  if (rank === 1) return colors.gold;
+function rankBadgeColor(rank: number): string {
+  if (rank === 1) return colors_V2.gold;
   if (rank === 2) return "#C0C0C0";
   if (rank === 3) return "#CD7F32";
-  return colors.primaryPurple;
-}
-
-function rankBadgeColor(rank: number): string {
-  if (rank <= 3) return medalColorForRank(rank);
-  return colors.grey;
+  return colors_V2.purple;
 }
 
 export default function TopPlayerCardView({ card }: Props) {
   if (!card) return null;
 
   const { rank, avatarSource, name, tier, xp, xpProgress } = card;
-  const clampedProgress = Math.min(1, Math.max(0, xpProgress));
+
+  const xpRaw = Number(xpProgress);
+  const xpPct = Number.isFinite(xpRaw)
+    ? Math.max(0, Math.min(1, xpRaw))
+    : 0;
+
+  const xpLabel =
+    typeof xp === "number" ? `${xp.toLocaleString("ar")} XP` : `${xp} XP`;
 
   return (
-    <View style={[styles.container, flexRowRtl]}>
-      <View style={styles.avatarCol}>
-        <View style={[styles.rankBadge, { backgroundColor: rankBadgeColor(rank) }]}>
-          <Text
-            style={[
-              styles.rankText,
-              rank <= 3 ? styles.rankTextOnMedal : styles.rankTextMuted,
-            ]}
-          >
-            {rank}
-          </Text>
+    <View style={styles.outer}>
+      <View style={[flexRowRtl, styles.container]}>
+        <View style={styles.cellAvatar}>
+          <View style={styles.avatarFrame}>
+            {avatarSource ? (
+              <Image
+                source={{ uri: formatImageUrl(avatarSource) }}
+                style={styles.avatar}
+              />
+            ) : (
+              <View style={styles.avatarPlaceholder} />
+            )}
+            <View
+              style={[
+                styles.rankBadgeOverlay,
+                { backgroundColor: rankBadgeColor(rank) },
+              ]}
+            >
+              <Text style={styles.rankText}>{rank}</Text>
+            </View>
+          </View>
         </View>
-        {avatarSource ? (
-          <Image
-            source={{ uri: formatImageUrl(avatarSource) }}
-            style={styles.avatar}
-          />
-        ) : (
-          <View style={styles.avatarPlaceholder} />
-        )}
-      </View>
-      <View style={styles.info}>
-        <View style={[styles.nameRow, flexRowRtl]}>
+
+        <View style={styles.info}>
           <Text style={[styles.name, textRtl]} numberOfLines={1}>
             {name}
           </Text>
-          <AchievementIcon
-            width={20}
-            height={24}
-            color={medalColorForRank(rank)}
-          />
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                progressFillRtl,
+                { width: `${Math.round(xpPct * 100)}%` },
+              ]}
+            />
+          </View>
         </View>
-        <View style={styles.xpBarTrack}>
-          <View
-            style={[
-              styles.xpBarFill,
-              progressFillRtl,
-              { width: `${clampedProgress * 100}%` },
-            ]}
-          />
-        </View>
-        <View style={[styles.statsRow, flexRowRtl]}>
-          <Text style={[styles.tier, textRtl]}>{tier}</Text>
-          <Text style={[styles.xpValue, textRtl]}>
-            {typeof xp === "number" ? xp.toLocaleString("ar") : xp} نقطة خبرة
+
+        <View style={styles.statsCol}>
+          <Text style={[styles.xpValue, textRtl]} numberOfLines={1}>
+            {xpLabel}
+          </Text>
+          <Text style={[styles.tier, textRtl]} numberOfLines={1}>
+            {tier}
           </Text>
         </View>
       </View>
@@ -81,98 +81,110 @@ export default function TopPlayerCardView({ card }: Props) {
   );
 }
 
+const AVATAR = 52;
+
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    backgroundColor: colors.darkBackground2,
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 8,
-    gap: 12,
+  outer: {
+    width: "100%",
+    marginBottom: 10,
+    borderRadius: 14,
+    overflow: "hidden",
+    backgroundColor: colors_V2.card,
     borderWidth: 1,
-    borderColor: colors.darkBackground1,
+    borderColor: "rgba(216,185,255,0.1)",
   },
-  avatarCol: {
-    position: "relative",
-    width: 48,
-    height: 48,
+  container: {
+    width: "100%",
+    minHeight: 72,
+    alignItems: "stretch",
+    paddingVertical: 12,
+    paddingEnd: 14,
+    paddingStart: 12,
+    gap: 12,
+    borderStartWidth: 3,
+    borderStartColor: colors_V2.gold,
+  },
+  cellAvatar: {
     justifyContent: "center",
+    alignItems: "center",
+    flexShrink: 0,
   },
-  rankBadge: {
+  avatarFrame: {
+    width: AVATAR,
+    height: AVATAR,
+  },
+  avatar: {
+    width: AVATAR,
+    height: AVATAR,
+    borderRadius: 12,
+  },
+  avatarPlaceholder: {
+    width: AVATAR,
+    height: AVATAR,
+    borderRadius: 12,
+    backgroundColor: colors_V2.background,
+  },
+  rankBadgeOverlay: {
     position: "absolute",
-    top: -4,
-    start: -4,
-    zIndex: 2,
+    top: -2,
+    start: -2,
     width: 22,
     height: 22,
     borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: colors.darkBackground2,
+    borderColor: colors_V2.card,
   },
   rankText: {
     fontSize: 11,
     fontWeight: "900",
-  },
-  rankTextOnMedal: {
-    color: colors.darkBackground1,
-  },
-  rankTextMuted: {
-    color: colors.white,
-  },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-  avatarPlaceholder: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.darkBackground1,
+    color: colors_V2.background,
   },
   info: {
     flex: 1,
     minWidth: 0,
-  },
-  nameRow: {
-    alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     gap: 8,
-    marginBottom: 6,
+    alignSelf: "stretch",
   },
   name: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: "700",
-    color: colors.white,
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: "800",
+    color: colors_V2.lilac,
   },
-  xpBarTrack: {
+  progressTrack: {
     height: 6,
-    backgroundColor: colors.darkBackground1,
-    borderRadius: 3,
+    borderRadius: 999,
+    backgroundColor: "rgba(0,0,0,0.35)",
     overflow: "hidden",
-    marginBottom: 6,
   },
-  xpBarFill: {
+  progressFill: {
     height: "100%",
-    backgroundColor: colors.primaryPurple,
-    borderRadius: 3,
+    borderRadius: 999,
+    backgroundColor: colors_V2.lavender,
   },
-  statsRow: {
-    alignItems: "center",
-    justifyContent: "space-between",
+  statsCol: {
+    justifyContent: "center",
+    alignItems: "stretch",
+    flexShrink: 0,
+    minWidth: 96,
+    maxWidth: "38%",
+    alignSelf: "stretch",
+    gap: 4,
   },
   tier: {
-    fontSize: 10,
+    fontSize: 11,
+    lineHeight: 14,
     fontWeight: "800",
-    color: colors.grey,
-    letterSpacing: 0.6,
+    color: colors_V2.slate,
+    letterSpacing: 0.4,
   },
   xpValue: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: colors.neonBlue,
+    fontSize: 16,
+    lineHeight: 22,
+    fontWeight: "800",
+    color: "#FFFFFF",
   },
 });

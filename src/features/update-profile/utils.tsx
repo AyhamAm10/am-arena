@@ -1,4 +1,5 @@
 import { useFetchCurrentUser } from "@/src/hooks/api/auth/useFetchCurrentUser";
+import { uploadImageToCloudinary } from "@/src/lib/cloudinary/upload-image";
 import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -75,9 +76,9 @@ function Utils({ children }: PropsWithChildren) {
   ]);
 
   const remoteAvatarUrl = useMemo(() => {
-    if (!currentUser?.profile_picture_url) return null;
-    return formatImageUrl(currentUser.profile_picture_url) || null;
-  }, [currentUser?.profile_picture_url]);
+    if (!currentUser?.avatarUrl) return null;
+    return formatImageUrl(currentUser.avatarUrl) || null;
+  }, [currentUser?.avatarUrl]);
 
   const dirty = useMemo(() => {
     if (!initialRef.current) return false;
@@ -131,7 +132,7 @@ function Utils({ children }: PropsWithChildren) {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
     });
@@ -144,36 +145,34 @@ function Utils({ children }: PropsWithChildren) {
     pickedImageRef.current = {
       uri: asset.uri,
       mimeType: asset.mimeType ?? "image/jpeg",
-      fileName: asset.fileName ?? "profile-image.jpg",
+      fileName: asset.fileName ?? "avatar.jpg",
     };
     setProfileImageUri(asset.uri);
   };
 
   const onSubmit = async () => {
     if (!canSubmit || !initialRef.current) return;
-  
-    const fd = new FormData();
-  
+
+    const payload: Record<string, string | null> = {
+      full_name: fullName.trim(),
+      gamer_name: gamerName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+    };
+
     if (profileImageUri) {
       const picked = pickedImageRef.current;
+      const uploaded = await uploadImageToCloudinary({
+        uri: picked?.uri ?? profileImageUri,
+        fileName: picked?.fileName || "profile.jpg",
+        mimeType: picked?.mimeType || "image/jpeg",
+      });
 
-      const name = picked?.fileName || "profile.jpg";
-      const type = picked?.mimeType || "image/jpeg";
-      const uri = picked?.uri ?? profileImageUri;
-
-      fd.append("profile_picture", {
-        uri,
-        name,
-        type,
-      } as any);
+      payload.avatarUrl = uploaded.avatarUrl;
+      payload.avatarPublicId = uploaded.avatarPublicId;
     }
-  
-    fd.append("full_name", fullName.trim());
-    fd.append("gamer_name", gamerName.trim());
-    fd.append("email", email.trim());
-    fd.append("phone", phone.trim());
-  
-    await submit(fd);
+
+    await submit(payload);
   };
 
   useMirrorRegistry("formError", formError);

@@ -1,10 +1,5 @@
-import { ScreenEnterTransition } from "@/src/components/motion";
-import { Reels } from "@/src/features/reels";
+import { Redirect } from "expo-router";
 
 export default function ReelsScreen() {
-  return (
-    <ScreenEnterTransition from="right" style={{ flex: 1 }}>
-      <Reels />
-    </ScreenEnterTransition>
-  );
+  return <Redirect href="/arena-space" />;
 }

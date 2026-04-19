@@ -1,12 +1,12 @@
 import type { AchievementPublic, UserAchievementEntry } from "@/src/api/types/user.types";
 import { formatAchievementIconUrl } from "@/src/lib/utils/image-url-factory";
-import { colors } from "@/src/theme/colors";
+import { flexRowRtl, textRtl, writingRtl } from "@/src/lib/rtl";
+import { colors_V2 } from "@/src/theme/colors";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -32,34 +32,30 @@ export function AchievementBadgesSection({
   return (
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>شارات الإنجاز</Text>
+        <Text style={[styles.sectionTitle, writingRtl]}>الألقاب المكتسبة</Text>
         {showViewAll ? (
           <Pressable
             onPress={() => router.push("/profile/achievements")}
             hitSlop={10}
             accessibilityRole="button"
-            accessibilityLabel="عرض كل الإنجازات"
+            accessibilityLabel="مشاهدة جميع الانجازات"
           >
-            <Text style={styles.viewAll}>عرض الكل</Text>
+            <Text style={[styles.viewAll, writingRtl]}>مشاهدة الجميع</Text>
           </Pressable>
         ) : null}
       </View>
 
       {visibleEntries.length === 0 ? (
-        <Text style={styles.empty}>لا توجد إنجازات بعد.</Text>
+        <Text style={[styles.empty, writingRtl]}>لا توجد ألقاب معروضة بعد.</Text>
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.rowScroll}
-        >
+        <View style={styles.list}>
           {visibleEntries.map(({ achievement }) => (
             <AchievementBadgeItem
               key={`badge-${achievement.id}`}
               achievement={achievement}
             />
           ))}
-        </ScrollView>
+        </View>
       )}
     </View>
   );
@@ -70,27 +66,35 @@ function AchievementBadgeItem({
 }: {
   achievement: AchievementPublic;
 }) {
-  const accent = achievement.color_theme?.trim() || colors.primaryPurple;
+  const accent = achievement.color_theme?.trim() || colors_V2.gold;
   const uri = achievement.icon_url
     ? formatAchievementIconUrl(achievement.icon_url)
     : null;
 
   return (
-    <View style={styles.badgeCell}>
-      <View
-        style={[
-          styles.badgeCircle,
-          { borderColor: accent, backgroundColor: "transparent" },
-        ]}
-      >
+    <View style={[styles.card, { borderStartColor: accent }]}>
+      <Text style={[styles.tierLabel, { color: accent }, writingRtl]}>
+        {achievement.name}
+      </Text>
+      <View style={[styles.cardTop, flexRowRtl]}>
+        <View style={styles.textCol}>
+          <Text style={[styles.badgeLabel, writingRtl]} numberOfLines={2}>
+            {achievement.description || achievement.name}
+          </Text>
+        </View>
         <View
-          pointerEvents="none"
           style={[
-            StyleSheet.absoluteFillObject,
-            { backgroundColor: accent, opacity: 0.22 },
+            styles.badgeCircle,
+            { borderColor: accent, backgroundColor: "transparent" },
           ]}
-        />
-        <View style={styles.badgeCircleContent}>
+        >
+          <View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFillObject,
+              { backgroundColor: accent, opacity: 0.14 },
+            ]}
+          />
           {uri ? (
             <Image
               source={{ uri }}
@@ -104,58 +108,68 @@ function AchievementBadgeItem({
           )}
         </View>
       </View>
-      <Text style={[styles.badgeLabel, { color: colors.grey }]} numberOfLines={2}>
-        {achievement.name}
-      </Text>
+      <View style={styles.progressTrack}>
+        <View style={[styles.progressFill, { backgroundColor: accent }]} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   section: {
-    marginBottom: 24,
+    marginBottom: 28,
   },
   sectionHeader: {
-    flexDirection: "row",
+    ...flexRowRtl,
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 16,
   },
   sectionTitle: {
-    color: colors.white,
-    fontSize: 18,
+    color: colors_V2.lilac,
+    fontSize: 20,
     fontWeight: "700",
   },
   viewAll: {
-    color: colors.primaryPurple,
+    color: colors_V2.skyBlue,
     fontSize: 14,
     fontWeight: "600",
   },
   empty: {
-    color: colors.grey,
+    color: colors_V2.slate,
     fontSize: 14,
+    ...textRtl,
   },
-  rowScroll: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    paddingVertical: 4,
-    paddingRight: 8,
-    gap: 4,
+  list: {
+    gap: 12,
   },
-  badgeCell: {
-    width: 76,
-    marginRight: 12,
+  card: {
+    backgroundColor: colors_V2.card,
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    borderStartWidth: 3,
+  },
+  tierLabel: {
+    fontSize: 10,
+    fontWeight: "800",
+    letterSpacing: 0.8,
+    marginBottom: 8,
+  },
+  cardTop: {
     alignItems: "center",
+    gap: 12,
+    marginBottom: 14,
+  },
+  textCol: {
+    flex: 1,
   },
   badgeCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
     borderWidth: 2,
     overflow: "hidden",
-  },
-  badgeCircleContent: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -164,11 +178,21 @@ const styles = StyleSheet.create({
     height: 36,
   },
   badgeLabel: {
-    marginTop: 8,
-    fontSize: 11,
+    color: colors_V2.lilac,
+    fontSize: 15,
     fontWeight: "600",
-    textAlign: "center",
-    lineHeight: 14,
-    maxWidth: 76,
+    lineHeight: 20,
+    ...textRtl,
+  },
+  progressTrack: {
+    height: 4,
+    borderRadius: 999,
+    backgroundColor: "rgba(216, 185, 255, 0.16)",
+    overflow: "hidden",
+  },
+  progressFill: {
+    width: "88%",
+    height: "100%",
+    borderRadius: 999,
   },
 });

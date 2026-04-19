@@ -1,23 +1,7 @@
-import type { AchievementPublic } from "@/src/api/types/user.types";
+import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
 import { type PropsWithChildren, useMemo } from "react";
 import { useMirror, useMirrorRegistry } from "./store";
 import type { ProfileScreenModel } from "./store/utils";
-
-function getRankLabel(achievements: ProfileScreenModel["achievements"]): string {
-  const unlocked = achievements
-    .map((entry) => entry.achievement)
-    .filter((achievement): achievement is AchievementPublic => achievement != null);
-
-  if (unlocked.length === 0) {
-    return "لاعب";
-  }
-
-  const topAchievement = [...unlocked].sort(
-    (left, right) => right.xp_reward - left.xp_reward
-  )[0];
-
-  return topAchievement.name.toUpperCase();
-}
 
 function Utils({ children }: PropsWithChildren) {
   const displayVariant = useMirror("displayVariant");
@@ -31,12 +15,21 @@ function Utils({ children }: PropsWithChildren) {
     return {
       gamerName: profile.user.gamer_name,
       fullName: profile.user.full_name,
-      profilePictureUrl: profile.user.profile_picture_url,
+      profilePictureUrl: profile.user.avatarUrl,
       xpPoints: Number(profile.user.xp_points ?? 0),
+      selectedTitle: profile.user.selected_achievement?.name?.trim() || null,
+      selectedAchievement: profile.user.selected_achievement ?? null,
+      titlesCount: Number(profile.stats?.titles_count ?? profile.achievements?.length ?? 0),
+      tournamentsParticipatedCount: Number(
+        profile.stats?.tournaments_participated_count ??
+          profile.tournament_history?.length ??
+          0
+      ),
       achievements: profile.achievements ?? [],
+      earnedTitles: profile.achievements ?? [],
       wonTournaments: profile.won_tournaments ?? [],
-      tournamentHistory: profile.tournament_history ?? [],
-      rankLabel: getRankLabel(profile.achievements ?? []),
+      participatedTournaments: profile.tournament_history ?? [],
+      level: computeLevelAndProgress(Number(profile.user.xp_points ?? 0)).level,
     };
   }, [profile]);
 

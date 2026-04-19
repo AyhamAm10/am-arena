@@ -6,11 +6,15 @@ import { MotionPressable } from "@/src/components/motion";
 import { ActivityIndicator, Text } from "react-native";
 import { notificationCardStyles as s } from "./styles";
 import { colors } from "@/src/theme/colors";
+import { ReadBadge, notificationCardStateStyle } from "./common";
+import { useRouter } from "expo-router";
+import { navigateFromNotificationPayload } from "@/src/lib/notifications/notification-navigation";
 
 export function createSystemMessageVariant(instanceId: string) {
   return function SystemMessageVariant() {
     const byId = useMirror("byId");
     const item = byId[instanceId];
+    const router = useRouter();
     const [busy, setBusy] = useState(false);
 
     const onInvalidate = item?.onInvalidate;
@@ -19,23 +23,34 @@ export function createSystemMessageVariant(instanceId: string) {
       if (!item || item.read_at) return;
       setBusy(true);
       try {
-        await apiMarkRead(item.id);
+        if (item.markAsRead) {
+          await item.markAsRead(item.id);
+        } else {
+          await apiMarkRead(item.id);
+        }
         onInvalidate?.();
       } finally {
         setBusy(false);
       }
     }, [item, onInvalidate]);
 
+    const onPressCard = useCallback(async () => {
+      if (!item) return;
+      navigateFromNotificationPayload(router, item.type, item.data);
+      await markRead();
+    }, [item, markRead, router]);
+
     if (!item) return null;
 
     return (
       <MotionPressable
-        style={s.card}
-        onPress={() => void markRead()}
-        disabled={busy || !!item.read_at}
+        style={notificationCardStateStyle(item.read_at)}
+        onPress={() => void onPressCard()}
+        disabled={busy}
       >
         <Text style={s.title}>{item.title}</Text>
         <Text style={s.body}>{item.body}</Text>
+        <ReadBadge readAt={item.read_at} />
         <Text style={s.meta}>
           {formatNotificationTime(item.created_at)}
           {item.read_at ? " · مقروء" : busy ? " · …" : " · اضغط للتعليم كمقروء"}
