@@ -1,5 +1,5 @@
 import type { AchievementPublic } from "@/src/api/types/user.types";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
 import { flexRowRtl, progressFillRtl, writingRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
@@ -36,7 +36,7 @@ export function ProfileAvatarSection({
     [xpPoints]
   );
 
-  const uri = profilePictureUrl ? formatImageUrl(profilePictureUrl) : "";
+  const uri = profilePictureUrl ? resolveMediaUrl(profilePictureUrl, "image") : "";
   const accent = selectedAchievement?.color_theme?.trim() || colors_V2.gold;
   const titleLabel = selectedTitle?.trim() || "بدون لقب محدد";
 

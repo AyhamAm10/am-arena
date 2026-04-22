@@ -11,6 +11,7 @@ export interface PubgTournamentWinnerSummary {
 export interface Game {
     id: number;
     image: string;
+    image_public_id?: string | null;
     type: PubgGameType;
     map: string;
     created_at: string;

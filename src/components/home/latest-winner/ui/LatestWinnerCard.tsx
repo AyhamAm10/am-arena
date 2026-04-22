@@ -1,5 +1,5 @@
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -26,7 +26,7 @@ export default function LatestWinnerCard() {
       <View style={styles.container}>
         {imageSource ? (
           <ImageBackground
-            source={{ uri: formatImageUrl(imageSource as string) }}
+            source={{ uri: resolveMediaUrl(imageSource as string, "image") }}
             style={styles.imageBackground}
             imageStyle={styles.imageRadius}
             resizeMode="cover"

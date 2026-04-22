@@ -1,7 +1,7 @@
 import type { PollOptionResponse, PollResponse } from "@/src/api/types/poll.types";
 import type { PubgGameType, PubgTournamentDetail } from "@/src/api/types/pubg-tournament.types";
 import { ScreenEnterTransition } from "@/src/components/motion";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { flexRowRtl, isRtl, rtlMirrorIconStyle, textRtl, writingRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
@@ -234,7 +234,7 @@ function VotingTabContent(props: {
                 option.user?.full_name?.trim() ||
                 (option.user ? `مشارك #${option.user.id}` : null);
               const avatarUri = option.user?.avatarUrl
-                ? formatImageUrl(option.user.avatarUrl)
+                ? resolveMediaUrl(option.user.avatarUrl, "image")
                 : null;
 
               return (
@@ -389,7 +389,7 @@ export function Ui() {
   const voteOnPoll = useMirror("voteOnPoll");
 
   const headerImage = tournament?.game?.image
-    ? { uri: formatImageUrl(tournament.game.image) }
+    ? { uri: resolveMediaUrl(tournament.game.image, "image") }
     : undefined;
   const totalVotes = polls.reduce((sum, poll) => sum + Number(poll.total_votes ?? 0), 0);
   const isTournamentActive = Boolean(tournament?.is_active);

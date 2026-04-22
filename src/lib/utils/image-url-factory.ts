@@ -1,8 +1,11 @@
 import { apiUrl } from "@/src/api/axios/api-url";
 
 /**
- * Achievement icons: DB stores `icons/<filename>`; backend serves `public/icons` at `GET /icons/<filename>`.
- * Do not use {@link formatImageUrl} for these — that maps to `/image/` (`public/uploads`).
+ * Low-level URL builders for legacy relative paths. Prefer `resolveMediaUrl` from
+ * `@/src/lib/utils/resolve-media-url` in UI code.
+ *
+ * Achievement icons: DB may store `icons/<filename>` or full URLs — do not use
+ * `formatImageUrl` alone for these; use `resolveMediaUrl(..., "achievementIcon")`.
  */
 export function formatAchievementIconUrl(path: string): string {
   if (!path) return "";

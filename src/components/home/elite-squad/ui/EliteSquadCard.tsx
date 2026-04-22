@@ -5,7 +5,7 @@ import {
   requiredLevelForTournament,
   xpThresholdFromTournament,
 } from "@/src/lib/utils/tournament-xp-gate";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -47,7 +47,7 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
   const { level: userLevel } = computeLevelAndProgress(userXp);
 
   const imageUri = tournament.game?.image
-    ? formatImageUrl(tournament.game.image)
+    ? resolveMediaUrl(tournament.game.image, "image")
     : undefined;
   const prizePool = formatPrizeWithDollar(tournament.prize_pool);
   const registeredCount = tournament.registered_count ?? 0;

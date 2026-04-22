@@ -54,7 +54,7 @@ export interface AuthTokensResponse {
   /** Register returns full `User` sans password; login returns the narrowed login payload. */
   user: UserAccountDto | LoginUserResponse;
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
 }
 
 export interface AuthRefreshResponse {

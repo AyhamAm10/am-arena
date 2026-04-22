@@ -21,6 +21,8 @@ export default function TabsLayout() {
           <Tabs.Screen name="friends" />
           <Tabs.Screen name="notifications" />
           <Tabs.Screen name="profile" />
+          <Tabs.Screen name="wallet" />
+          <Tabs.Screen name="packages" />
         </Tabs>
       </View>
       <TabBarShell />

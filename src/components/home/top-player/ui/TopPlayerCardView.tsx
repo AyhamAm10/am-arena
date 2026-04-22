@@ -1,5 +1,5 @@
 import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
@@ -36,7 +36,7 @@ export default function TopPlayerCardView({ card }: Props) {
           <View style={styles.avatarFrame}>
             {avatarSource ? (
               <Image
-                source={{ uri: formatImageUrl(avatarSource) }}
+                source={{ uri: resolveMediaUrl(avatarSource, "image") }}
                 style={styles.avatar}
               />
             ) : (

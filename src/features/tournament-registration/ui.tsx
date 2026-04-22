@@ -1,4 +1,4 @@
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import type { PubgGameType } from "@/src/api/types/pubg-tournament.types";
 import type { TournamentRegistrationField } from "@/src/api/types/pubg-tournament-registration.types";
 import { LinearGradient } from "expo-linear-gradient";
@@ -116,7 +116,7 @@ export function Ui() {
   const remainingPct = Math.max(0, Math.min(100, Math.round((1 - fillRatio) * 100)));
 
   const headerImage = tournament?.game?.image
-    ? { uri: formatImageUrl(tournament.game.image) }
+    ? { uri: resolveMediaUrl(tournament.game.image, "image") }
     : fallbackMap;
 
   const selectModalField = useMemo(
@@ -415,7 +415,7 @@ export function Ui() {
             const selected = selectedFriendIds.includes(item.id);
             const blocked = !selected && selectedFriendIds.length >= 3;
             const avatarSource = item.avatarUrl
-              ? { uri: formatImageUrl(item.avatarUrl) }
+              ? { uri: resolveMediaUrl(item.avatarUrl, "image") }
               : undefined;
             return (
               <TouchableOpacity

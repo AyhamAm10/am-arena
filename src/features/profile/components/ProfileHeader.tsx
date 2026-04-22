@@ -29,6 +29,17 @@ function SettingsGlyph({ color }: { color: string }) {
   );
 }
 
+function WalletGlyph({ color }: { color: string }) {
+  return (
+    <Svg width={25} height={28} viewBox="0 0 25 28" fill="none">
+      <Path
+        d="M5.20445 20.8056V7.19444C5.20445 7.19444 5.20445 7.55498 5.20445 8.27604C5.20445 8.99711 5.20445 9.93287 5.20445 11.0833V16.9167C5.20445 18.0671 5.20445 19.0029 5.20445 19.724C5.20445 20.445 5.20445 20.8056 5.20445 20.8056ZM5.20445 22.75C4.66973 22.75 4.21198 22.5596 3.83119 22.1788C3.4504 21.798 3.26001 21.3403 3.26001 20.8056V7.19444C3.26001 6.65972 3.4504 6.20197 3.83119 5.82118C4.21198 5.44039 4.66973 5.25 5.20445 5.25H18.8156C19.3503 5.25 19.808 5.44039 20.1888 5.82118C20.5696 6.20197 20.76 6.65972 20.76 7.19444V9.625H18.8156V7.19444H5.20445V20.8056H18.8156V18.375H20.76V20.8056C20.76 21.3403 20.5696 21.798 20.1888 22.1788C19.808 22.5596 19.3503 22.75 18.8156 22.75H5.20445ZM12.9822 18.8611C12.4475 18.8611 11.9898 18.6707 11.609 18.2899C11.2282 17.9091 11.0378 17.4514 11.0378 16.9167V11.0833C11.0378 10.5486 11.2282 10.0909 11.609 9.71007C11.9898 9.32928 12.4475 9.13889 12.9822 9.13889H19.7878C20.3225 9.13889 20.7803 9.32928 21.1611 9.71007C21.5418 10.0909 21.7322 10.5486 21.7322 11.0833V16.9167C21.7322 17.4514 21.5418 17.9091 21.1611 18.2899C20.7803 18.6707 20.3225 18.8611 19.7878 18.8611H12.9822ZM19.7878 16.9167V11.0833H12.9822V16.9167H19.7878ZM15.8989 15.4583C15.8989 15.4583 16.0002 15.4583 16.2027 15.4583C16.4053 15.4583 16.6483 15.3166 16.9319 15.033C17.2155 14.7494 17.3572 14.4051 17.3572 14C17.3572 13.5949 17.2155 13.2506 16.9319 12.967C16.6483 12.6834 16.304 12.5417 15.8989 12.5417C15.4938 12.5417 15.1495 12.6834 14.8659 12.967C14.5823 13.2506 14.4406 13.5949 14.4406 14C14.4406 14.4051 14.5823 14.7494 14.8659 15.033C15.1495 15.3166 15.4938 15.4583 15.8989 15.4583Z"
+        fill={color}
+      />
+    </Svg>
+  );
+}
+
 type ProfileHeaderProps = {
   title: string;
   showBack: boolean;
@@ -36,6 +47,7 @@ type ProfileHeaderProps = {
   /** Own profile: overflow menu — navigate to edit screen. */
   onEditPress?: () => void;
   onViewAllAchievementsPress?: () => void;
+  onWalletPress?: () => void;
   /** Own profile: POST /auth/logout (wired via profile Api layer). */
   onLogoutPress?: () => void | Promise<void>;
   isLoggingOut?: boolean;
@@ -47,6 +59,7 @@ export function ProfileHeader({
   onBack,
   onEditPress,
   onViewAllAchievementsPress,
+  onWalletPress,
   onLogoutPress,
   isLoggingOut,
 }: ProfileHeaderProps) {
@@ -56,7 +69,9 @@ export function ProfileHeader({
   const openMenu = () => setMenuOpen(true);
   const closeMenu = () => setMenuOpen(false);
 
-  const menuEnabled = Boolean(onEditPress || onLogoutPress || onViewAllAchievementsPress);
+  const menuEnabled = Boolean(
+    onEditPress || onLogoutPress || onViewAllAchievementsPress || onWalletPress,
+  );
 
   const handleEdit = () => {
     closeMenu();
@@ -71,6 +86,11 @@ export function ProfileHeader({
   const handleViewAllAchievements = () => {
     closeMenu();
     onViewAllAchievementsPress?.();
+  };
+
+  const handleWallet = () => {
+    closeMenu();
+    onWalletPress?.();
   };
 
   return (
@@ -95,6 +115,16 @@ export function ProfileHeader({
         {title}
       </Text>
       <View style={styles.side}>
+        {onWalletPress ? (
+          <Pressable
+            onPress={handleWallet}
+            style={styles.iconBtn}
+            hitSlop={8}
+            accessibilityLabel="المحفظة"
+          >
+            <WalletGlyph color={colors_V2.lavenderLight} />
+          </Pressable>
+        ) : null}
         {menuEnabled ? (
           <Pressable
             onPress={openMenu}
@@ -153,8 +183,21 @@ export function ProfileHeader({
                 <Text style={[styles.menuLabel, textRtl]}>مشاهدة جميع الانجازات</Text>
               </Pressable>
             ) : null}
-            {onViewAllAchievementsPress && onLogoutPress ? (
+            {(onViewAllAchievementsPress || onWalletPress) && onLogoutPress ? (
               <View style={styles.menuDivider} />
+            ) : null}
+            {onWalletPress ? (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.menuRow,
+                  pressed && styles.menuRowPressed,
+                ]}
+                onPress={handleWallet}
+                disabled={isLoggingOut}
+              >
+                <Icon name="account-balance-wallet" size={20} color={colors_V2.gold} />
+                <Text style={[styles.menuLabel, textRtl]}>المحفظة</Text>
+              </Pressable>
             ) : null}
             {onLogoutPress ? (
               <Pressable
@@ -189,9 +232,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   side: {
-    width: 44,
+    width: 92,
+    ...flexRowRtl,
+    gap: 4,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
   },
   title: {
     flex: 1,

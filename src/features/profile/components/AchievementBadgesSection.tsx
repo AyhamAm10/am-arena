@@ -1,5 +1,5 @@
 import type { AchievementPublic, UserAchievementEntry } from "@/src/api/types/user.types";
-import { formatAchievementIconUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { flexRowRtl, textRtl, writingRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { Image } from "expo-image";
@@ -68,7 +68,7 @@ function AchievementBadgeItem({
 }) {
   const accent = achievement.color_theme?.trim() || colors_V2.gold;
   const uri = achievement.icon_url
-    ? formatAchievementIconUrl(achievement.icon_url)
+    ? resolveMediaUrl(achievement.icon_url, "achievementIcon")
     : null;
 
   return (

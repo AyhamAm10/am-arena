@@ -27,10 +27,15 @@ export async function refreshSession(): Promise<void> {
 
 export async function persistAuthSession(tokens: {
   accessToken: string;
-  refreshToken: string;
+  refreshToken?: string;
 }): Promise<void> {
   useAuthStore.getState().setAccessToken(tokens.accessToken);
-  await setRefreshToken(tokens.refreshToken);
+  if (Platform.OS !== "web") {
+    if (!tokens.refreshToken) {
+      throw new Error("Missing refresh token");
+    }
+    await setRefreshToken(tokens.refreshToken);
+  }
 }
 
 export async function clearAuthSession(): Promise<void> {

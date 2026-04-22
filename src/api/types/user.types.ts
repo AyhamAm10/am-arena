@@ -46,6 +46,7 @@ export interface AchievementPublic {
   description: string;
   color_theme: string | null;
   icon_url: string;
+  icon_public_id?: string | null;
   xp_reward: number;
   type: AchievementType;
   logic_type: AchievementLogicType;

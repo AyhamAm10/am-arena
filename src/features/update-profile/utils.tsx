@@ -1,6 +1,6 @@
 import { useFetchCurrentUser } from "@/src/hooks/api/auth/useFetchCurrentUser";
 import { uploadImageToCloudinary } from "@/src/lib/cloudinary/upload-image";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import * as ImagePicker from "expo-image-picker";
 import {
   type PropsWithChildren,
@@ -77,7 +77,7 @@ function Utils({ children }: PropsWithChildren) {
 
   const remoteAvatarUrl = useMemo(() => {
     if (!currentUser?.avatarUrl) return null;
-    return formatImageUrl(currentUser.avatarUrl) || null;
+    return resolveMediaUrl(currentUser.avatarUrl, "image") || null;
   }, [currentUser?.avatarUrl]);
 
   const dirty = useMemo(() => {

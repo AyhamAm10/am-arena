@@ -6,7 +6,7 @@ import {
   arWriting,
 } from "@/src/features/tournaments/tournaments-rtl";
 import { tournamentsTheme } from "@/src/features/tournaments/theme";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import React from "react";
 import {
   Image,
@@ -41,7 +41,7 @@ function formatPastDateAr(t: PubgTournamentDetail): string {
 
 export function PastTournamentCard({ tournament, onReplayPress }: Props) {
   const imageUri = tournament.game?.image
-    ? formatImageUrl(tournament.game.image)
+    ? resolveMediaUrl(tournament.game.image, "image")
     : undefined;
   const champion =
     tournament.winners && tournament.winners.length > 0

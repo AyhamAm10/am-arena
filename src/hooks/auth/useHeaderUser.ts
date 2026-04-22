@@ -1,5 +1,5 @@
 import type { CurrentUserResponse } from "@/src/api/types/auth.types";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
 import { useAuthStore } from "@/src/stores/authStore";
 import { useMemo } from "react";
@@ -51,11 +51,11 @@ export function useHeaderUser(): HeaderUserState {
     const coins =
       typeof coinsRaw === "string" ? Number(coinsRaw) || 0 : Number(coinsRaw ?? 0);
     const avatarUri = user?.avatarUrl
-      ? formatImageUrl(user.avatarUrl)
+      ? resolveMediaUrl(user.avatarUrl, "image")
       : null;
     const achievementColor = user?.selected_achievement?.color_theme ?? null;
     const achievementIconUrl = user?.selected_achievement?.icon_url
-      ? formatImageUrl(user.selected_achievement.icon_url)
+      ? resolveMediaUrl(user.selected_achievement.icon_url, "achievementIcon")
       : null;
     const rawName = user?.selected_achievement?.name?.trim();
     const achievementName = rawName && rawName.length > 0 ? rawName : null;

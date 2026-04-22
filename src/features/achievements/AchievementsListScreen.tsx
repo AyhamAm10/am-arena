@@ -6,7 +6,7 @@ import { useFetchMyAchievements } from "@/src/hooks/api/achievement/useFetchMyAc
 import { useSetActiveAchievement } from "@/src/hooks/api/achievement/useSetActiveAchievement";
 import { useToggleAchievementDisplay } from "@/src/hooks/api/achievement/useToggleAchievementDisplay";
 import { flexRowRtl, progressFillRtl, textRtl, writingRtl } from "@/src/lib/rtl";
-import { formatAchievementIconUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -56,7 +56,9 @@ function AchievementCard({
   onSetActive?: () => void;
 }) {
   const accent = achievementAccent(achievement);
-  const uri = achievement.icon_url ? formatAchievementIconUrl(achievement.icon_url) : null;
+  const uri = achievement.icon_url
+    ? resolveMediaUrl(achievement.icon_url, "achievementIcon")
+    : null;
   const isObtained = achievement.is_obtained === true || userAchievementId != null;
   const percentage = achievementProgress(achievement);
   const current = Number(achievement.current ?? 0);

@@ -31,6 +31,7 @@ export interface ReelEntity {
   id: number;
   title: string;
   video_url: string;
+  video_public_id?: string | null;
   description: string;
   created_at: string;
   updated_at: string;

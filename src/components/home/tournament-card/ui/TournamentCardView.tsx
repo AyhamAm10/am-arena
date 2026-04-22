@@ -1,6 +1,6 @@
 import { HourIcon } from "@/src/components/icons/figma/HourIcon";
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
@@ -50,7 +50,7 @@ export default function TournamentCardView({ card }: Props) {
     >
       {imageSource ? (
         <ImageBackground
-          source={{ uri: formatImageUrl(imageSource) }}
+          source={{ uri: resolveMediaUrl(imageSource, "image") }}
           style={styles.imageWrap}
           imageStyle={styles.image}
           resizeMode="cover"

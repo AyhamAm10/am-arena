@@ -1,7 +1,6 @@
 import { ChatIcon } from "@/src/components/icons/figma/ChatIcon";
 import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIcon";
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
 import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";

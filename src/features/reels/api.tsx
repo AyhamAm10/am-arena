@@ -60,8 +60,10 @@ function Api({ children }: PropsWithChildren) {
   }, [queryClient]);
 
   const voteOnPoll = useCallback(
-    async (pollId: number, optionId: number) =>
-      voteMutation.mutateAsync({ pollId, optionId }),
+    async (pollId: number, optionId: number) => {
+      if (voteMutation.isPending) return;
+      await voteMutation.mutateAsync({ pollId, optionId });
+    },
     [voteMutation]
   );
 

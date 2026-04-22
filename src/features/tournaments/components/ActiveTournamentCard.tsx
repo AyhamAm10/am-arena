@@ -9,7 +9,7 @@ import {
   arText,
   arWriting,
 } from "@/src/features/tournaments/tournaments-rtl";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { flexRowRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
@@ -36,7 +36,7 @@ export function ActiveTournamentCard({
   onJoinPress,
 }: Props) {
   const imageUri = tournament.game?.image
-    ? formatImageUrl(tournament.game.image)
+    ? resolveMediaUrl(tournament.game.image, "image")
     : undefined;
   const registeredCount = tournament.registered_count ?? 0;
   const maxPlayers = tournament.max_players ?? 0;

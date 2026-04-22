@@ -2,7 +2,7 @@ import { useFetchTournamentPolls } from "@/src/hooks/api/poll/useFetchTournament
 import { useVoteOnPoll } from "@/src/hooks/api/poll/useVoteOnPoll";
 import { useFetchPubgTournamentById } from "@/src/hooks/api/tournament/useFetchPubgTournamentById";
 import { useLocalSearchParams } from "expo-router";
-import { type PropsWithChildren, useMemo } from "react";
+import { type PropsWithChildren, useCallback, useMemo } from "react";
 import { useMirrorRegistry } from "./store";
 
 function Api({ children }: PropsWithChildren) {
@@ -36,12 +36,14 @@ function Api({ children }: PropsWithChildren) {
     pollsQuery.isFetching,
   );
   useMirrorRegistry("isVoting", voteMutation.isPending, voteMutation.isPending);
-  useMirrorRegistry(
-    "voteOnPoll",
-    async (pollId: number, optionId: number) =>
-      voteMutation.mutateAsync({ pollId, optionId, tournamentId }),
-    voteMutation.mutateAsync,
+  const voteOnPoll = useCallback(
+    async (pollId: number, optionId: number) => {
+      if (voteMutation.isPending) return;
+      await voteMutation.mutateAsync({ pollId, optionId, tournamentId });
+    },
+    [voteMutation, tournamentId]
   );
+  useMirrorRegistry("voteOnPoll", voteOnPoll, voteOnPoll);
 
   return children;
 }

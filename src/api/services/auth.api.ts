@@ -1,6 +1,7 @@
 import axiosInstance from "../axios/axiosInstance";
 import { parseApiResponse } from "../axios/apiResponseParser";
 import { ApiResponse } from "../types/api-response";
+import { Platform } from "react-native";
 import type {
   AuthLoginBody,
   AuthRegisterBody,
@@ -13,7 +14,14 @@ export async function register(
 ): Promise<AuthTokensResponse> {
   const res = await axiosInstance.post<ApiResponse<AuthTokensResponse>>(
     "/auth/register",
-    body
+    body,
+    Platform.OS === "web"
+      ? undefined
+      : {
+          headers: {
+            "X-Refresh-Token-Delivery": "body",
+          },
+        }
   );
   return parseApiResponse(res);
 }
@@ -21,7 +29,14 @@ export async function register(
 export async function login(body: AuthLoginBody): Promise<AuthTokensResponse> {
   const res = await axiosInstance.post<ApiResponse<AuthTokensResponse>>(
     "/auth/login",
-    body
+    body,
+    Platform.OS === "web"
+      ? undefined
+      : {
+          headers: {
+            "X-Refresh-Token-Delivery": "body",
+          },
+        }
   );
   return parseApiResponse(res);
 }

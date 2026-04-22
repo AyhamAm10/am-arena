@@ -56,6 +56,7 @@ export function Ui() {
           onViewAllAchievementsPress={
             showViewAll ? () => router.push("/profile/achievements") : undefined
           }
+          onWalletPress={!showFriendButton ? () => router.push("/wallet") : undefined}
           isLoggingOut={showLogoutButton ? isLoggingOut : undefined}
         />
 

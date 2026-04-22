@@ -1,4 +1,4 @@
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import type { UserPublicSummary } from "@/src/api/types/user.types";
 import { AppLayout } from "@/src/components/layout";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -145,7 +145,7 @@ export function Ui() {
         const u = item as UserPublicSummary;
         const online = u.is_active;
         const uri = u.avatarUrl
-          ? formatImageUrl(u.avatarUrl)
+          ? resolveMediaUrl(u.avatarUrl, "image")
           : null;
         const busy = busyFriendId === u.id;
         const outgoingPending =
@@ -166,7 +166,7 @@ export function Ui() {
         return (
           <View style={styles.card}>
             <TouchableOpacity
-              style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+              style={styles.cardPressable}
               onPress={() => router.push(`/profile/${u.id}`)}
             >
               <View style={styles.avatarWrap}>
@@ -183,7 +183,9 @@ export function Ui() {
                 />
               </View>
               <View style={styles.cardBody}>
-                <Text style={styles.gamerName}>{u.gamer_name}</Text>
+                <Text style={styles.gamerName} numberOfLines={1}>
+                  {u.gamer_name}
+                </Text>
                 <Text
                   style={[
                     styles.statusText,
@@ -213,7 +215,7 @@ export function Ui() {
       const u = fi.user;
       const online = u.is_active;
       const uri = u.avatarUrl
-        ? formatImageUrl(u.avatarUrl)
+        ? resolveMediaUrl(u.avatarUrl, "image")
         : null;
       const busy = busyFriendId === u.id;
 
@@ -221,7 +223,7 @@ export function Ui() {
         return (
           <View style={styles.card}>
             <TouchableOpacity
-              style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+              style={styles.cardPressable}
               onPress={() => router.push(`/profile/${u.id}`)}
             >
               <View style={styles.avatarWrap}>
@@ -238,7 +240,9 @@ export function Ui() {
                 />
               </View>
               <View style={styles.cardBody}>
-                <Text style={styles.gamerName}>{u.gamer_name}</Text>
+                <Text style={styles.gamerName} numberOfLines={1}>
+                  {u.gamer_name}
+                </Text>
                 <Text
                   style={[
                     styles.statusText,
@@ -272,7 +276,7 @@ export function Ui() {
       return (
         <View style={styles.card}>
           <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+            style={styles.cardPressable}
             onPress={() => router.push(`/profile/${u.id}`)}
           >
             <View style={styles.avatarWrap}>
@@ -289,7 +293,9 @@ export function Ui() {
               />
             </View>
             <View style={styles.cardBody}>
-              <Text style={styles.gamerName}>{u.gamer_name}</Text>
+              <Text style={styles.gamerName} numberOfLines={1}>
+                {u.gamer_name}
+              </Text>
               <Text
                 style={[
                   styles.statusText,
@@ -419,7 +425,7 @@ export function Ui() {
         );
       }
       const uri = u.avatarUrl
-        ? formatImageUrl(u.avatarUrl)
+        ? resolveMediaUrl(u.avatarUrl, "image")
         : null;
       const busy = busyFriendId === u.id;
       const outgoingPending = pendingOutgoingUserIds.includes(u.id);

@@ -12,8 +12,7 @@ import { useHeaderUser } from "@/src/hooks/auth/useHeaderUser";
 import { flexRowRtl } from "@/src/lib/rtl";
 import { formatCommentTimeAgo } from "@/src/lib/utils/comment-time-ago";
 import { formatCompactCount } from "@/src/lib/utils/format-compact-count";
-import { formatImageUrl } from "@/src/lib/utils/image-url-factory";
-import { formatReelVideoUrl } from "@/src/lib/utils/reel-video-url";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import { useIsFocused } from "@react-navigation/native";
 import type { AVPlaybackStatus } from "expo-av";
@@ -149,7 +148,7 @@ function commentAvatarUri(user: ReelCommentEntity["user"]): string | null {
   const u = user as UserAccountDto;
   const raw = u.avatarUrl;
   if (!raw) return null;
-  return formatImageUrl(raw);
+  return resolveMediaUrl(raw, "image");
 }
 
 function formatPollCountdown(expiresAt: string | null): string {
@@ -819,7 +818,7 @@ export function Ui() {
                   keyExtractor={(item, index) => reelKey(item, index)}
                   extraData={{ activeTab, currentIndex, playbackRatio }}
                   renderItem={({ item, index }) => {
-                    const videoUri = formatReelVideoUrl(item.video_url);
+                    const videoUri = resolveMediaUrl(item.video_url, "video");
                     const isActive = index === currentIndex;
                     const liked = Boolean(item.liked_by_current_user);
                     const likesCount = item.likes_count ?? 0;
