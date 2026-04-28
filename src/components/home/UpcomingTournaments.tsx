@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   viewAll: {
     fontSize: 12,
     fontWeight: "700",
-    color: colors_V2.lavender,
+    color: colors_V2.gradientEnd,
     letterSpacing: 0.5,
   },
   scrollContent: {

@@ -13,7 +13,7 @@ export function HomeNavIconV2({
   size = 18,
   width: w,
   height: h,
-  color = colors_V2.skyBlue,
+  color = colors_V2.primaryLight,
 }: Props) {
   const width = w ?? size;
   const height = h ?? (size * 18) / 16;

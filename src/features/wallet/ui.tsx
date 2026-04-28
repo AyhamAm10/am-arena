@@ -68,7 +68,7 @@ export function WalletScreen() {
         <View style={styles.balanceCard}>
           <Text style={[styles.balanceLabel, textRtl]}>الرصيد الحالي</Text>
           {walletQuery.isLoading ? (
-            <ActivityIndicator color={colors_V2.gold} />
+            <ActivityIndicator color={colors_V2.accent} />
           ) : (
             <Text style={styles.balanceValue}>
               {Number(walletQuery.data?.balance ?? 0).toLocaleString("ar")} عملة
@@ -94,8 +94,8 @@ export function WalletScreen() {
               onRefresh={() => {
                 void refreshAll();
               }}
-              tintColor={colors_V2.gold}
-              colors={[colors_V2.purple, colors_V2.gold]}
+              tintColor={colors_V2.accent}
+              colors={[colors_V2.primary, colors_V2.accent]}
             />
           }
           onEndReachedThreshold={0.4}
@@ -106,7 +106,7 @@ export function WalletScreen() {
           }}
           ListEmptyComponent={
             txQuery.isLoading ? (
-              <ActivityIndicator color={colors_V2.purple} />
+              <ActivityIndicator color={colors_V2.primary} />
             ) : (
               <Text style={[styles.emptyText, textRtl]}>لا توجد عمليات حتى الآن.</Text>
             )
@@ -114,7 +114,7 @@ export function WalletScreen() {
           renderItem={({ item }) => {
             const isDeposit = item.type === "deposit";
             const amountPrefix = isDeposit ? "+" : "-";
-            const amountColor = isDeposit ? colors_V2.skyBlue : colors_V2.errorLight;
+            const amountColor = isDeposit ? colors_V2.primaryLight : colors_V2.error;
             return (
               <View style={styles.rowCard}>
                 <View style={[styles.rowHeader, flexRowRtl]}>
@@ -137,7 +137,7 @@ export function WalletScreen() {
           }}
           ListFooterComponent={
             txQuery.isFetchingNextPage ? (
-              <ActivityIndicator color={colors_V2.purple} />
+              <ActivityIndicator color={colors_V2.primary} />
             ) : null
           }
         />
@@ -148,7 +148,7 @@ export function WalletScreen() {
 
 const styles = StyleSheet.create({
   wrap: { flex: 1, gap: 12 },
-  title: { color: colors_V2.lilac, fontSize: 24, fontWeight: "800" },
+  title: { color: colors_V2.textPrimary, fontSize: 24, fontWeight: "800" },
   balanceCard: {
     backgroundColor: colors_V2.card,
     borderRadius: 18,
@@ -157,17 +157,17 @@ const styles = StyleSheet.create({
     borderColor: "rgba(216,185,255,0.15)",
     gap: 10,
   },
-  balanceLabel: { color: colors_V2.slate, fontSize: 14, fontWeight: "700" },
-  balanceValue: { color: colors_V2.gold, fontSize: 30, fontWeight: "900" },
+  balanceLabel: { color: colors_V2.textSecondary, fontSize: 14, fontWeight: "700" },
+  balanceValue: { color: colors_V2.accent, fontSize: 30, fontWeight: "900" },
   buyButton: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
     paddingVertical: 12,
     borderRadius: 14,
     alignItems: "center",
   },
-  buyText: { color: colors_V2.lilac, fontSize: 17, fontWeight: "800" },
+  buyText: { color: colors_V2.textPrimary, fontSize: 17, fontWeight: "800" },
   sectionTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 20,
     fontWeight: "800",
     marginTop: 6,
@@ -182,9 +182,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   rowHeader: { justifyContent: "space-between", alignItems: "center" },
-  rowType: { color: colors_V2.lilac, fontSize: 16, fontWeight: "700" },
+  rowType: { color: colors_V2.textPrimary, fontSize: 16, fontWeight: "700" },
   rowAmount: { fontSize: 18, fontWeight: "900" },
   rowMeta: { justifyContent: "space-between", alignItems: "center" },
-  rowMetaText: { color: colors_V2.slate, fontSize: 13, fontWeight: "600" },
-  emptyText: { color: colors_V2.slate, fontSize: 14, textAlign: "center" },
+  rowMetaText: { color: colors_V2.textSecondary, fontSize: 13, fontWeight: "600" },
+  emptyText: { color: colors_V2.textSecondary, fontSize: 14, textAlign: "center" },
 });

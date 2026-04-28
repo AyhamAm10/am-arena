@@ -37,7 +37,7 @@ export function ProfileAvatarSection({
   );
 
   const uri = profilePictureUrl ? resolveMediaUrl(profilePictureUrl, "image") : "";
-  const accent = selectedAchievement?.color_theme?.trim() || colors_V2.gold;
+  const accent = selectedAchievement?.color_theme?.trim() || colors_V2.accent;
   const titleLabel = selectedTitle?.trim() || "بدون لقب محدد";
 
   return (
@@ -55,7 +55,7 @@ export function ProfileAvatarSection({
           {uri ? (
             <Image source={{ uri }} style={styles.avatarImg} contentFit="cover" />
           ) : (
-            <Icon name="person" size={56} color={colors_V2.slate} />
+            <Icon name="person" size={56} color={colors_V2.textSecondary} />
           )}
         </View>
         <View style={[styles.levelBadge, { backgroundColor: accent }]}>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     borderColor: colors_V2.background,
   },
   playerName: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 22,
     fontWeight: "700",
     marginBottom: 10,
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   gamerName: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 15,
     marginBottom: 18,
     textAlign: "center",
@@ -185,13 +185,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   statValue: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 24,
     fontWeight: "700",
     marginBottom: 4,
   },
   statLabel: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "600",
     textAlign: "center",

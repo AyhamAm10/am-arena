@@ -141,7 +141,7 @@ export function ActiveTournamentCard({
             colors={
               canJoin
                 ? [colors_V2.gradientStart, colors_V2.gradientEnd]
-                : [colors_V2.slate, colors_V2.dustyLavender]
+                : [colors_V2.textSecondary, colors_V2.textSecondary]
             }
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   modePill: {
-    backgroundColor: colors_V2.skyBlue,
+    backgroundColor: colors_V2.primaryLight,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 6,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 22,
     fontWeight: "900",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     letterSpacing: 0.2,
     lineHeight: 28,
   },
@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
   statValueParticipants: {
     fontSize: 15,
     fontWeight: "800",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     lineHeight: 20,
   },
   progressTrack: {
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: colors_V2.skyBlue,
+    backgroundColor: colors_V2.primaryLight,
   },
   joinTouchable: {
     borderRadius: 14,
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   joinHint: {
     fontSize: 11,
     fontWeight: "600",
-    color: colors_V2.errorLight,
+    color: colors_V2.error,
     lineHeight: 17,
     textAlign: "center",
   },

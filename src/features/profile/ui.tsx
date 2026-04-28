@@ -62,7 +62,7 @@ export function Ui() {
 
         {isLoadingProfile ? (
           <View style={styles.centered}>
-            <ActivityIndicator size="large" color={colors_V2.purple} />
+            <ActivityIndicator size="large" color={colors_V2.primary} />
           </View>
         ) : isProfileError || !screenModel ? (
           <View style={styles.centered}>
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   errorText: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 16,
     textAlign: "center",
   },

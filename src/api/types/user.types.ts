@@ -17,6 +17,7 @@ export interface UserAccountDto {
   avatarPublicId?: string | null;
   email: string;
   phone: string;
+  country?: string | null;
   role: UserRole;
   is_active: boolean;
   coins: number | string;

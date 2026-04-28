@@ -10,6 +10,7 @@ function Utils({ children }: PropsWithChildren) {
   const phone = useMirror('phone')
   const fullName = useMirror('fullName')
   const gamerName = useMirror('gamerName')
+  const country = useMirror('country')
   const email = useMirror('email')
   const password = useMirror('password')
   const confirmPassword = useMirror('confirmPassword')
@@ -27,7 +28,7 @@ function Utils({ children }: PropsWithChildren) {
       return 'Please upload your profile image.'
     }
 
-    if (!fullName.trim() || !gamerName.trim() || !email.trim() || !password.trim()) {
+    if (!fullName.trim() || !gamerName.trim() || !country.trim() || !email.trim() || !password.trim()) {
       return 'Please fill all required fields.'
     }
 
@@ -36,7 +37,7 @@ function Utils({ children }: PropsWithChildren) {
     }
 
     return null
-  }, [profileImageUri, fullName, gamerName, email, password, confirmPassword])
+  }, [profileImageUri, fullName, gamerName, country, email, password, confirmPassword])
 
   const canSubmit = useMemo(() => {
     return !isLoading && !formError
@@ -73,6 +74,7 @@ function Utils({ children }: PropsWithChildren) {
     const payload: AuthRegisterBody = {
       full_name: fullName.trim(),
       gamer_name: gamerName.trim(),
+      country: country.trim(),
       email: email.trim(),
       password,
     }

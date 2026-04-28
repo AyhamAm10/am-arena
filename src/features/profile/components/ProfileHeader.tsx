@@ -105,7 +105,7 @@ export function ProfileHeader({
             <Icon
               name="arrow-back"
               size={22}
-              color={colors_V2.lavender}
+              color={colors_V2.gradientEnd}
               style={rtlMirrorIconStyle}
             />
           </Pressable>
@@ -122,7 +122,7 @@ export function ProfileHeader({
             hitSlop={8}
             accessibilityLabel="المحفظة"
           >
-            <WalletGlyph color={colors_V2.lavenderLight} />
+            <WalletGlyph color={colors_V2.primaryLight} />
           </Pressable>
         ) : null}
         {menuEnabled ? (
@@ -132,7 +132,7 @@ export function ProfileHeader({
             hitSlop={8}
             accessibilityLabel="فتح القائمة"
           >
-            <SettingsGlyph color={colors_V2.lavenderLight} />
+            <SettingsGlyph color={colors_V2.primaryLight} />
           </Pressable>
         ) : null}
       </View>
@@ -163,7 +163,7 @@ export function ProfileHeader({
                 onPress={handleEdit}
                 disabled={isLoggingOut}
               >
-                <Icon name="edit" size={20} color={colors_V2.lilac} />
+                <Icon name="edit" size={20} color={colors_V2.textPrimary} />
                 <Text style={[styles.menuLabel, textRtl]}>تعديل</Text>
               </Pressable>
             ) : null}
@@ -179,7 +179,7 @@ export function ProfileHeader({
                 onPress={handleViewAllAchievements}
                 disabled={isLoggingOut}
               >
-                <Icon name="emoji-events" size={20} color={colors_V2.skyBlue} />
+                <Icon name="emoji-events" size={20} color={colors_V2.primaryLight} />
                 <Text style={[styles.menuLabel, textRtl]}>مشاهدة جميع الانجازات</Text>
               </Pressable>
             ) : null}
@@ -195,7 +195,7 @@ export function ProfileHeader({
                 onPress={handleWallet}
                 disabled={isLoggingOut}
               >
-                <Icon name="account-balance-wallet" size={20} color={colors_V2.gold} />
+                <Icon name="account-balance-wallet" size={20} color={colors_V2.accent} />
                 <Text style={[styles.menuLabel, textRtl]}>المحفظة</Text>
               </Pressable>
             ) : null}
@@ -209,9 +209,9 @@ export function ProfileHeader({
                 disabled={isLoggingOut}
               >
                 {isLoggingOut ? (
-                  <ActivityIndicator size="small" color={colors_V2.errorLight} />
+                  <ActivityIndicator size="small" color={colors_V2.error} />
                 ) : (
-                  <Icon name="exit-to-app" size={20} color={colors_V2.errorLight} />
+                  <Icon name="exit-to-app" size={20} color={colors_V2.error} />
                 )}
                 <Text style={[styles.menuLabel, styles.menuLabelDanger, textRtl]}>
                   تسجيل الخروج
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     textAlign: "center",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: 0.2,
@@ -282,13 +282,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.05)",
   },
   menuLabel: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 15,
     fontWeight: "600",
     ...writingRtl,
   },
   menuLabelDanger: {
-    color: colors_V2.errorLight,
+    color: colors_V2.error,
   },
   menuDivider: {
     height: StyleSheet.hairlineWidth,

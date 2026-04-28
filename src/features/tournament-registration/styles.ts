@@ -6,15 +6,15 @@ export const trColors = {
   bg: colors_V2.background,
   cardBg: colors_V2.card,
   inputBg: "#2A1D35",
-  labelMuted: colors_V2.slate,
-  cyan: colors_V2.skyBlue,
-  purple: colors_V2.purple,
+  labelMuted: colors_V2.textSecondary,
+  cyan: colors_V2.primaryLight,
+  purple: colors_V2.primary,
   purpleDeep: colors_V2.gradientStart,
-  white: colors_V2.lilac,
+  white: colors_V2.textPrimary,
   progressTrack: "#23172E",
   borderLine: "#4C3A5A",
   avatarPlaceholder: "#2F223B",
-  selectRing: colors_V2.dustyLavender,
+  selectRing: colors_V2.textSecondary,
 };
 
 export const styles = StyleSheet.create({
@@ -61,7 +61,7 @@ export const styles = StyleSheet.create({
     fontWeight: "700",
   },
   pageTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "800",
   },
@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
   },
   heroPubgText: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 1,
@@ -116,14 +116,14 @@ export const styles = StyleSheet.create({
     marginTop: -4,
   },
   heroTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 28,
     fontWeight: "900",
     letterSpacing: 0.4,
     lineHeight: 34,
   },
   heroSubtitle: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 13,
     fontWeight: "600",
     letterSpacing: 0.5,
@@ -141,7 +141,7 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   progressCount: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 13,
     fontWeight: "800",
   },
@@ -159,7 +159,7 @@ export const styles = StyleSheet.create({
   },
   progressSub: {
     marginTop: 6,
-    color: colors_V2.gold,
+    color: colors_V2.accent,
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.6,
@@ -174,7 +174,7 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
   },
   levelGateHint: {
-    color: colors_V2.gold,
+    color: colors_V2.accent,
     fontSize: 12,
     fontWeight: "600",
     lineHeight: 17,
@@ -326,7 +326,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   friendName: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
     fontWeight: "700",
   },
@@ -388,7 +388,7 @@ export const styles = StyleSheet.create({
     borderBottomColor: trColors.borderLine,
   },
   modalOptionText: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
   },
 });

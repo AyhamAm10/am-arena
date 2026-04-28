@@ -11,9 +11,9 @@ type Props = {
 };
 
 const ACCENT_COLORS: Record<TournamentHistoryItem["result"], string> = {
-  won: colors_V2.skyBlue,
-  lost: colors_V2.gold,
-  free: colors_V2.lavenderLight,
+  won: colors_V2.primaryLight,
+  lost: colors_V2.accent,
+  free: colors_V2.primaryLight,
 };
 
 function formatRelativeTime(iso: string): string {
@@ -101,12 +101,12 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "700",
   },
   sectionCaption: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "600",
   },
@@ -132,12 +132,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 15,
     fontWeight: "700",
   },
   subtitle: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 12,
     marginTop: 3,
   },
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     marginStart: 12,
   },
   metaTop: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "600",
   },

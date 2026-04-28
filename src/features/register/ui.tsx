@@ -21,6 +21,7 @@ export function Ui() {
   const phone = useMirror('phone')
   const fullName = useMirror('fullName')
   const gamerName = useMirror('gamerName')
+  const country = useMirror('country')
   const email = useMirror('email')
   const password = useMirror('password')
   const confirmPassword = useMirror('confirmPassword')
@@ -30,6 +31,7 @@ export function Ui() {
   const setPhone = useMirror('setPhone')
   const setFullName = useMirror('setFullName')
   const setGamerName = useMirror('setGamerName')
+  const setCountry = useMirror('setCountry')
   const setEmail = useMirror('setEmail')
   const setPassword = useMirror('setPassword')
   const setConfirmPassword = useMirror('setConfirmPassword')
@@ -98,6 +100,17 @@ export function Ui() {
             placeholderTextColor={colors.grey}
             style={styles.input}
             autoCapitalize='none'
+          />
+        </View>
+
+        <Text style={styles.label}>الدولة</Text>
+        <View style={styles.inputWrap}>
+          <TextInput
+            value={country}
+            onChangeText={setCountry}
+            placeholder="أدخل الدولة"
+            placeholderTextColor={colors.grey}
+            style={styles.input}
           />
         </View>
 

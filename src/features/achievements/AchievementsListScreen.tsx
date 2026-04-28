@@ -28,7 +28,7 @@ type TabKey = "all" | "mine";
 export type AchievementsListVariant = "tab" | "stack";
 
 function achievementAccent(item: AchievementPublic) {
-  return item.color_theme?.trim() || colors_V2.gold;
+  return item.color_theme?.trim() || colors_V2.accent;
 }
 
 function achievementProgress(item: AchievementPublic) {
@@ -134,7 +134,7 @@ function AchievementCard({
               onValueChange={onToggleDisplay}
               disabled={busy || !onToggleDisplay}
               trackColor={{ false: colors_V2.card, true: accent }}
-              thumbColor={colors_V2.lilac}
+              thumbColor={colors_V2.textPrimary}
             />
           </View>
           <Pressable
@@ -285,7 +285,7 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
 
           {isLoading ? (
             <View style={styles.centered}>
-              <ActivityIndicator size="large" color={colors_V2.purple} />
+              <ActivityIndicator size="large" color={colors_V2.primary} />
             </View>
           ) : isError ? (
             <View style={styles.centered}>
@@ -371,15 +371,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabButtonActive: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
   },
   tabLabel: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 15,
     fontWeight: "700",
   },
   tabLabelActive: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
   },
   centered: {
     flex: 1,
@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   muted: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 15,
     textAlign: "center",
   },
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   name: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "800",
     marginBottom: 4,
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   description: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 14,
     lineHeight: 21,
   },
@@ -477,12 +477,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   progressLabel: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 13,
     fontWeight: "700",
   },
   progressValue: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 12,
     fontWeight: "700",
   },
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
   },
   progressPercent: {
     marginTop: 6,
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 12,
     fontWeight: "700",
   },
@@ -515,7 +515,7 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
   },
   switchLabel: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 14,
     fontWeight: "600",
   },

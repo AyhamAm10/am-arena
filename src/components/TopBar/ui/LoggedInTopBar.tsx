@@ -16,7 +16,7 @@ const LoggedInTopBar: React.FC = () => {
   const achievementIconUrl = useMirror("achievementIconUrl") as string | null;
   const achievementName = useMirror("achievementName") as string | null | undefined;
 
-  const borderColor = achievementColor || colors_V2.purple;
+  const borderColor = achievementColor || colors_V2.primary;
   const titleLabel =
     typeof achievementName === "string" && achievementName.trim().length > 0
       ? achievementName.trim()
@@ -72,7 +72,7 @@ const LoggedInTopBar: React.FC = () => {
             accessibilityLabel="الإشعارات"
             onPress={() => router.push("/(tabs)/notifications" as never)}
           >
-            <NotificationsIcon width={20} height={22} color={colors_V2.lavender} />
+            <NotificationsIcon width={20} height={22} color={colors_V2.gradientEnd} />
             <View style={styles.notifDot} />
           </TouchableOpacity>
           <TouchableOpacity
@@ -81,7 +81,7 @@ const LoggedInTopBar: React.FC = () => {
             accessibilityLabel="الدردشة"
             onPress={() => router.push("/(tabs)/channels" as never)}
           >
-            <ChatIcon width={20} height={20} color={colors_V2.lavender} />
+            <ChatIcon width={20} height={20} color={colors_V2.gradientEnd} />
           </TouchableOpacity>
         </View>
       </View>
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 16,
     fontWeight: "800",
-    color: colors_V2.lavender,
+    color: colors_V2.gradientEnd,
     letterSpacing: 1.5,
   },
   userRow: {
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   rankText: {
     fontSize: 12,
     fontWeight: "700",
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     letterSpacing: 0.5,
   },
   actionsRow: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: colors_V2.gold,
+    backgroundColor: colors_V2.accent,
   },
 });
 

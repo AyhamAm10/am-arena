@@ -111,21 +111,21 @@ function TournamentRulesGrid({ tournament }: { tournament: PubgTournamentDetail 
       icon: "groups",
       label: "الشكل",
       value: formatGameTypeAr(tournament.game?.type),
-      iconColor: colors_V2.lavenderLight,
+      iconColor: colors_V2.primaryLight,
     },
     {
       key: "map",
       icon: "map",
       label: "الخريطة",
       value: tournament.game?.map ?? "—",
-      iconColor: colors_V2.lavenderLight,
+      iconColor: colors_V2.primaryLight,
     },
     {
       key: "platform",
       icon: "games",
       label: "المنصة",
       value: "جوال / كمبيوتر",
-      iconColor: colors_V2.lavenderLight,
+      iconColor: colors_V2.primaryLight,
     },
     {
       key: "prize",
@@ -133,7 +133,7 @@ function TournamentRulesGrid({ tournament }: { tournament: PubgTournamentDetail 
       label: "مجموع الجوائز",
       value: prizeText,
       valueGold: true,
-      iconColor: colors_V2.gold,
+      iconColor: colors_V2.accent,
     },
   ];
 
@@ -257,12 +257,12 @@ function VotingTabContent(props: {
                         <Image source={{ uri: avatarUri }} style={styles.nomineeAvatar} />
                       ) : (
                         <View style={styles.nomineeAvatarPlaceholder}>
-                          <Icon name="person" size={28} color={colors_V2.slate} />
+                          <Icon name="person" size={28} color={colors_V2.textSecondary} />
                         </View>
                       )}
                       {selected ? (
                         <View style={styles.nomineeCheckBadge}>
-                          <Icon name="check-circle" size={18} color={colors_V2.skyBlue} />
+                          <Icon name="check-circle" size={18} color={colors_V2.primaryLight} />
                         </View>
                       ) : null}
                     </View>
@@ -400,7 +400,7 @@ export function Ui() {
     return (
       <SafeAreaView style={styles.safe}>
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color={colors_V2.purple} />
+          <ActivityIndicator size="large" color={colors_V2.primary} />
         </View>
       </SafeAreaView>
     );
@@ -428,13 +428,13 @@ export function Ui() {
             <Icon
               name="arrow-back"
               size={22}
-              color={colors_V2.lilac}
+              color={colors_V2.textPrimary}
               style={rtlMirrorIconStyle}
             />
           </TouchableOpacity>
           <Text style={styles.pageTitle}>تفاصيل البطولة</Text>
           <TouchableOpacity style={styles.iconButton}>
-            <Icon name="share" size={20} color={colors_V2.lilac} />
+            <Icon name="share" size={20} color={colors_V2.textPrimary} />
           </TouchableOpacity>
         </View>
 
@@ -516,7 +516,7 @@ export function Ui() {
 
         {isLoadingPolls && polls.length === 0 && (activeTab === "voting" || activeTab === "votingDetails") ? (
           <View style={styles.centered}>
-            <ActivityIndicator color={colors_V2.purple} />
+            <ActivityIndicator color={colors_V2.primary} />
           </View>
         ) : (
           <ScreenEnterTransition from="right" style={{ flex: 1 }}>
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors_V2.card,
   },
   pageTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "800",
     ...textRtl,
@@ -608,24 +608,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   smallBadgeText: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 11,
     fontWeight: "800",
   },
   endsText: {
-    color: colors_V2.gold,
+    color: colors_V2.accent,
     fontSize: 12,
     fontWeight: "700",
     ...textRtl,
   },
   heroTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 32,
     fontWeight: "900",
     ...textRtl,
   },
   heroDescription: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 14,
     lineHeight: 22,
     ...writingRtl,
@@ -642,14 +642,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   heroStatLabel: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "700",
     marginBottom: 4,
     ...textRtl,
   },
   heroStatValue: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
     fontWeight: "800",
     ...textRtl,
@@ -689,22 +689,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabButtonActive: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
   },
   tabText: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "700",
     ...textRtl,
   },
   tabTextActive: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
   },
   tabContent: {
     gap: 10,
   },
   sectionEyebrow: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1.2,
@@ -720,7 +720,7 @@ const styles = StyleSheet.create({
     padding: 18,
   },
   descriptionBody: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 15,
     lineHeight: 24,
     ...writingRtl,
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   ruleCardLabel: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.8,
@@ -756,13 +756,13 @@ const styles = StyleSheet.create({
     ...textRtl,
   },
   ruleCardValue: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
     fontWeight: "800",
     ...textRtl,
   },
   ruleCardValueGold: {
-    color: colors_V2.gold,
+    color: colors_V2.accent,
   },
   emptyCard: {
     backgroundColor: colors_V2.card,
@@ -770,7 +770,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   emptyText: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 14,
     lineHeight: 22,
     ...writingRtl,
@@ -780,19 +780,19 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   pollSectionTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 17,
     fontWeight: "800",
     ...textRtl,
   },
   pollSectionSub: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 13,
     lineHeight: 20,
     ...writingRtl,
   },
   nomineesEyebrow: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "800",
     letterSpacing: 1,
@@ -809,8 +809,8 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   nomineeCardSelected: {
-    borderColor: colors_V2.skyBlue,
-    shadowColor: colors_V2.skyBlue,
+    borderColor: colors_V2.primaryLight,
+    shadowColor: colors_V2.primaryLight,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.35,
     shadowRadius: 6,
@@ -854,16 +854,16 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   nomineeName: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
     fontWeight: "800",
     ...textRtl,
   },
   nomineeNameSelected: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
   },
   nomineeTeam: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.4,
@@ -873,22 +873,22 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   nomineeVoteNum: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "800",
   },
   nomineeVoteNumSelected: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
   },
   nomineeVotesLabel: {
     marginTop: 2,
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 9,
     fontWeight: "800",
     letterSpacing: 0.6,
   },
   pollClosedHint: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 12,
     fontWeight: "600",
     ...textRtl,
@@ -917,10 +917,10 @@ const styles = StyleSheet.create({
     ...textRtl,
   },
   resultRankGold: {
-    color: colors_V2.gold,
+    color: colors_V2.accent,
   },
   resultRankMuted: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
   },
   resultInfo: {
     flex: 1,
@@ -929,7 +929,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   resultName: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
     fontWeight: "800",
     lineHeight: 22,
@@ -937,7 +937,7 @@ const styles = StyleSheet.create({
     ...androidTextTrim,
   },
   resultSub: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 10,
     fontWeight: "800",
     lineHeight: 14,
@@ -951,7 +951,7 @@ const styles = StyleSheet.create({
     minWidth: 52,
   },
   resultVoteNum: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "800",
     lineHeight: 22,
@@ -959,7 +959,7 @@ const styles = StyleSheet.create({
   },
   resultVotesLabel: {
     marginTop: 2,
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 9,
     fontWeight: "800",
     letterSpacing: 0.6,
@@ -971,7 +971,7 @@ const styles = StyleSheet.create({
     height: 2,
     marginTop: 8,
     borderRadius: 1,
-    backgroundColor: colors_V2.lilac,
+    backgroundColor: colors_V2.textPrimary,
     opacity: 0.45,
   },
   officialFooter: {
@@ -985,11 +985,11 @@ const styles = StyleSheet.create({
   officialRule: {
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: colors_V2.slate,
+    backgroundColor: colors_V2.textSecondary,
     opacity: 0.35,
   },
   officialFooterText: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 10,
     fontWeight: "800",
     letterSpacing: 1,

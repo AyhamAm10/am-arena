@@ -66,7 +66,7 @@ function AchievementBadgeItem({
 }: {
   achievement: AchievementPublic;
 }) {
-  const accent = achievement.color_theme?.trim() || colors_V2.gold;
+  const accent = achievement.color_theme?.trim() || colors_V2.accent;
   const uri = achievement.icon_url
     ? resolveMediaUrl(achievement.icon_url, "achievementIcon")
     : null;
@@ -126,17 +126,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 20,
     fontWeight: "700",
   },
   viewAll: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 14,
     fontWeight: "600",
   },
   empty: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 14,
     ...textRtl,
   },
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     height: 36,
   },
   badgeLabel: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 15,
     fontWeight: "600",
     lineHeight: 20,

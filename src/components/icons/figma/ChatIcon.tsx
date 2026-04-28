@@ -11,7 +11,7 @@ type Props = {
 export function ChatIcon({
   width = 20,
   height = 20,
-  color = colors_V2.lavender,
+  color = colors_V2.gradientEnd,
 }: Props) {
   return (
     <Svg width={width} height={height} viewBox="0 0 24 24" fill="none">

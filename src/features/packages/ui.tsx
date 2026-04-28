@@ -36,8 +36,8 @@ export function PackagesScreen() {
                 setRefreshing(false);
               }
             }}
-            tintColor={colors_V2.gold}
-            colors={[colors_V2.purple, colors_V2.gold]}
+            tintColor={colors_V2.accent}
+            colors={[colors_V2.primary, colors_V2.accent]}
           />
         }
       >
@@ -47,7 +47,7 @@ export function PackagesScreen() {
         </Text>
 
         {packagesQuery.isLoading ? (
-          <ActivityIndicator color={colors_V2.purple} />
+          <ActivityIndicator color={colors_V2.primary} />
         ) : (
           (packagesQuery.data ?? []).map((pkg) => {
             const selected = selectedPackageId === pkg.id;
@@ -88,7 +88,7 @@ export function PackagesScreen() {
                     disabled={createRequest.isPending}
                   >
                     {createRequest.isPending ? (
-                      <ActivityIndicator color={colors_V2.lilac} />
+                      <ActivityIndicator color={colors_V2.textPrimary} />
                     ) : (
                       <Text style={[styles.requestBtnText, textRtl]}>طلب شراء</Text>
                     )}
@@ -115,8 +115,8 @@ export function PackagesScreen() {
 
 const styles = StyleSheet.create({
   wrap: { gap: 10, paddingBottom: 110 },
-  title: { color: colors_V2.lilac, fontSize: 24, fontWeight: "800" },
-  subtitle: { color: colors_V2.slate, fontSize: 14, fontWeight: "600" },
+  title: { color: colors_V2.textPrimary, fontSize: 24, fontWeight: "800" },
+  subtitle: { color: colors_V2.textSecondary, fontSize: 14, fontWeight: "600" },
   card: {
     backgroundColor: colors_V2.card,
     borderRadius: 16,
@@ -127,21 +127,21 @@ const styles = StyleSheet.create({
     opacity: 0.96,
   },
   cardSelected: {
-    borderColor: colors_V2.gold,
+    borderColor: colors_V2.accent,
   },
   cardHead: { justifyContent: "space-between", alignItems: "center" },
-  coins: { color: colors_V2.gold, fontSize: 22, fontWeight: "900" },
-  price: { color: colors_V2.lilac, fontSize: 20, fontWeight: "700" },
-  packageName: { color: colors_V2.slate, fontSize: 14, fontWeight: "700" },
-  disabledText: { color: colors_V2.slate, fontSize: 12, fontWeight: "600" },
+  coins: { color: colors_V2.accent, fontSize: 22, fontWeight: "900" },
+  price: { color: colors_V2.textPrimary, fontSize: 20, fontWeight: "700" },
+  packageName: { color: colors_V2.textSecondary, fontSize: 14, fontWeight: "700" },
+  disabledText: { color: colors_V2.textSecondary, fontSize: 12, fontWeight: "600" },
   requestBtn: {
     marginTop: 8,
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
     borderRadius: 12,
     paddingVertical: 11,
     alignItems: "center",
   },
-  requestBtnText: { color: colors_V2.lilac, fontSize: 16, fontWeight: "800" },
+  requestBtnText: { color: colors_V2.textPrimary, fontSize: 16, fontWeight: "800" },
   noteBox: {
     marginTop: 8,
     backgroundColor: "rgba(111,45,189,0.2)",
@@ -149,6 +149,6 @@ const styles = StyleSheet.create({
     padding: 12,
     gap: 4,
   },
-  noteText: { color: colors_V2.lilac, fontSize: 14, fontWeight: "700" },
-  contactText: { color: colors_V2.skyBlue, fontSize: 13, fontWeight: "700" },
+  noteText: { color: colors_V2.textPrimary, fontSize: 14, fontWeight: "700" },
+  contactText: { color: colors_V2.primaryLight, fontSize: 13, fontWeight: "700" },
 });

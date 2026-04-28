@@ -39,7 +39,7 @@ export function Ui() {
         <View style={styles.section}>
           {isLoadingSuper && !superTournaments?.length ? (
             <View style={styles.loaderSection}>
-              <ActivityIndicator size="large" color={colors_V2.purple} />
+              <ActivityIndicator size="large" color={colors_V2.primary} />
             </View>
           ) : (
             <EliteSquad
@@ -63,7 +63,7 @@ export function Ui() {
         {/* Live Brackets */}
         {isLoading && !tournaments?.length ? (
           <View style={styles.loaderSection}>
-            <ActivityIndicator size="large" color={colors_V2.purple} />
+            <ActivityIndicator size="large" color={colors_V2.primary} />
           </View>
         ) : (
           <UpcomingTournaments
@@ -88,7 +88,7 @@ export function Ui() {
         {/* Hall of Fame */}
         {isLoadingBestPlayers && !bestPlayers?.length ? (
           <View style={styles.loaderSection}>
-            <ActivityIndicator color={colors_V2.purple} />
+            <ActivityIndicator color={colors_V2.primary} />
           </View>
         ) : (
           <TopPlayersSection

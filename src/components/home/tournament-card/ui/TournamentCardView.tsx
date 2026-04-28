@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     padding: 14,
   },
   liveBadge: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -136,11 +136,11 @@ const styles = StyleSheet.create({
   liveBadgeText: {
     fontSize: 10,
     fontWeight: "800",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     letterSpacing: 0.4,
   },
   typeBadge: {
-    backgroundColor: colors_V2.skyBlue,
+    backgroundColor: colors_V2.primaryLight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "900",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     lineHeight: 24,
   },
   progressSection: {
@@ -171,13 +171,13 @@ const styles = StyleSheet.create({
   progressLabel: {
     fontSize: 10,
     fontWeight: "800",
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     letterSpacing: 0.9,
   },
   progressCount: {
     fontSize: 13,
     fontWeight: "900",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
   },
   progressTrack: {
     height: 5,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   metaText: {
     fontSize: 11,
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontWeight: "600",
   },
 });

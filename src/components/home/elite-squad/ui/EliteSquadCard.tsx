@@ -87,7 +87,7 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
           resizeMode="cover"
         >
           <LinearGradient
-            colors={["transparent", "rgba(26, 14, 37, 0.88)", colors_V2.background]}
+            colors={["transparent", "rgba(13, 10, 20, 0.88)", colors_V2.background]}
             style={styles.overlay}
           >
             {renderContent()}
@@ -95,7 +95,7 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
         </ImageBackground>
       ) : (
         <LinearGradient
-          colors={[colors_V2.purple, colors_V2.background]}
+          colors={[colors_V2.primary, colors_V2.background]}
           style={[styles.imageBackground, styles.imageRadius]}
         >
           <View style={styles.overlay}>{renderContent()}</View>
@@ -160,8 +160,8 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
               <LinearGradient
                 colors={
                   canJoin
-                    ? [colors_V2.purple, colors_V2.lavender]
-                    : [colors_V2.slate, colors_V2.slate]
+                    ? [colors_V2.primary, colors_V2.gradientEnd]
+                    : [colors_V2.textSecondary, colors_V2.textSecondary]
                 }
                 start={{ x: 0, y: 0 }}
                 end={{ x: 0, y: 1 }}
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: colors_V2.skyBlue,
+    borderColor: colors_V2.primaryLight,
     backgroundColor: "rgba(147, 204, 255, 0.18)",
   },
   superPillText: {
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "800",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     letterSpacing: 0.3,
   },
   detailsRow: {
@@ -245,17 +245,17 @@ const styles = StyleSheet.create({
   prizeValue: {
     fontSize: 18,
     fontWeight: "800",
-    color: colors_V2.gold,
+    color: colors_V2.accent,
   },
   levelValue: {
     fontSize: 18,
     fontWeight: "800",
-    color: colors_V2.errorLight,
+    color: colors_V2.error,
   },
   detailLabel: {
     fontSize: 10,
     fontWeight: "600",
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     letterSpacing: 0.4,
   },
   bottomRow: {
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: "100%",
     borderRadius: 3,
-    backgroundColor: colors_V2.skyBlue,
+    backgroundColor: colors_V2.primaryLight,
   },
   joinColumn: {
     maxWidth: 172,
@@ -323,12 +323,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   joinButtonTextDisabled: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
   },
   joinHint: {
     fontSize: 11,
     fontWeight: "600",
-    color: colors_V2.errorLight,
+    color: colors_V2.error,
     lineHeight: 16,
   },
 });

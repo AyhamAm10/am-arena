@@ -45,7 +45,7 @@ const DESCRIPTION_CHAR_THRESHOLD = 96;
 const DESCRIPTION_MAX_LINES = 2;
 const LAYOUT_PAD_X = 16;
 
-function FavActionIcon({ color = colors_V2.lavenderLight }: { color?: string }) {
+function FavActionIcon({ color = colors_V2.primaryLight }: { color?: string }) {
   return (
     <Svg width={25} height={28} viewBox="0 0 25 28" fill="none">
       <Path
@@ -56,7 +56,7 @@ function FavActionIcon({ color = colors_V2.lavenderLight }: { color?: string }) 
   );
 }
 
-function CommentRailIcon({ color = colors_V2.skyBlue }: { color?: string }) {
+function CommentRailIcon({ color = colors_V2.primaryLight }: { color?: string }) {
   return (
     <Svg width={25} height={28} viewBox="0 0 25 28" fill="none">
       <Path
@@ -67,7 +67,7 @@ function CommentRailIcon({ color = colors_V2.skyBlue }: { color?: string }) {
   );
 }
 
-function ShareRailIcon({ color = colors_V2.lilac }: { color?: string }) {
+function ShareRailIcon({ color = colors_V2.textPrimary }: { color?: string }) {
   return (
     <Svg width={25} height={28} viewBox="0 0 25 28" fill="none">
       <Path
@@ -291,7 +291,7 @@ function VotingTab({
   if (isLoading) {
     return (
       <View style={styles.votingStateWrap}>
-        <ActivityIndicator color={colors_V2.purple} size="large" />
+        <ActivityIndicator color={colors_V2.primary} size="large" />
         <Text style={styles.votingStateText}>جاري تحميل التصويتات…</Text>
       </View>
     );
@@ -326,8 +326,8 @@ function VotingTab({
         <RefreshControl
           refreshing={isRefreshing}
           onRefresh={() => void refresh()}
-          tintColor={colors_V2.purple}
-          colors={[colors_V2.purple]}
+          tintColor={colors_V2.primary}
+          colors={[colors_V2.primary]}
         />
       }
       renderItem={({ item }) => (
@@ -377,7 +377,7 @@ function ArenaHeader({
           accessibilityLabel="الإشعارات"
           onPress={() => router.push("/(tabs)/notifications" as never)}
         >
-          <NotificationsIcon width={16} height={20} color={colors_V2.lavenderLight} />
+          <NotificationsIcon width={16} height={20} color={colors_V2.primaryLight} />
         </Pressable>
       </View>
 
@@ -800,7 +800,7 @@ export function Ui() {
             >
               {isLoadingReels ? (
                 <View style={styles.centered}>
-                  <ActivityIndicator size="large" color={colors_V2.purple} />
+                  <ActivityIndicator size="large" color={colors_V2.primary} />
                   <Text style={styles.muted}>جاري تحميل الريلز…</Text>
                 </View>
               ) : isReelsError ? (
@@ -877,7 +877,7 @@ export function Ui() {
                                   color={
                                     liked
                                       ? colors_V2.gradientEnd
-                                      : colors_V2.lavenderLight
+                                      : colors_V2.primaryLight
                                   }
                                 />
                               </Pressable>
@@ -891,7 +891,7 @@ export function Ui() {
                                 onPress={() => setCommentReelId(String(item.id ?? ""))}
                                 style={styles.overlayCircle}
                               >
-                                <CommentRailIcon color={colors_V2.skyBlue} />
+                                <CommentRailIcon color={colors_V2.primaryLight} />
                               </Pressable>
                               <Text style={styles.overlayCount}>
                                 {formatCompactCount(commentsCount)}
@@ -903,7 +903,7 @@ export function Ui() {
                                 onPress={() => void shareReel(item)}
                                 style={styles.overlayCircle}
                               >
-                                <ShareRailIcon color={colors_V2.lavenderLight} />
+                                <ShareRailIcon color={colors_V2.primaryLight} />
                               </Pressable>
                               <Text style={styles.overlayCount}>مشاركة</Text>
                             </View>
@@ -1000,8 +1000,8 @@ export function Ui() {
                     <RefreshControl
                       refreshing={isFetchingReels && !isLoadingReels}
                       onRefresh={() => void refreshReels()}
-                      tintColor={colors_V2.purple}
-                      colors={[colors_V2.purple]}
+                      tintColor={colors_V2.primary}
+                      colors={[colors_V2.primary]}
                     />
                   }
                   ListEmptyComponent={
@@ -1110,7 +1110,7 @@ export function Ui() {
                   <TextInput
                     style={styles.modalInput}
                     placeholder="أضف تعليقاً…"
-                    placeholderTextColor={colors_V2.slate}
+                    placeholderTextColor={colors_V2.textSecondary}
                     value={commentDraft}
                     onChangeText={setCommentDraft}
                     editable={!isAddingComment}

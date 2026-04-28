@@ -54,7 +54,7 @@ export function TournamentsWonSection({
                 <Icon
                   name={iconForGameType(t.game_type)}
                   size={22}
-                  color={colors_V2.gold}
+                  color={colors_V2.accent}
                 />
               </View>
               <View style={styles.textCol}>
@@ -66,7 +66,7 @@ export function TournamentsWonSection({
                 </Text>
               </View>
               <View style={styles.trailingWrap}>
-                <Icon name="emoji-events" size={20} color={colors_V2.gold} />
+                <Icon name="emoji-events" size={20} color={colors_V2.accent} />
               </View>
             </View>
           ))}
@@ -81,13 +81,13 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   sectionTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 14,
   },
   empty: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 14,
   },
   list: {},
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 4,
-    backgroundColor: colors_V2.gold,
+    backgroundColor: colors_V2.accent,
   },
   iconWrap: {
     width: 42,
@@ -122,12 +122,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 15,
     fontWeight: "600",
   },
   tDate: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 12,
     marginTop: 4,
   },

@@ -32,7 +32,7 @@ export default function LatestWinnerCard() {
             resizeMode="cover"
           >
             <LinearGradient
-              colors={["transparent", "rgba(26, 14, 37, 0.8)", colors_V2.background]}
+              colors={["transparent", "rgba(13, 10, 20, 0.8)", colors_V2.background]}
               style={styles.overlay}
             >
               {renderContent()}
@@ -40,7 +40,7 @@ export default function LatestWinnerCard() {
           </ImageBackground>
         ) : (
           <LinearGradient
-            colors={[colors_V2.purple, colors_V2.background]}
+            colors={[colors_V2.primary, colors_V2.background]}
             style={[styles.imageBackground, styles.imageRadius]}
           >
             <View style={styles.overlay}>
@@ -56,7 +56,7 @@ export default function LatestWinnerCard() {
     return (
       <View style={styles.content}>
         <LinearGradient
-          colors={[colors_V2.gold, "#B8960A"]}
+          colors={[colors_V2.accent, "#B8960A"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.topPlayerPill}
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   globalRanking: {
     fontSize: 12,
     fontWeight: "600",
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     letterSpacing: 0.5,
   },
   container: {
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   statsText: {
     fontSize: 13,
     fontWeight: "600",
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
   },
   badgesRow: {
     gap: 6,
@@ -158,6 +158,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors_V2.card,
     borderWidth: 1,
-    borderColor: colors_V2.purple,
+    borderColor: colors_V2.primary,
   },
 });

@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
   },
   headerTitle: {
     flex: 1,
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "900",
     letterSpacing: 0.4,
@@ -69,17 +69,17 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabButtonActive: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
   },
   tabLabel: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 15,
     fontWeight: "800",
     textAlign: "center",
     writingDirection: "rtl",
   },
   tabLabelActive: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
   },
   contentArea: {
     flex: 1,
@@ -100,20 +100,20 @@ export const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     textAlign: "center",
     writingDirection: "rtl",
   },
   muted: {
     fontSize: 14,
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     textAlign: "center",
     marginTop: 8,
     writingDirection: "rtl",
   },
   retryText: {
     marginTop: 10,
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors_V2.card,
   },
   videoPlaceholderText: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 14,
     writingDirection: "rtl",
   },
@@ -171,7 +171,7 @@ export const styles = StyleSheet.create({
   reelTitle: {
     fontSize: 28,
     fontWeight: "800",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     lineHeight: 34,
     letterSpacing: 0.1,
     marginBottom: 12,
@@ -183,7 +183,7 @@ export const styles = StyleSheet.create({
   reelDescription: {
     fontSize: 15,
     lineHeight: 24,
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     textShadowColor: "rgba(0,0,0,0.5)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 8,
@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 18,
     fontWeight: "700",
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
   },
   commentPreviewDragHost: {
     alignSelf: "flex-start",
@@ -215,7 +215,7 @@ export const styles = StyleSheet.create({
     maxWidth: "100%",
     backgroundColor: "rgba(35,22,46,0.78)",
     borderStartWidth: 2,
-    borderStartColor: colors_V2.skyBlue,
+    borderStartColor: colors_V2.primaryLight,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 12,
@@ -223,7 +223,7 @@ export const styles = StyleSheet.create({
     minWidth: 220,
     borderWidth: 1,
     borderColor: "rgba(147,204,255,0.18)",
-    shadowColor: colors_V2.skyBlue,
+    shadowColor: colors_V2.primaryLight,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.22,
     shadowRadius: 14,
@@ -262,7 +262,7 @@ export const styles = StyleSheet.create({
   commentPreviewUser: {
     fontSize: 14,
     fontWeight: "700",
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     lineHeight: 18,
     textShadowColor: "rgba(147,204,255,0.45)",
     textShadowOffset: { width: 0, height: 0 },
@@ -273,7 +273,7 @@ export const styles = StyleSheet.create({
   },
   commentPreviewBody: {
     fontSize: 14,
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     lineHeight: 18,
     opacity: 0.96,
     writingDirection: "rtl",
@@ -282,7 +282,7 @@ export const styles = StyleSheet.create({
   commentPreviewBodyPrefix: {
     fontSize: 14,
     lineHeight: 18,
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontWeight: "600",
     writingDirection: "rtl",
   },
@@ -316,7 +316,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   overlayCount: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
@@ -328,7 +328,7 @@ export const styles = StyleSheet.create({
   },
   progressFill: {
     height: "100%",
-    backgroundColor: colors_V2.skyBlue,
+    backgroundColor: colors_V2.primaryLight,
   },
   modalBackdropHost: {
     flex: 1,
@@ -350,7 +350,7 @@ export const styles = StyleSheet.create({
     width: 40,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors_V2.slate,
+    backgroundColor: colors_V2.textSecondary,
     marginTop: 8,
     marginBottom: 12,
   },
@@ -371,7 +371,7 @@ export const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     writingDirection: "rtl",
   },
   modalCountBadge: {
@@ -383,13 +383,13 @@ export const styles = StyleSheet.create({
   modalCountText: {
     fontSize: 12,
     fontWeight: "600",
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
   },
   modalClose: {
     padding: 8,
   },
   modalCloseText: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 18,
     fontWeight: "600",
   },
@@ -404,7 +404,7 @@ export const styles = StyleSheet.create({
   },
   commentRowFocused: {
     borderWidth: 1,
-    borderColor: colors_V2.skyBlue,
+    borderColor: colors_V2.primaryLight,
     borderRadius: 10,
     padding: 8,
     backgroundColor: "rgba(147,204,255,0.08)",
@@ -418,18 +418,18 @@ export const styles = StyleSheet.create({
   commentUser: {
     fontSize: 14,
     fontWeight: "700",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     writingDirection: "rtl",
   },
   commentTime: {
     fontSize: 11,
     fontWeight: "600",
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     writingDirection: "rtl",
   },
   commentBody: {
     fontSize: 14,
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     lineHeight: 20,
     writingDirection: "rtl",
     textAlign: "right",
@@ -456,7 +456,7 @@ export const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
   },
   modalInputWrap: {
     flex: 1,
@@ -470,20 +470,20 @@ export const styles = StyleSheet.create({
   },
   modalInput: {
     flex: 1,
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 14,
     paddingVertical: 8,
     textAlign: "right",
     writingDirection: "rtl",
   },
   modalSend: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 16,
   },
   modalSendText: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontWeight: "800",
     fontSize: 12,
   },
@@ -501,7 +501,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.03)",
   },
   mentionHitLabel: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 13,
     fontWeight: "700",
     textAlign: "right",
@@ -515,7 +515,7 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   votingStateText: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 15,
     fontWeight: "700",
     textAlign: "center",
@@ -545,7 +545,7 @@ export const styles = StyleSheet.create({
     minWidth: 0,
   },
   pollTitle: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 17,
     fontWeight: "800",
     marginBottom: 4,
@@ -553,7 +553,7 @@ export const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
   pollDescription: {
-    color: colors_V2.dustyLavender,
+    color: colors_V2.textSecondary,
     fontSize: 13,
     lineHeight: 20,
     textAlign: "right",
@@ -566,7 +566,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
   },
   liveBadgeText: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 11,
     fontWeight: "800",
     writingDirection: "rtl",
@@ -583,7 +583,7 @@ export const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   pollOptionCardSelected: {
-    borderColor: colors_V2.skyBlue,
+    borderColor: colors_V2.primaryLight,
     backgroundColor: "rgba(147,204,255,0.14)",
     opacity: 1,
   },
@@ -603,17 +603,17 @@ export const styles = StyleSheet.create({
     minWidth: 0,
   },
   pollOptionLabel: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
     fontSize: 16,
     fontWeight: "700",
     textAlign: "right",
     writingDirection: "rtl",
   },
   pollOptionLabelSelected: {
-    color: colors_V2.lavenderLight,
+    color: colors_V2.primaryLight,
   },
   pollOptionLabelInactive: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     opacity: 0.85,
   },
   pollOptionRight: {
@@ -625,7 +625,7 @@ export const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: colors_V2.lavenderLight,
+    backgroundColor: colors_V2.primaryLight,
   },
   unselectedDot: {
     width: 18,
@@ -635,22 +635,22 @@ export const styles = StyleSheet.create({
     borderColor: "rgba(216,185,255,0.18)",
   },
   pollOptionPercent: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 14,
     fontWeight: "800",
   },
   pollOptionPercentSelected: {
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
   },
   pollOptionPercentInactive: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     opacity: 0.7,
   },
   pollOptionDotInactive: {
     opacity: 0.35,
   },
   pollEmptyText: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 13,
     lineHeight: 18,
     textAlign: "right",
@@ -663,13 +663,13 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   pollFooterText: {
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     fontSize: 12,
     fontWeight: "600",
     writingDirection: "rtl",
   },
   pollFooterLocked: {
-    color: colors_V2.skyBlue,
+    color: colors_V2.primaryLight,
     fontSize: 12,
     fontWeight: "700",
     writingDirection: "rtl",

@@ -44,7 +44,7 @@ export function AddFriendButton({
 
 const styles = StyleSheet.create({
   btn: {
-    backgroundColor: colors_V2.purple,
+    backgroundColor: colors_V2.primary,
     borderRadius: 14,
     paddingVertical: 15,
     paddingHorizontal: 24,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   label: {
     marginStart: 10,
-    color: colors_V2.lavenderLight,
+    color: colors_V2.primaryLight,
     fontSize: 16,
     fontWeight: "700",
     ...textRtl,

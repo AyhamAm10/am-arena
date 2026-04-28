@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#FFFFFF",
+    color: colors_V2.textPrimary,
     letterSpacing: 1,
   },
 });

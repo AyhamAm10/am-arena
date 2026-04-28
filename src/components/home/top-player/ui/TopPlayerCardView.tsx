@@ -10,10 +10,10 @@ type Props = {
 };
 
 function rankBadgeColor(rank: number): string {
-  if (rank === 1) return colors_V2.gold;
+  if (rank === 1) return colors_V2.accent;
   if (rank === 2) return "#C0C0C0";
   if (rank === 3) return "#CD7F32";
-  return colors_V2.purple;
+  return colors_V2.primary;
 }
 
 export default function TopPlayerCardView({ card }: Props) {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     paddingStart: 12,
     gap: 12,
     borderStartWidth: 3,
-    borderStartColor: colors_V2.gold,
+    borderStartColor: colors_V2.accent,
   },
   cellAvatar: {
     justifyContent: "center",
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
     fontWeight: "800",
-    color: colors_V2.lilac,
+    color: colors_V2.textPrimary,
   },
   progressTrack: {
     height: 6,
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: colors_V2.lavender,
+    backgroundColor: colors_V2.gradientEnd,
   },
   statsCol: {
     justifyContent: "center",
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 14,
     fontWeight: "800",
-    color: colors_V2.slate,
+    color: colors_V2.textSecondary,
     letterSpacing: 0.4,
   },
   xpValue: {

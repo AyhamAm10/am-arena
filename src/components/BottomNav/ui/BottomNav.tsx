@@ -27,35 +27,36 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
           <BottomTabItem
             label="الرئيسية"
             Icon={HomeNavIconV2}
-            inactiveIconColor={colors_V2.skyBlue}
+            iconColor={colors_V2.textPrimary}
             active={activeTab === "Home"}
             onPress={() => onTabPress("Home")}
           />
           <BottomTabItem
             label="الساحة"
             Icon={ArenaSpaceNavIcon}
-            inactiveIconColor={colors_V2.slate}
+            iconColor={colors_V2.textPrimary}
             active={activeTab === "ArenaSpace"}
             onPress={() => onTabPress("ArenaSpace")}
           />
           <BottomTabItem
             label="البطولات"
             Icon={TournamentsNavIcon}
-            inactiveIconColor={colors_V2.slate}
+            iconColor={colors_V2.textPrimary}
+            isCenterItem
             active={activeTab === "Tournaments"}
             onPress={() => onTabPress("Tournaments")}
           />
           <BottomTabItem
             label="الإنجازات"
             Icon={AchievementsNavIcon}
-            inactiveIconColor={colors_V2.slate}
+            iconColor={colors_V2.textPrimary}
             active={activeTab === "Achievements"}
             onPress={() => onTabPress("Achievements")}
           />
           <BottomTabItem
             label="الأصدقاء"
             Icon={FriendsNavIcon}
-            inactiveIconColor={colors_V2.slate}
+            iconColor={colors_V2.textPrimary}
             active={activeTab === "Friends"}
             onPress={() => onTabPress("Friends")}
           />
@@ -77,7 +78,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopWidth: 1,
     borderTopColor: colors_V2.card,
-    paddingTop: 10,
+    paddingTop: 8,
+    paddingBottom: 2,
     overflow: "visible",
     ...Platform.select({
       ios: {
@@ -93,8 +95,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    minHeight: 52,
-    paddingHorizontal: 4,
+    minHeight: 66,
+    paddingHorizontal: 8,
     width: "100%",
   },
 });

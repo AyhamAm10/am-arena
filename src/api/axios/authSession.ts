@@ -32,7 +32,11 @@ export async function persistAuthSession(tokens: {
   useAuthStore.getState().setAccessToken(tokens.accessToken);
   if (Platform.OS !== "web") {
     if (!tokens.refreshToken) {
-      throw new Error("Missing refresh token");
+      throw new Error(
+        "Missing refresh token in login/register response. " +
+          "The API must return refreshToken in JSON when the client sends X-Refresh-Token-Delivery: body " +
+          "(deploy the latest backend auth controller, and confirm EXPO_PUBLIC_API_URL points at that server)."
+      );
     }
     await setRefreshToken(tokens.refreshToken);
   }

@@ -1,36 +1,38 @@
+import { colors_V2 } from "@/src/theme/colors";
+
 /**
- * Feature-local tokens for the Tournaments tab (pixel tuning without changing global theme).
+ * Feature-local tokens for the Tournaments tab (pixel tuning on top of global `colors_V2`).
  */
 export const tournamentsTheme = {
-  screenBg: "#1a1125",
-  surface: "#2b1d3d",
+  screenBg: colors_V2.background,
+  surface: colors_V2.card,
   /** Active card stats panel (slightly lifted from screen bg). */
-  activeCardPanel: "#322248",
-  surfaceMuted: "#241833",
-  eyebrowLive: "#7ec8ff",
-  eyebrowArchive: "#a89bc4",
-  title: "#f2e9ff",
-  bodyMuted: "#9a8bb0",
-  statLabelMuted: "#8b7aa0",
-  openEntry: "#00a3ff",
-  openEntryBadgeBg: "#00a3ff",
-  openEntryBadgeText: "#0a0a0a",
-  openEntryBg: "rgba(0, 163, 255, 0.2)",
-  /** Purple → lavender (active JOIN button). */
-  joinGradient: ["#7b5cff", "#c9a8ff"] as const,
-  joinDisabled: ["#4a3d5c", "#4a3d5c"] as const,
-  joinTextOnGradient: "#2d0f52",
-  joinTextDisabled: "#6a5c78",
-  progressTrack: "#2a1f38",
-  progressFill: "#5ecbff",
-  countdownBright: "#7ecbff",
-  divider: "#3d2f52",
-  searchBg: "#241833",
-  searchBorder: "#4a3d5c",
-  error: "#ff8a8a",
-  champion: "#ffd36a",
-  /** Past card (mock ~#1A1A1A). */
-  pastCardBg: "#1a1a1a",
-  pastWinnerLine: "#c4b0e8",
-  replayLavender: "#b8a0e8",
+  activeCardPanel: "#221A2E",
+  surfaceMuted: "#16111F",
+  eyebrowLive: colors_V2.primaryLight,
+  eyebrowArchive: colors_V2.textSecondary,
+  title: colors_V2.textPrimary,
+  bodyMuted: colors_V2.textSecondary,
+  statLabelMuted: "#8E8AA0",
+  openEntry: colors_V2.primaryLight,
+  openEntryBadgeBg: colors_V2.primaryLight,
+  openEntryBadgeText: colors_V2.background,
+  openEntryBg: "rgba(167, 139, 250, 0.2)",
+  /** Primary → gradient end (active JOIN button). */
+  joinGradient: [colors_V2.gradientStart, colors_V2.gradientEnd] as const,
+  joinDisabled: ["#3D3550", "#3D3550"] as const,
+  joinTextOnGradient: colors_V2.background,
+  joinTextDisabled: colors_V2.textSecondary,
+  progressTrack: "#1E1828",
+  progressFill: colors_V2.primaryLight,
+  countdownBright: colors_V2.primaryLight,
+  divider: "#2A2438",
+  searchBg: colors_V2.card,
+  searchBorder: "#3D3550",
+  error: colors_V2.error,
+  champion: colors_V2.accent,
+  /** Past card */
+  pastCardBg: "#141018",
+  pastWinnerLine: colors_V2.gradientEnd,
+  replayLavender: colors_V2.primaryLight,
 } as const;

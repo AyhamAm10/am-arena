@@ -13,7 +13,7 @@ export function ArenaSpaceNavIcon({
   size = 18,
   width: w,
   height: h,
-  color = colors_V2.slate,
+  color = colors_V2.textSecondary,
 }: Props) {
   const width = w ?? size;
   const height = h ?? size;

@@ -86,4 +86,21 @@ export const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '700',
   },
+  registerFooter: {
+    marginTop: 22,
+    alignItems: 'center',
+    paddingBottom: 8,
+  },
+  registerPrompt: {
+    color: colors.grey,
+    fontSize: 15,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  registerLink: {
+    color: colors.primaryPurple,
+    fontSize: 15,
+    fontWeight: '800',
+    textDecorationLine: 'underline',
+  },
 })

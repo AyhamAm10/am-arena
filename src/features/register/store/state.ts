@@ -2,6 +2,7 @@ type RegisterState = {
   phone: string
   fullName: string
   gamerName: string
+  country: string
   email: string
   password: string
   confirmPassword: string
@@ -11,6 +12,7 @@ type RegisterState = {
   setPhone: (phone: string) => void
   setFullName: (fullName: string) => void
   setGamerName: (gamerName: string) => void
+  setCountry: (country: string) => void
   setEmail: (email: string) => void
   setPassword: (password: string) => void
   setConfirmPassword: (confirmPassword: string) => void
@@ -23,6 +25,7 @@ const store = (): RegisterState => ({
   phone: '',
   fullName: '',
   gamerName: '',
+  country: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -32,6 +35,7 @@ const store = (): RegisterState => ({
   setPhone: () => {},
   setFullName: () => {},
   setGamerName: () => {},
+  setCountry: () => {},
   setEmail: () => {},
   setPassword: () => {},
   setConfirmPassword: () => {},

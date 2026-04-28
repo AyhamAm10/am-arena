@@ -19,6 +19,7 @@ export interface LoginUserResponse {
   role: UserRole;
   full_name: string;
   gamer_name: string;
+  country?: string | null;
   is_active: boolean;
   avatarUrl?: string | null;
   avatarPublicId?: string | null;
@@ -38,6 +39,7 @@ export interface CurrentUserResponse extends UserAccountDto {
 export interface AuthRegisterBody {
   full_name: string;
   gamer_name: string;
+  country: string;
   email: string;
   password: string;
   phone?: string;

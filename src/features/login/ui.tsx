@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { useRouter } from 'expo-router'
 import { MotionPressable } from '@/src/components/motion'
 import { styles } from './styles'
 import { colors } from '@/src/theme/colors'
@@ -18,6 +19,7 @@ import { useMirror } from './store'
 const heroBanner = require('../../assets/Image+Overlay+Shadow.png')
 
 export function Ui() {
+  const router = useRouter()
   const email = useMirror('email')
   const password = useMirror('password')
   const showPassword = useMirror('showPassword')
@@ -85,6 +87,18 @@ export function Ui() {
             <Text style={styles.buttonText}>تسجيل الدخول</Text>
           )}
         </MotionPressable>
+
+        <View style={styles.registerFooter}>
+          <Text style={styles.registerPrompt}>
+            ليس لديك حساب؟{' '}
+            <Text
+              style={styles.registerLink}
+              onPress={() => router.push('/register')}
+            >
+              إنشاء حساب
+            </Text>
+          </Text>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   )

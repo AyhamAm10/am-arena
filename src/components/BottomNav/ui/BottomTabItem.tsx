@@ -1,107 +1,60 @@
 import { writingRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
-import React, { useEffect, type ComponentType } from "react";
-import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
-import Animated, {
-  interpolate,
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import React, { type ComponentType } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type TabIconProps = { size: number; color: string };
 
 type Props = {
   label: string;
   Icon: ComponentType<TabIconProps>;
-  /** Inactive glyph color (from design assets). */
-  inactiveIconColor?: string;
+  iconColor?: string;
+  isCenterItem?: boolean;
   active?: boolean;
   onPress: () => void;
 };
 
-const INACTIVE_ICON_SIZE = 26;
-const ACTIVE_ICON_SIZE = 28;
-
-const springConfig = {
-  damping: 20,
-  stiffness: 260,
-  mass: 0.85,
-};
+const ICON_SIZE = 26;
+const CENTER_ICON_SIZE = 32;
 
 const BottomTabItem: React.FC<Props> = ({
   label,
   Icon,
-  inactiveIconColor = colors_V2.slate,
+  iconColor = colors_V2.textPrimary,
+  isCenterItem = false,
   active,
   onPress,
 }) => {
-  const progress = useSharedValue(active ? 1 : 0);
-
-  useEffect(() => {
-    progress.value = withSpring(active ? 1 : 0, springConfig);
-  }, [active]);
-
-  const inactiveLayerStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0, 0.35], [1, 0]),
-    transform: [
-      {
-        scale: interpolate(progress.value, [0, 1], [1, 0.94]),
-      },
-    ],
-  }));
-
-  const fabLayerStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(progress.value, [0.2, 0.65], [0, 1]),
-    transform: [
-      {
-        scale: interpolate(progress.value, [0, 1], [0.86, 1]),
-      },
-    ],
-  }));
-
-  const labelStyle = useAnimatedStyle(() => ({
-    color: interpolateColor(
-      progress.value,
-      [0, 1],
-      [inactiveIconColor, "#FFFFFF"]
-    ),
-    transform: [
-      {
-        translateY: interpolate(progress.value, [0, 1], [1.5, 0]),
-      },
-    ],
-  }));
+  const isActive = Boolean(active);
+  const handlePress = () => {
+    if (isActive) return;
+    onPress();
+  };
 
   return (
     <TouchableOpacity
-      style={styles.container}
-      onPress={onPress}
+      style={[styles.container, isCenterItem && styles.centerContainer]}
+      onPress={handlePress}
+      disabled={isActive}
       activeOpacity={0.92}
     >
-      <View style={styles.iconSlot}>
-        <Animated.View
-          style={[styles.inactiveLayer, inactiveLayerStyle]}
-          pointerEvents="none"
-        >
-          <Icon size={INACTIVE_ICON_SIZE} color={inactiveIconColor} />
-        </Animated.View>
-        <Animated.View
-          style={[styles.fabLayer, fabLayerStyle]}
-          pointerEvents="none"
-        >
-          <View style={[styles.fab, styles.fabActive]}>
-            <Icon size={ACTIVE_ICON_SIZE} color="#FFFFFF" />
+      <View style={[styles.iconSlot, isCenterItem && styles.centerIconSlot]}>
+        {isCenterItem ? (
+          <View style={styles.centerBadge}>
+            <View style={styles.centerBadgeInner}>
+              <Icon size={CENTER_ICON_SIZE} color={colors_V2.textPrimary} />
+            </View>
           </View>
-        </Animated.View>
+        ) : (
+          <Icon size={ICON_SIZE} color={iconColor} />
+        )}
       </View>
-      <Animated.Text
-        style={[styles.label, labelStyle, writingRtl]}
+      <Text
+        style={[styles.label, isCenterItem && styles.centerLabel, writingRtl]}
         numberOfLines={1}
       >
         {label}
-      </Animated.Text>
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -111,64 +64,52 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "flex-end",
-    paddingBottom: 6,
+    paddingBottom: 8,
     paddingTop: 4,
   },
+  centerContainer: {
+    paddingTop: 0,
+  },
   iconSlot: {
-    height: 50,
+    height: 34,
     width: "100%",
     alignItems: "center",
-    justifyContent: "flex-end",
-    marginBottom: 0,
-  },
-  inactiveLayer: {
-    position: "absolute",
-    bottom: 4,
-    alignItems: "center",
     justifyContent: "center",
   },
-  fabLayer: {
-    position: "absolute",
-    bottom: 0,
+  centerIconSlot: {
+    height: 62,
+    marginTop: -26,
+  },
+  centerBadge: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: "#8B5CF6",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -32,
+    shadowColor: "#8B5CF6",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.38,
+    shadowRadius: 14,
+    elevation: 16,
   },
-  fab: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: colors_V2.purple,
+  centerBadgeInner: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: "#A78BFA",
     alignItems: "center",
     justifyContent: "center",
-    ...Platform.select({
-      ios: {
-        shadowColor: colors_V2.purple,
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.55,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 14,
-      },
-    }),
-  },
-  fabActive: {
-    ...Platform.select({
-      ios: {
-        shadowOpacity: 0.75,
-        shadowRadius: 16,
-      },
-      android: {
-        elevation: 18,
-      },
-    }),
   },
   label: {
     fontSize: 8,
-    marginTop: 4,
+    marginTop: 6,
     fontWeight: "700",
     letterSpacing: 0.3,
+    color: colors_V2.textPrimary,
+  },
+  centerLabel: {
+    marginTop: 2,
   },
 });
 
