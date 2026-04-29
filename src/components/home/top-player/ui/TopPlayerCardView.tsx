@@ -1,8 +1,8 @@
+import RankAvatar from "@/src/components/avatar/RankAvatar";
 import { flexRowRtl, progressFillRtl, textRtl } from "@/src/lib/rtl";
-import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import type { TopPlayerCardState } from "../state/init";
 
 type Props = {
@@ -19,7 +19,21 @@ function rankBadgeColor(rank: number): string {
 export default function TopPlayerCardView({ card }: Props) {
   if (!card) return null;
 
-  const { rank, avatarSource, name, tier, xp, xpProgress } = card;
+  const {
+    rank,
+    avatarSource,
+    name,
+    title,
+    achievementColor,
+    achievementIconUrl,
+    hasActiveRank,
+    xp,
+    xpProgress,
+  } = card;
+  const accent =
+    hasActiveRank && achievementColor?.trim()
+      ? achievementColor.trim()
+      : colors_V2.primary;
 
   const xpRaw = Number(xpProgress);
   const xpPct = Number.isFinite(xpRaw)
@@ -31,17 +45,21 @@ export default function TopPlayerCardView({ card }: Props) {
 
   return (
     <View style={styles.outer}>
-      <View style={[flexRowRtl, styles.container]}>
+      <View style={[flexRowRtl, styles.container, { borderStartColor: accent }]}>
         <View style={styles.cellAvatar}>
-          <View style={styles.avatarFrame}>
-            {avatarSource ? (
-              <Image
-                source={{ uri: resolveMediaUrl(avatarSource, "image") }}
-                style={styles.avatar}
-              />
-            ) : (
-              <View style={styles.avatarPlaceholder} />
-            )}
+          <RankAvatar
+            avatarSource={avatarSource}
+            achievementColor={achievementColor}
+            achievementIconUrl={achievementIconUrl}
+            hasActiveRank={Boolean(hasActiveRank)}
+            neutralBorderColor={colors_V2.primary}
+            frameStyle={styles.avatarFrame}
+            imageStyle={styles.avatar}
+            placeholderStyle={styles.avatarPlaceholder}
+            badgeStyle={styles.achievementBadge}
+            badgeIconStyle={styles.achievementIcon}
+          />
+          <View style={styles.rankBadgeWrap}>
             <View
               style={[
                 styles.rankBadgeOverlay,
@@ -62,6 +80,7 @@ export default function TopPlayerCardView({ card }: Props) {
               style={[
                 styles.progressFill,
                 progressFillRtl,
+                { backgroundColor: accent },
                 { width: `${Math.round(xpPct * 100)}%` },
               ]}
             />
@@ -72,9 +91,11 @@ export default function TopPlayerCardView({ card }: Props) {
           <Text style={[styles.xpValue, textRtl]} numberOfLines={1}>
             {xpLabel}
           </Text>
-          <Text style={[styles.tier, textRtl]} numberOfLines={1}>
-            {tier}
-          </Text>
+          {hasActiveRank && title ? (
+            <Text style={[styles.tier, textRtl, { color: accent }]} numberOfLines={1}>
+              {title}
+            </Text>
+          ) : null}
         </View>
       </View>
     </View>
@@ -108,10 +129,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     flexShrink: 0,
+    position: "relative",
   },
   avatarFrame: {
     width: AVATAR,
     height: AVATAR,
+    borderRadius: 12,
+    borderWidth: 2,
+    overflow: "visible",
   },
   avatar: {
     width: AVATAR,
@@ -124,10 +149,22 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors_V2.background,
   },
-  rankBadgeOverlay: {
+  achievementBadge: {
     position: "absolute",
-    top: -2,
-    start: -2,
+    bottom: -6,
+    end: -6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors_V2.background,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  achievementIcon: {
+    width: 14,
+    height: 14,
+  },
+  rankBadgeOverlay: {
     width: 22,
     height: 22,
     borderRadius: 11,
@@ -135,6 +172,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors_V2.card,
+  },
+  rankBadgeWrap: {
+    position: "absolute",
+    top: -2,
+    start: -2,
   },
   rankText: {
     fontSize: 11,
@@ -163,7 +205,6 @@ const styles = StyleSheet.create({
   progressFill: {
     height: "100%",
     borderRadius: 999,
-    backgroundColor: colors_V2.gradientEnd,
   },
   statsCol: {
     justifyContent: "center",

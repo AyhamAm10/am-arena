@@ -11,7 +11,10 @@ export type TopPlayerItem = {
   rank: number;
   avatarSource?: TopPlayerCardState["avatarSource"];
   name: string;
-  tier: string;
+  title?: string | null;
+  achievementColor?: string | null;
+  achievementIconUrl?: string | null;
+  hasActiveRank?: boolean;
   xp: string | number;
   xpProgress: number;
 };
@@ -28,7 +31,10 @@ function buildById(players: TopPlayerItem[]): Record<string, TopPlayerCardState>
       rank: p.rank,
       avatarSource: p.avatarSource,
       name: p.name,
-      tier: p.tier,
+      title: p.title,
+      achievementColor: p.achievementColor,
+      achievementIconUrl: p.achievementIconUrl,
+      hasActiveRank: p.hasActiveRank,
       xp: p.xp,
       xpProgress: p.xpProgress,
     };

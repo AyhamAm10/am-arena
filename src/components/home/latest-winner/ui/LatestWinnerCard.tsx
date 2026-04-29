@@ -68,12 +68,6 @@ export default function LatestWinnerCard() {
           {teamName}
         </Text>
         <Text style={[styles.statsText, textRtl]}>{tournamentName}</Text>
-
-        <View style={styles.badgesRow}>
-          {[1, 2, 3, 4, 5].map((i) => (
-            <View key={i} style={styles.badge} />
-          ))}
-        </View>
       </View>
     );
   }
@@ -146,18 +140,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     color: colors_V2.textSecondary,
-  },
-  badgesRow: {
-    gap: 6,
-    marginTop: 8,
-    ...flexRowRtl,
-  },
-  badge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: colors_V2.card,
-    borderWidth: 1,
-    borderColor: colors_V2.primary,
   },
 });

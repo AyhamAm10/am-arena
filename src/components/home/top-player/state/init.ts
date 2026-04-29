@@ -4,7 +4,10 @@ export type TopPlayerCardState = {
   rank: number;
   avatarSource?: string;
   name: string;
-  tier: string;
+  title?: string | null;
+  achievementColor?: string | null;
+  achievementIconUrl?: string | null;
+  hasActiveRank?: boolean;
   xp: string | number;
   xpProgress: number;
 };

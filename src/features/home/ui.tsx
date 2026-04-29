@@ -8,8 +8,8 @@ import { AppLayout } from "@/src/components/layout";
 import { PubgGame } from "@/src/api/types/pubg-tournament.types";
 import { UserPublicSummary } from "@/src/api/types/user.types";
 import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
+import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { formatTournamentTimeRemaining } from "@/src/lib/utils/tournament-time-remaining";
-import { tierLabelFromXp } from "@/src/lib/utils/tier-from-xp";
 import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -96,12 +96,28 @@ export function Ui() {
               bestPlayers?.map((player: UserPublicSummary, index: number) => {
                 const xp = Number(player.xp_points ?? 0);
                 const { progress } = computeLevelAndProgress(xp);
+                const selectedAchievement = player.selected_achievement ?? null;
+                const hasActiveRank = Boolean(
+                  selectedAchievement?.name?.trim() &&
+                    selectedAchievement?.color_theme?.trim() &&
+                    selectedAchievement?.icon_url?.trim()
+                );
                 return {
                   id: player.id.toString(),
                   rank: index + 1,
                   avatarSource: player.avatarUrl || undefined,
                   name: player.gamer_name,
-                  tier: tierLabelFromXp(xp),
+                  title: hasActiveRank ? selectedAchievement?.name?.trim() : null,
+                  achievementColor: hasActiveRank
+                    ? selectedAchievement?.color_theme?.trim() || null
+                    : null,
+                  achievementIconUrl: hasActiveRank && selectedAchievement?.icon_url
+                    ? resolveMediaUrl(
+                        selectedAchievement.icon_url,
+                        "achievementIcon"
+                      )
+                    : null,
+                  hasActiveRank,
                   xp,
                   xpProgress: progress,
                 };

@@ -53,7 +53,7 @@ export function useHeaderUser(): HeaderUserState {
     const avatarUri = user?.avatarUrl
       ? resolveMediaUrl(user.avatarUrl, "image")
       : null;
-    const achievementColor = user?.selected_achievement?.color_theme ?? null;
+    const achievementColor = user?.selected_achievement?.color_theme?.trim() || null;
     const achievementIconUrl = user?.selected_achievement?.icon_url
       ? resolveMediaUrl(user.selected_achievement.icon_url, "achievementIcon")
       : null;

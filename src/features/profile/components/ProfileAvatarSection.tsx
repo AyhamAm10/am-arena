@@ -38,6 +38,9 @@ export function ProfileAvatarSection({
 
   const uri = profilePictureUrl ? resolveMediaUrl(profilePictureUrl, "image") : "";
   const accent = selectedAchievement?.color_theme?.trim() || colors_V2.accent;
+  const achievementIconUri = selectedAchievement?.icon_url?.trim()
+    ? resolveMediaUrl(selectedAchievement.icon_url, "achievementIcon")
+    : "";
   const titleLabel = selectedTitle?.trim() || "بدون لقب محدد";
 
   return (
@@ -58,9 +61,11 @@ export function ProfileAvatarSection({
             <Icon name="person" size={56} color={colors_V2.textSecondary} />
           )}
         </View>
-        <View style={[styles.levelBadge, { backgroundColor: accent }]}>
-          <Icon name="emoji-events" size={14} color={colors_V2.background} />
-        </View>
+        {achievementIconUri ? (
+          <View style={[styles.levelBadge, { backgroundColor: accent }]}>
+            <Image source={{ uri: achievementIconUri }} style={styles.levelBadgeIcon} contentFit="contain" />
+          </View>
+        ) : null}
       </View>
 
       <Text style={[styles.playerName, writingRtl]}>{fullName}</Text>
@@ -145,6 +150,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 2,
     borderColor: colors_V2.background,
+  },
+  levelBadgeIcon: {
+    width: 16,
+    height: 16,
   },
   playerName: {
     color: colors_V2.textPrimary,

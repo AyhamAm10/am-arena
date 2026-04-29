@@ -38,6 +38,7 @@ export interface UserPublicSummary {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  selected_achievement?: AchievementPublic | null;
   friend_status?: "accepted" | "pending" | null;
 }
 

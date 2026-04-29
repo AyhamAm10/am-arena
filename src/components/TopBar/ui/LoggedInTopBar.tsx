@@ -1,5 +1,6 @@
 import { ChatIcon } from "@/src/components/icons/figma/ChatIcon";
 import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIcon";
+import RankAvatar from "@/src/components/avatar/RankAvatar";
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
@@ -15,10 +16,18 @@ const LoggedInTopBar: React.FC = () => {
   const achievementColor = useMirror("achievementColor") as string | null;
   const achievementIconUrl = useMirror("achievementIconUrl") as string | null;
   const achievementName = useMirror("achievementName") as string | null | undefined;
+  const hasActiveRank = Boolean(
+    achievementName?.trim() &&
+      achievementColor?.trim() &&
+      achievementIconUrl?.trim()
+  );
 
-  const borderColor = achievementColor || colors_V2.primary;
+  const borderColor =
+    hasActiveRank && achievementColor?.trim()
+      ? achievementColor.trim()
+      : colors_V2.primary;
   const titleLabel =
-    typeof achievementName === "string" && achievementName.trim().length > 0
+    hasActiveRank && typeof achievementName === "string" && achievementName.trim().length > 0
       ? achievementName.trim()
       : null;
 
@@ -39,27 +48,23 @@ const LoggedInTopBar: React.FC = () => {
           onPress={() => router.push("/(tabs)/profile" as never)}
           activeOpacity={0.85}
         >
-          <View style={[styles.avatarBorder, { borderColor }]}>
-            {avatarSource ? (
-              <Image source={avatarSource} style={styles.avatar} />
-            ) : (
-              <View style={styles.avatarPlaceholder} />
-            )}
-          </View>
-          {achievementIconUrl ? (
-            <View style={styles.achievementBadge}>
-              <Image
-                source={{ uri: achievementIconUrl }}
-                style={styles.achievementIcon}
-                resizeMode="contain"
-              />
-            </View>
-          ) : null}
+          <RankAvatar
+            avatarSource={avatarSource}
+            achievementColor={achievementColor}
+            achievementIconUrl={achievementIconUrl}
+            hasActiveRank={hasActiveRank}
+            neutralBorderColor={colors_V2.primary}
+            frameStyle={styles.avatarBorder}
+            imageStyle={styles.avatar}
+            placeholderStyle={styles.avatarPlaceholder}
+            badgeStyle={styles.achievementBadge}
+            badgeIconStyle={styles.achievementIcon}
+          />
         </TouchableOpacity>
 
         <View style={[styles.userInfo, flexRowRtl]}>
           {titleLabel ? (
-            <Text style={[styles.rankText, textRtl]} numberOfLines={2}>
+            <Text style={[styles.rankText, textRtl, { color: borderColor }]} numberOfLines={2}>
               {titleLabel}
             </Text>
           ) : null}
