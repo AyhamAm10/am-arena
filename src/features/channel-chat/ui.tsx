@@ -1,8 +1,8 @@
 import type { ChannelMessage } from "@/src/api/types/chat.types";
 import { FadeInListRow } from "@/src/components/motion";
 import { colors } from "@/src/theme/colors";
-import { useRouter } from "expo-router";
-import React, { useCallback, useRef } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useCallback, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -25,6 +25,7 @@ function formatTime(iso: string): string {
 }
 
 export function Ui() {
+  const params = useLocalSearchParams<{ messageId?: string }>();
   const router = useRouter();
   const messages = useMirror("messages");
   const channelTitle = useMirror("channelTitle");
@@ -34,6 +35,31 @@ export function Ui() {
   const onRefresh = useMirror("onRefresh");
 
   const flatListRef = useRef<FlatList<ChannelMessage>>(null);
+  const didJumpRef = useRef<string | null>(null);
+  const focusMessageId = Number(params.messageId ?? 0);
+  const focusMessageIdStr = Number.isFinite(focusMessageId) && focusMessageId > 0 ? String(focusMessageId) : null;
+
+  useEffect(() => {
+    if (!focusMessageIdStr) return;
+    if (!flatListRef.current) return;
+    if (!messages.length) return;
+    if (didJumpRef.current === focusMessageIdStr) return;
+
+    const index = messages.findIndex((m) => Number(m.id) === focusMessageId);
+    if (index < 0) {
+      // Target message missing/deleted: preserve existing scroll behavior (scrollToEnd).
+      didJumpRef.current = focusMessageIdStr;
+      flatListRef.current?.scrollToEnd({ animated: false });
+      return;
+    }
+
+    didJumpRef.current = focusMessageIdStr;
+    flatListRef.current?.scrollToIndex({
+      index,
+      animated: false,
+      viewPosition: 0.5,
+    });
+  }, [focusMessageId, focusMessageIdStr, messages]);
 
   const onBack = useCallback(() => {
     if (router.canGoBack()) router.back();
@@ -106,8 +132,14 @@ export function Ui() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
+          onScrollToIndexFailed={() => undefined}
           onContentSizeChange={() => {
             if (messages.length > 0) {
+              if (focusMessageIdStr) {
+                if (didJumpRef.current === focusMessageIdStr) return;
+                // Let the effect below handle the jump; this prevents conflicting scrollToEnd.
+                return;
+              }
               flatListRef.current?.scrollToEnd({ animated: false });
             }
           }}

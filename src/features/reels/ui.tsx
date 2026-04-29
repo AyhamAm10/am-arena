@@ -277,6 +277,7 @@ function VotingTab({
   isRefreshing,
   isError,
   isVotingPoll,
+  focusPollId,
   refresh,
   voteOnPoll,
 }: {
@@ -285,6 +286,7 @@ function VotingTab({
   isRefreshing: boolean;
   isError: boolean;
   isVotingPoll: boolean;
+  focusPollId?: string;
   refresh: () => Promise<void>;
   voteOnPoll: (pollId: number, optionId: number) => Promise<unknown>;
 }) {
@@ -316,12 +318,40 @@ function VotingTab({
     );
   }
 
+  const flatListRef = useRef<FlatList<PollResponse>>(null);
+  const didJumpRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const trimmed = (focusPollId ?? "").trim();
+    if (!trimmed) return;
+    const idNum = Number(trimmed);
+    if (!Number.isFinite(idNum) || idNum <= 0) return;
+    if (didJumpRef.current === String(idNum)) return;
+    if (polls.length === 0) return;
+
+    const index = polls.findIndex((p) => p.id === idNum);
+    if (index < 0) {
+      // Target poll missing/deleted: preserve existing behavior (no forced scroll).
+      didJumpRef.current = String(idNum);
+      return;
+    }
+
+    didJumpRef.current = String(idNum);
+    flatListRef.current?.scrollToIndex({
+      index,
+      animated: false,
+      viewPosition: 0,
+    });
+  }, [focusPollId, polls]);
+
   return (
     <FlatList
+      ref={flatListRef}
       data={polls}
       keyExtractor={(item) => String(item.id)}
       contentContainerStyle={styles.votingListContent}
       showsVerticalScrollIndicator={false}
+      onScrollToIndexFailed={() => undefined}
       refreshControl={
         <RefreshControl
           refreshing={isRefreshing}
@@ -1021,6 +1051,7 @@ export function Ui() {
             isRefreshing={isFetchingGlobalPolls && !isLoadingGlobalPolls}
             isError={isGlobalPollsError}
             isVotingPoll={isVotingPoll}
+            focusPollId={params.pollId}
             refresh={refreshGlobalPolls}
             voteOnPoll={voteOnPoll}
           />

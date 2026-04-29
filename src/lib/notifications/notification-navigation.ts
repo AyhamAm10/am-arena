@@ -49,10 +49,15 @@ export function resolveNotificationHref(
 
   if (notificationType === "CHAT_MESSAGE") {
     const chatId = num(data, "chatId");
+    const messageId = num(data, "messageId") ?? num(data, "focusMessageId");
     if (chatId == null) return null;
     return {
       pathname: "/channel/[id]",
-      params: { id: String(chatId), title: str(data, "chatTitle") || str(data, "title") },
+      params: {
+        id: String(chatId),
+        title: str(data, "chatTitle") || str(data, "title"),
+        ...(messageId != null ? { messageId: String(messageId) } : {}),
+      },
     };
   }
 
