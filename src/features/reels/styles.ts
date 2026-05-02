@@ -294,6 +294,11 @@ export const styles = StyleSheet.create({
     gap: 18,
     zIndex: 3,
   },
+  overlayAction: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
   bottomChrome: {
     position: "absolute",
     left: 0,
@@ -301,19 +306,38 @@ export const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 2,
   },
-  overlayAction: {
-    alignItems: "center",
-    gap: 6,
-  },
   overlayCircle: {
-    width: 54,
-    height: 54,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 14,
     backgroundColor: "rgba(35,22,46,0.92)",
     borderWidth: 1,
     borderColor: "rgba(216,185,255,0.18)",
     alignItems: "center",
     justifyContent: "center",
+    overflow: "visible",
+  },
+  overlayCircleActive: {
+    borderColor: "#7a3bff",
+    backgroundColor: "#9047FF",
+    shadowColor: "#9047FF",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.95,
+    shadowRadius: 20,
+    elevation: 14,
+  },
+
+  likedGlow: {
+    position: "absolute",
+    width: 86,
+    height: 86,
+    borderRadius: 22,
+    top: -19,
+    left: -19,
+    zIndex: 0,
+    opacity: 1,
+    // Make sure the gradient itself doesn't block presses
+    pointerEvents: "none",
   },
   overlayCount: {
     color: colors_V2.textPrimary,
