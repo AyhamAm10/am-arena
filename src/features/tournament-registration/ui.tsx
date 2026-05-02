@@ -111,8 +111,9 @@ export function Ui() {
 
   const gameType = tournament?.game?.type;
   const maxPlayers = tournament?.max_players ?? 16;
-  const filledPlayers = 0;
+  const filledPlayers = tournament?.participant_count ?? tournament?.registered_count ?? 0;
   const fillRatio = maxPlayers > 0 ? filledPlayers / maxPlayers : 0;
+  const remainingSlots = Math.max(0, maxPlayers - filledPlayers);
   const remainingPct = Math.max(0, Math.min(100, Math.round((1 - fillRatio) * 100)));
 
   const headerImage = tournament?.game?.image
@@ -272,6 +273,19 @@ export function Ui() {
           <Text style={styles.heroSubtitle}>
             {formatStartSubtitle(gameType, tournament?.start_date ?? null)}
           </Text>
+          <View style={styles.participantBadgeRow}>
+            <View style={styles.participantBadge}>
+              <Text style={styles.participantBadgeIcon}>🔥</Text>
+              <Text style={styles.participantBadgeText}>
+                {filledPlayers.toLocaleString("en-US")} مشارك انضم
+              </Text>
+            </View>
+            <Text style={styles.participantBadgeMeta}>
+              {remainingSlots > 0
+                ? `${remainingSlots.toLocaleString("en-US")} مقعد متبقي`
+                : "اكتملت المقاعد"}
+            </Text>
+          </View>
           <View style={styles.progressRow}>
             <Text style={styles.progressLabel}>عدد اللاعبين</Text>
             <Text style={styles.progressCount}>
@@ -286,9 +300,7 @@ export function Ui() {
               ]}
             />
           </View>
-          <Text style={styles.progressSub}>
-            {remainingPct}% مقاعد متبقية
-          </Text>
+          <Text style={styles.progressSub}>{remainingPct}% مقاعد متبقية</Text>
         </View>
       </View>
 

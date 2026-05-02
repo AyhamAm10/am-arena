@@ -8,6 +8,8 @@ type ApiState = {
   isLoadingTournament: boolean;
   isLoadingPolls: boolean;
   isVoting: boolean;
+  votePendingPollId: number | null;
+  votePendingOptionId: number | null;
   voteOnPoll: (pollId: number, optionId: number) => Promise<unknown>;
 };
 
@@ -18,6 +20,8 @@ const store = (): ApiState => ({
   isLoadingTournament: false,
   isLoadingPolls: false,
   isVoting: false,
+  votePendingPollId: null,
+  votePendingOptionId: null,
   voteOnPoll: async () => undefined,
 });
 

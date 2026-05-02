@@ -1,4 +1,4 @@
-# am-arena — role file (project conventions)
+# AM ARENA — role file (project conventions)
 
 This document summarizes **only** structures, patterns, and tooling present in this repository. It is intended as a reference for assistants and contributors.
 
@@ -8,7 +8,7 @@ This document summarizes **only** structures, patterns, and tooling present in t
 
 - **Package name:** `am-arena` (`package.json`).
 - **Entry:** `expo-router/entry` (`package.json` `main`).
-- **App display name / slug:** `am-arena` (`app.json` under `expo.name`, `expo.slug`).
+- **App display name / slug:** `AM ARENA` (`app.json` under `expo.name`), `am-arena` slug.
 - **Private:** `true` (`package.json`).
 
 ---

@@ -33,12 +33,22 @@ const BottomTabItem: React.FC<Props> = ({
 
   return (
     <TouchableOpacity
-      style={[styles.container, isCenterItem && styles.centerContainer]}
+      style={[
+        styles.container,
+        isCenterItem && styles.centerContainer,
+        isActive && styles.containerActive,
+      ]}
       onPress={handlePress}
       disabled={isActive}
-      activeOpacity={0.92}
+      activeOpacity={0.88}
     >
-      <View style={[styles.iconSlot, isCenterItem && styles.centerIconSlot]}>
+      <View
+        style={[
+          styles.iconSlot,
+          isCenterItem && styles.centerIconSlot,
+          isActive && styles.iconSlotActive,
+        ]}
+      >
         {isCenterItem ? (
           <View style={styles.centerBadge}>
             <View style={styles.centerBadgeInner}>
@@ -46,11 +56,16 @@ const BottomTabItem: React.FC<Props> = ({
             </View>
           </View>
         ) : (
-          <Icon size={ICON_SIZE} color={iconColor} />
+          <Icon size={ICON_SIZE} color={isActive ? colors_V2.primaryLight : iconColor} />
         )}
       </View>
       <Text
-        style={[styles.label, isCenterItem && styles.centerLabel, writingRtl]}
+        style={[
+          styles.label,
+          isCenterItem && styles.centerLabel,
+          isActive && styles.labelActive,
+          writingRtl,
+        ]}
         numberOfLines={1}
       >
         {label}
@@ -67,6 +82,9 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 4,
   },
+  containerActive: {
+    transform: [{ translateY: -1 }],
+  },
   centerContainer: {
     paddingTop: 0,
   },
@@ -75,6 +93,9 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  iconSlotActive: {
+    transform: [{ scale: 1.04 }],
   },
   centerIconSlot: {
     height: 62,
@@ -106,7 +127,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontWeight: "700",
     letterSpacing: 0.3,
-    color: colors_V2.textPrimary,
+    color: "rgba(255,255,255,0.72)",
+  },
+  labelActive: {
+    color: colors_V2.primaryLight,
+    textShadowColor: "rgba(167,139,250,0.5)",
+    textShadowRadius: 8,
   },
   centerLabel: {
     marginTop: 2,

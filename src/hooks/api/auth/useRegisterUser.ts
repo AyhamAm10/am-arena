@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { register } from "@/src/api/services/auth.api";
 import type { AuthRegisterBody, AuthTokensResponse } from "@/src/api/types/auth.types";
 import { persistAuthSession } from "@/src/api/axios/authSession";
+import { useActionToast } from "@/src/lib/notifications/useActionToast";
 
 /**
  * Register a new user with JSON metadata only.
@@ -13,6 +14,7 @@ export function useRegisterUser(): UseMutationResult<
   AuthRegisterBody
 > {
   const queryClient = useQueryClient();
+  const toast = useActionToast();
   return useMutation({
     mutationFn: register,
     onSuccess: async (data) => {
@@ -21,7 +23,11 @@ export function useRegisterUser(): UseMutationResult<
         refreshToken: data.refreshToken,
       });
       await queryClient.invalidateQueries({ queryKey: ["auth", "current-user"] });
+      toast.success("Account created successfully");
       router.replace("/");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

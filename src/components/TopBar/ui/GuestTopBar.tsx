@@ -9,7 +9,7 @@ const GuestTopBar: React.FC = () => {
   const router = useRouter();
   return (
     <View style={[styles.container, flexRowRtl]}>
-      <Text style={[styles.logo, textRtl]}>ساحة AM</Text>
+      <Text style={[styles.logo, textRtl]}>AM ARENA</Text>
       <TouchableOpacity
         style={styles.loginButton}
         onPress={() => router.push("/login")}

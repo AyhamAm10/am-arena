@@ -37,7 +37,7 @@ const LoggedInTopBar: React.FC = () => {
         <View style={styles.logoWrap}>
           <Image source={LOGO} style={styles.logo} resizeMode="contain" />
         </View>
-        <Text style={[styles.logoText, textRtl]}>NEON KINETIC</Text>
+        <Text style={[styles.logoText, textRtl]}>AM ARENA</Text>
       </View>
 
       <View style={[styles.userRow, flexRowRtl]}>

@@ -16,6 +16,7 @@ type ApiState = {
   handleAddFriend: () => void;
   friendAction: FriendAction;
   handleFriendAction: () => void;
+  handleRejectFriendRequest: () => void;
   isFriendActionBusy: boolean;
   /** POST /auth/logout — wired in profile Api layer. */
   logout: () => Promise<void>;
@@ -34,6 +35,7 @@ const store = (): ApiState => ({
   handleAddFriend: () => {},
   friendAction: "add",
   handleFriendAction: () => {},
+  handleRejectFriendRequest: () => {},
   isFriendActionBusy: false,
   logout: async () => {},
   isLoggingOut: false,

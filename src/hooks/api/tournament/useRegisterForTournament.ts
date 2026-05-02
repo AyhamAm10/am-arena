@@ -4,6 +4,7 @@ import type {
   PubgRegistrationResponse,
   RegisterForTournamentBody,
 } from "@/src/api/types/pubg-tournament-registration.types";
+import { useActionToast } from "@/src/lib/notifications/useActionToast";
 
 type RegisterVariables = {
   tournamentId: string;
@@ -20,11 +21,13 @@ export function useRegisterForTournament(): UseMutationResult<
   RegisterVariables
 > {
   const queryClient = useQueryClient();
+  const toast = useActionToast();
   return useMutation({
     mutationFn: ({ tournamentId, body }) =>
       registerForTournament(tournamentId, body),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["pubg-tournaments"] });
+      queryClient.invalidateQueries({ queryKey: ["pubg-tournament", variables.tournamentId] });
       queryClient.invalidateQueries({
         queryKey: [
           "pubg-tournament",
@@ -32,6 +35,10 @@ export function useRegisterForTournament(): UseMutationResult<
           "registration-fields",
         ],
       });
+      toast.success("Successfully joined tournament!");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

@@ -1,13 +1,40 @@
-import { AchievementsNavIcon } from "@/src/components/icons/nav/AchievementsNavIcon";
-import { ArenaSpaceNavIcon } from "@/src/components/icons/nav/ArenaSpaceNavIcon";
-import { FriendsNavIcon } from "@/src/components/icons/nav/FriendsNavIcon";
-import { HomeNavIconV2 } from "@/src/components/icons/nav/HomeNavIconV2";
-import { TournamentsNavIcon } from "@/src/components/icons/nav/TournamentsNavIcon";
+import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react-native";
+import {
+  ChampionIcon,
+  Home12Icon,
+  MedalThirdPlaceIcon,
+  SparklesIcon,
+  UserMultiple03Icon,
+} from "@hugeicons/core-free-icons";
 import { colors_V2 } from "@/src/theme/colors";
 import React from "react";
 import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomTabItem from "./BottomTabItem";
+
+type TabIconProps = { size: number; color: string };
+
+const TAB_ICON_STROKE_WIDTH = 1.9;
+
+function makeHugeIcon(icon: IconSvgElement) {
+  return function HugeTabIcon({ size, color }: TabIconProps) {
+    return (
+      <HugeiconsIcon
+        icon={icon}
+        size={size}
+        color={color}
+        strokeWidth={TAB_ICON_STROKE_WIDTH}
+        absoluteStrokeWidth
+      />
+    );
+  };
+}
+
+const HomeTabIcon = makeHugeIcon(Home12Icon);
+const EventsTabIcon = makeHugeIcon(SparklesIcon);
+const TournamentsTabIcon = makeHugeIcon(ChampionIcon);
+const AchievementsTabIcon = makeHugeIcon(MedalThirdPlaceIcon);
+const FriendsTabIcon = makeHugeIcon(UserMultiple03Icon);
 
 
 type Props = {
@@ -26,21 +53,21 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
         <View style={styles.row}>
           <BottomTabItem
             label="الرئيسية"
-            Icon={HomeNavIconV2}
+            Icon={HomeTabIcon}
             iconColor={colors_V2.textPrimary}
             active={activeTab === "Home"}
             onPress={() => onTabPress("Home")}
           />
           <BottomTabItem
             label="الساحة"
-            Icon={ArenaSpaceNavIcon}
+            Icon={EventsTabIcon}
             iconColor={colors_V2.textPrimary}
             active={activeTab === "ArenaSpace"}
             onPress={() => onTabPress("ArenaSpace")}
           />
           <BottomTabItem
             label="البطولات"
-            Icon={TournamentsNavIcon}
+            Icon={TournamentsTabIcon}
             iconColor={colors_V2.textPrimary}
             isCenterItem
             active={activeTab === "Tournaments"}
@@ -48,14 +75,14 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
           />
           <BottomTabItem
             label="الإنجازات"
-            Icon={AchievementsNavIcon}
+            Icon={AchievementsTabIcon}
             iconColor={colors_V2.textPrimary}
             active={activeTab === "Achievements"}
             onPress={() => onTabPress("Achievements")}
           />
           <BottomTabItem
             label="الأصدقاء"
-            Icon={FriendsNavIcon}
+            Icon={FriendsTabIcon}
             iconColor={colors_V2.textPrimary}
             active={activeTab === "Friends"}
             onPress={() => onTabPress("Friends")}
@@ -69,34 +96,38 @@ const BottomNav: React.FC<Props> = ({ activeTab, onTabPress }) => {
 const styles = StyleSheet.create({
   outer: {
     width: "100%",
-    backgroundColor: colors_V2.background,
+    backgroundColor: "rgba(11, 8, 18, 0.94)",
   },
   bar: {
     width: "100%",
-    backgroundColor: colors_V2.background,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    backgroundColor: "rgba(15, 11, 24, 0.96)",
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
     borderTopWidth: 1,
-    borderTopColor: colors_V2.card,
-    paddingTop: 8,
-    paddingBottom: 2,
+    borderTopColor: "rgba(216,185,255,0.12)",
+    paddingTop: 10,
+    paddingBottom: 4,
     overflow: "visible",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
     ...Platform.select({
       ios: {
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: -4 },
+        shadowOffset: { width: 0, height: -10 },
         shadowOpacity: 0.35,
-        shadowRadius: 10,
+        shadowRadius: 18,
       },
-      android: { elevation: 12 },
+      android: { elevation: 16 },
     }),
   },
   row: {
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-between",
-    minHeight: 66,
-    paddingHorizontal: 8,
+    minHeight: 70,
+    paddingHorizontal: 10,
     width: "100%",
   },
 });

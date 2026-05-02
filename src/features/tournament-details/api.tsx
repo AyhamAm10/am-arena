@@ -2,7 +2,7 @@ import { useFetchTournamentPolls } from "@/src/hooks/api/poll/useFetchTournament
 import { useVoteOnPoll } from "@/src/hooks/api/poll/useVoteOnPoll";
 import { useFetchPubgTournamentById } from "@/src/hooks/api/tournament/useFetchPubgTournamentById";
 import { useLocalSearchParams } from "expo-router";
-import { type PropsWithChildren, useCallback, useMemo } from "react";
+import { type PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { useMirrorRegistry } from "./store";
 
 function Api({ children }: PropsWithChildren) {
@@ -11,6 +11,9 @@ function Api({ children }: PropsWithChildren) {
     if (Array.isArray(params.id)) return params.id[0] ?? "";
     return params.id ?? "";
   }, [params.id]);
+
+  const [votePendingPollId, setVotePendingPollId] = useState<number | null>(null);
+  const [votePendingOptionId, setVotePendingOptionId] = useState<number | null>(null);
 
   const tournamentQuery = useFetchPubgTournamentById(tournamentId);
   const pollsQuery = useFetchTournamentPolls(tournamentId, {
@@ -36,10 +39,19 @@ function Api({ children }: PropsWithChildren) {
     pollsQuery.isFetching,
   );
   useMirrorRegistry("isVoting", voteMutation.isPending, voteMutation.isPending);
+  useMirrorRegistry("votePendingPollId", votePendingPollId, votePendingPollId);
+  useMirrorRegistry("votePendingOptionId", votePendingOptionId, votePendingOptionId);
   const voteOnPoll = useCallback(
     async (pollId: number, optionId: number) => {
       if (voteMutation.isPending) return;
-      await voteMutation.mutateAsync({ pollId, optionId, tournamentId });
+      setVotePendingPollId(pollId);
+      setVotePendingOptionId(optionId);
+      try {
+        await voteMutation.mutateAsync({ pollId, optionId, tournamentId });
+      } finally {
+        setVotePendingPollId((current) => (current === pollId ? null : current));
+        setVotePendingOptionId((current) => (current === optionId ? null : current));
+      }
     },
     [voteMutation, tournamentId]
   );

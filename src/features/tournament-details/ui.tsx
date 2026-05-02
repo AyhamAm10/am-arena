@@ -2,6 +2,7 @@ import type { PollOptionResponse, PollResponse } from "@/src/api/types/poll.type
 import type { PubgGameType, PubgTournamentDetail } from "@/src/api/types/pubg-tournament.types";
 import { ScreenEnterTransition } from "@/src/components/motion";
 import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
+import { formatTournamentTimeRemaining } from "@/src/lib/utils/tournament-time-remaining";
 import { flexRowRtl, isRtl, rtlMirrorIconStyle, textRtl, writingRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,13 +14,13 @@ import {
   ImageBackground,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import type { TournamentDetailsTab } from "./store/state";
@@ -41,6 +42,34 @@ function formatPrizePoolDisplay(value: number | string | undefined): string {
   const n = typeof value === "string" ? Number(value) : value;
   if (!Number.isFinite(n)) return String(value);
   return n.toLocaleString("en-US");
+}
+
+function formatDateTimeAr(value: string | null | undefined) {
+  if (!value) return "—";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "—";
+  return parsed.toLocaleString("ar", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function getTimingCopy(tournament: PubgTournamentDetail) {
+  const now = Date.now();
+  const startAt = tournament.start_date ? new Date(tournament.start_date).getTime() : NaN;
+  const endAt = tournament.end_date ? new Date(tournament.end_date).getTime() : NaN;
+  const showStartPublicly = !tournament.is_active && Number.isFinite(startAt) && startAt > now;
+
+  return {
+    showStartPublicly,
+    endCountdown: Number.isFinite(endAt) ? formatTournamentTimeRemaining(tournament.end_date) : "—",
+    endDate: formatDateTimeAr(tournament.end_date),
+    startCountdown: showStartPublicly ? formatTournamentTimeRemaining(tournament.start_date) : null,
+    startDate: showStartPublicly ? formatDateTimeAr(tournament.start_date) : null,
+  };
 }
 
 function formatGameTypeAr(type: PubgGameType | undefined): string {
@@ -141,18 +170,39 @@ function TournamentRulesGrid({ tournament }: { tournament: PubgTournamentDetail 
     <View style={styles.rulesGrid}>
       <View style={styles.rulesRow}>
         <View style={styles.ruleCell}>
-          <RuleStatCard {...cells[0]} />
+          <RuleStatCard
+            icon={cells[0].icon}
+            label={cells[0].label}
+            value={cells[0].value}
+            iconColor={cells[0].iconColor}
+          />
         </View>
         <View style={styles.ruleCell}>
-          <RuleStatCard {...cells[1]} />
+          <RuleStatCard
+            icon={cells[1].icon}
+            label={cells[1].label}
+            value={cells[1].value}
+            iconColor={cells[1].iconColor}
+          />
         </View>
       </View>
       <View style={styles.rulesRow}>
         <View style={styles.ruleCell}>
-          <RuleStatCard {...cells[2]} />
+          <RuleStatCard
+            icon={cells[2].icon}
+            label={cells[2].label}
+            value={cells[2].value}
+            iconColor={cells[2].iconColor}
+          />
         </View>
         <View style={styles.ruleCell}>
-          <RuleStatCard {...cells[3]} />
+          <RuleStatCard
+            icon={cells[3].icon}
+            label={cells[3].label}
+            value={cells[3].value}
+            valueGold={cells[3].valueGold}
+            iconColor={cells[3].iconColor}
+          />
         </View>
       </View>
     </View>
@@ -183,11 +233,37 @@ function RuleStatCard(props: {
 }
 
 function TournamentDetailsTab({ tournament }: { tournament: PubgTournamentDetail }) {
+  const timing = getTimingCopy(tournament);
+
   return (
     <View style={styles.tabContent}>
       <Text style={styles.sectionEyebrow}>الوصف</Text>
       <View style={styles.descriptionCard}>
         <Text style={styles.descriptionBody}>{tournament.description || "لا يوجد وصف."}</Text>
+      </View>
+
+      <Text style={[styles.sectionEyebrow, styles.sectionEyebrowSpaced]}>الوقت</Text>
+      <View style={styles.timingGrid}>
+        <View style={styles.timingCardPrimary}>
+          <Text style={styles.timingCardLabel}>ينتهي</Text>
+          <Text style={styles.timingCardValue} numberOfLines={1}>
+            {timing.endCountdown}
+          </Text>
+          <Text style={styles.timingCardMeta} numberOfLines={2}>
+            {timing.endDate}
+          </Text>
+        </View>
+        {timing.showStartPublicly ? (
+          <View style={styles.timingCardSecondary}>
+            <Text style={styles.timingCardLabel}>تبدأ</Text>
+            <Text style={styles.timingCardValue} numberOfLines={1}>
+              {timing.startCountdown}
+            </Text>
+            <Text style={styles.timingCardMeta} numberOfLines={2}>
+              {timing.startDate}
+            </Text>
+          </View>
+        ) : null}
       </View>
 
       <Text style={[styles.sectionEyebrow, styles.sectionEyebrowSpaced]}>قواعد البطولة</Text>
@@ -200,9 +276,11 @@ function VotingTabContent(props: {
   polls: PollResponse[];
   isTournamentActive: boolean;
   isVoting: boolean;
+  votePendingPollId: number | null;
+  votePendingOptionId: number | null;
   voteOnPoll: (pollId: number, optionId: number) => Promise<unknown>;
 }) {
-  const { polls, isTournamentActive, isVoting, voteOnPoll } = props;
+  const { polls, isTournamentActive, isVoting, votePendingPollId, votePendingOptionId, voteOnPoll } = props;
 
   if (polls.length === 0) {
     return (
@@ -215,6 +293,7 @@ function VotingTabContent(props: {
   return (
     <View style={styles.tabContent}>
       {polls.map((poll) => {
+        const pendingVote = isVoting && votePendingPollId === poll.id;
         const canSubmitVote = !poll.closed && isTournamentActive && !isVoting && !hasUserVoted(poll);
         return (
           <View key={poll.id} style={styles.pollSection}>
@@ -248,6 +327,7 @@ function VotingTabContent(props: {
                   style={({ pressed }) => [
                     styles.nomineeCard,
                     selected && styles.nomineeCardSelected,
+                    pendingVote && votePendingOptionId === option.id && styles.nomineeCardPending,
                     pressed && canSubmitVote && !poll.closed && styles.nomineeCardPressed,
                   ]}
                 >
@@ -279,10 +359,16 @@ function VotingTabContent(props: {
                     </View>
 
                     <View style={styles.nomineeVotesCol}>
-                      <Text style={[styles.nomineeVoteNum, selected && styles.nomineeVoteNumSelected]}>
-                        {formatCompactVotes(option.votes_count)}
-                      </Text>
-                      <Text style={styles.nomineeVotesLabel}>أصوات</Text>
+                      {pendingVote && votePendingOptionId === option.id ? (
+                        <ActivityIndicator size="small" color={colors_V2.primaryLight} />
+                      ) : (
+                        <>
+                          <Text style={[styles.nomineeVoteNum, selected && styles.nomineeVoteNumSelected]}>
+                            {formatCompactVotes(option.votes_count)}
+                          </Text>
+                          <Text style={styles.nomineeVotesLabel}>أصوات</Text>
+                        </>
+                      )}
                     </View>
                   </View>
                 </Pressable>
@@ -386,6 +472,8 @@ export function Ui() {
   const isLoadingTournament = useMirror("isLoadingTournament");
   const isLoadingPolls = useMirror("isLoadingPolls");
   const isVoting = useMirror("isVoting");
+  const votePendingPollId = useMirror("votePendingPollId");
+  const votePendingOptionId = useMirror("votePendingOptionId");
   const voteOnPoll = useMirror("voteOnPoll");
 
   const headerImage = tournament?.game?.image
@@ -398,7 +486,7 @@ export function Ui() {
 
   if (isLoadingTournament && !tournament) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={styles.safe} edges={["top"]}>
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={colors_V2.primary} />
         </View>
@@ -408,7 +496,7 @@ export function Ui() {
 
   if (!tournament) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={styles.safe} edges={["top"]}>
         <View style={styles.centered}>
           <Text style={styles.emptyText}>تعذر تحميل البطولة.</Text>
         </View>
@@ -417,7 +505,7 @@ export function Ui() {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.content}
@@ -467,7 +555,7 @@ export function Ui() {
                 <View style={styles.heroStat}>
                   <Text style={styles.heroStatLabel}>المشاركون</Text>
                   <Text style={styles.heroStatValue}>
-                    {tournament.registered_count ?? 0}/{tournament.max_players ?? 0}
+                      {tournament.participant_count ?? tournament.registered_count ?? 0}/{tournament.max_players ?? 0}
                   </Text>
                 </View>
                 <View style={styles.heroStat}>
@@ -527,6 +615,8 @@ export function Ui() {
                 polls={polls}
                 isTournamentActive={isTournamentActive}
                 isVoting={isVoting}
+                votePendingPollId={votePendingPollId}
+                votePendingOptionId={votePendingOptionId}
                 voteOnPoll={voteOnPoll}
               />
             ) : (
@@ -725,6 +815,49 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     ...writingRtl,
   },
+  timingGrid: {
+    flexDirection: "row",
+    gap: 10,
+    flexWrap: "wrap",
+  },
+  timingCardPrimary: {
+    flex: 1,
+    minWidth: 160,
+    borderRadius: 18,
+    padding: 14,
+    backgroundColor: "rgba(147,204,255,0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(147,204,255,0.2)",
+    gap: 6,
+  },
+  timingCardSecondary: {
+    flex: 1,
+    minWidth: 160,
+    borderRadius: 18,
+    padding: 14,
+    backgroundColor: "rgba(216,185,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(216,185,255,0.16)",
+    gap: 6,
+  },
+  timingCardLabel: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: colors_V2.textSecondary,
+    letterSpacing: 0.6,
+  },
+  timingCardValue: {
+    fontSize: 15,
+    fontWeight: "900",
+    color: colors_V2.textPrimary,
+    lineHeight: 20,
+  },
+  timingCardMeta: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: colors_V2.textSecondary,
+    lineHeight: 16,
+  },
   rulesGrid: {
     gap: 10,
   },
@@ -807,6 +940,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 1,
     borderColor: "transparent",
+  },
+  nomineeCardPending: {
+    opacity: 0.92,
+    borderColor: "rgba(147,204,255,0.45)",
+    shadowColor: colors_V2.primaryLight,
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 4,
   },
   nomineeCardSelected: {
     borderColor: colors_V2.primaryLight,

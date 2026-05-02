@@ -24,19 +24,19 @@ type Props = {
 
 const HERO_HEIGHT = 168;
 
+function formatArDate(value: string | null | undefined) {
+  if (!value) return tournamentsAr.noWinner;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return tournamentsAr.noWinner;
+  return parsed.toLocaleDateString("ar", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function formatPastDateAr(t: PubgTournamentDetail): string {
-  const raw = t.end_date ?? t.start_date ?? t.updated_at ?? t.created_at;
-  if (!raw) return tournamentsAr.noWinner;
-  try {
-    const d = new Date(raw);
-    return d.toLocaleDateString("ar", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  } catch {
-    return tournamentsAr.noWinner;
-  }
+  return formatArDate(t.end_date ?? t.start_date ?? t.updated_at ?? t.created_at);
 }
 
 export function PastTournamentCard({ tournament, onReplayPress }: Props) {
@@ -69,7 +69,10 @@ export function PastTournamentCard({ tournament, onReplayPress }: Props) {
         <Text style={[styles.title, arWriting]} numberOfLines={2}>
           {tournament.title}
         </Text>
-        <Text style={[styles.date, arWriting]}>{dateLabel}</Text>
+        <View style={styles.datePill}>
+          <Text style={[styles.datePillLabel, arText]}>انتهت في</Text>
+          <Text style={[styles.date, arWriting]}>{dateLabel}</Text>
+        </View>
 
         <View style={styles.championBlock}>
           <Icon
@@ -133,11 +136,27 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   date: {
-    marginTop: 8,
     fontSize: 13,
     fontWeight: "600",
     color: tournamentsTheme.bodyMuted,
     textAlign: "center",
+  },
+  datePill: {
+    marginTop: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: "rgba(216,185,255,0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(216,185,255,0.12)",
+    alignItems: "center",
+    gap: 2,
+  },
+  datePillLabel: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: tournamentsTheme.bodyMuted,
+    letterSpacing: 0.5,
   },
   championBlock: {
     flexDirection: "row",

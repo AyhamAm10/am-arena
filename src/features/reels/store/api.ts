@@ -24,6 +24,8 @@ type ApiState = {
   isReelLikeBusy: boolean;
   voteOnPoll: (pollId: number, optionId: number) => Promise<unknown>;
   isVotingPoll: boolean;
+  votePendingPollId: number | null;
+  votePendingOptionId: number | null;
   addReelComment: (reelId: string, comment: string, mentionedUserIds?: number[]) => Promise<unknown>;
   isAddingComment: boolean;
   commentReelId: string | null;
@@ -50,6 +52,8 @@ const store = (): ApiState => ({
   isReelLikeBusy: false,
   voteOnPoll: async () => {},
   isVotingPoll: false,
+  votePendingPollId: null,
+  votePendingOptionId: null,
   addReelComment: async () => {},
   isAddingComment: false,
   commentReelId: null,

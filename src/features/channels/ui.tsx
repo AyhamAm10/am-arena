@@ -162,7 +162,7 @@ export function Ui() {
     filterTab === "private"
       ? "محادثاتك المباشرة"
       : filterTab === "tournaments"
-        ? "انضم للنقاش في بطولات ساحة AM"
+        ? "انضم للنقاش في بطولات AM ARENA"
         : "كل قنوات البطولات والمحادثات الخاصة";
 
   const ListHeader = (

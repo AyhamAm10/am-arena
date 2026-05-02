@@ -24,6 +24,19 @@ import {
 
 const IMAGE_HEADER_HEIGHT = 168;
 
+function formatArDateTime(value: string | null | undefined) {
+  if (!value) return "—";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "—";
+  return parsed.toLocaleString("ar", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 type Props = {
   tournament: PubgTournamentDetail;
   joinGate: TournamentJoinGate | undefined;
@@ -42,7 +55,12 @@ export function ActiveTournamentCard({
   const maxPlayers = tournament.max_players ?? 0;
   const progressPct =
     maxPlayers > 0 ? Math.min(1, registeredCount / maxPlayers) : 0;
-  const countdown = formatActiveTournamentCountdownAr(tournament.start_date);
+  const endCountdown = formatActiveTournamentCountdownAr(tournament.end_date);
+  const startCountdown = formatActiveTournamentCountdownAr(tournament.start_date);
+  const primaryTimingLabel = tournament.end_date ? "ينتهي خلال" : "يبدأ خلال";
+  const primaryTimingValue = tournament.end_date ? endCountdown : startCountdown;
+  const primaryTimingMeta = formatArDateTime(tournament.end_date ?? tournament.start_date);
+  const showStartTiming = !tournament.is_active && Boolean(tournament.start_date);
 
   const gate = joinGate ?? {
     canJoin: false,
@@ -68,6 +86,28 @@ export function ActiveTournamentCard({
       <Text style={[styles.heroTitle, arText]} numberOfLines={2}>
         {tournament.title}
       </Text>
+      <View style={styles.timingStrip}>
+        <View style={styles.timingChip}>
+          <Text style={styles.timingChipLabel}>{primaryTimingLabel}</Text>
+          <Text style={[styles.timingChipValue, arText]} numberOfLines={1}>
+            {primaryTimingValue}
+          </Text>
+          <Text style={[styles.timingChipMeta, arWriting]} numberOfLines={1}>
+            {primaryTimingMeta}
+          </Text>
+        </View>
+        {showStartTiming ? (
+          <View style={styles.timingChipMuted}>
+            <Text style={styles.timingChipLabel}>تبدأ في</Text>
+            <Text style={[styles.timingChipValue, arText]} numberOfLines={1}>
+              {startCountdown}
+            </Text>
+            <Text style={[styles.timingChipMeta, arWriting]} numberOfLines={1}>
+              {formatArDateTime(tournament.start_date)}
+            </Text>
+          </View>
+        ) : null}
+      </View>
     </>
   );
 
@@ -108,7 +148,7 @@ export function ActiveTournamentCard({
           <View style={styles.statCol}>
             <Text style={[styles.statLabel, arText]}>{tournamentsAr.countdown}</Text>
             <Text style={[styles.statValueCountdown, arText]} numberOfLines={2}>
-              {countdown}
+              {primaryTimingValue}
             </Text>
           </View>
           <View style={styles.statCol}>
@@ -218,6 +258,48 @@ const styles = StyleSheet.create({
     color: colors_V2.textPrimary,
     letterSpacing: 0.2,
     lineHeight: 28,
+  },
+  timingStrip: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  timingChip: {
+    flex: 1,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: "rgba(147,204,255,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(147,204,255,0.22)",
+    gap: 4,
+  },
+  timingChipMuted: {
+    flex: 1,
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: "rgba(216,185,255,0.1)",
+    borderWidth: 1,
+    borderColor: "rgba(216,185,255,0.16)",
+    gap: 4,
+  },
+  timingChipLabel: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: tournamentsTheme.statLabelMuted,
+    letterSpacing: 0.5,
+  },
+  timingChipValue: {
+    fontSize: 14,
+    fontWeight: "900",
+    color: colors_V2.textPrimary,
+    lineHeight: 20,
+  },
+  timingChipMeta: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: tournamentsTheme.bodyMuted,
+    lineHeight: 14,
   },
   statsPanel: {
     backgroundColor: colors_V2.card,

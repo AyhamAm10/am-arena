@@ -6,6 +6,7 @@ import {
 import { updateProfile } from "@/src/api/services/user.api";
 import type { CurrentUserResponse } from "@/src/api/types/auth.types";
 import type { UpdateProfileBody, UserProfileResponse } from "@/src/api/types/user.types";
+import { useActionToast } from "@/src/lib/notifications/useActionToast";
 
 /**
  * Update current user's profile with JSON metadata only.
@@ -16,6 +17,7 @@ export function useUpdateProfile(): UseMutationResult<
   UpdateProfileBody
 > {
   const queryClient = useQueryClient();
+  const toast = useActionToast();
 
   return useMutation({
     mutationFn: updateProfile,
@@ -41,6 +43,10 @@ export function useUpdateProfile(): UseMutationResult<
       queryClient.invalidateQueries({
         queryKey: ["user", "profile", String(data.user.id)],
       });
+      toast.success("Profile updated successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

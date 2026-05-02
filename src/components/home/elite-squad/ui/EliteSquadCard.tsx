@@ -87,7 +87,7 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
           resizeMode="cover"
         >
           <LinearGradient
-            colors={["transparent", "rgba(13, 10, 20, 0.88)", colors_V2.background]}
+            colors={["transparent", "rgba(13, 10, 20, 0.76)", "rgba(9, 7, 14, 0.96)"]}
             style={styles.overlay}
           >
             {renderContent()}
@@ -117,18 +117,33 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
           {tournament.title}
         </Text>
 
-        <View style={[styles.detailsRow, flexRowRtl]}>
-          <View style={styles.detailItem}>
-            <Text style={[styles.prizeValue, textRtl]}>{prizePool}</Text>
-            <Text style={[styles.detailLabel, textRtl]}>مجموع الجوائز</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={[styles.levelValue, textRtl]}>المستوى {levelRequired}</Text>
-            <Text style={[styles.detailLabel, textRtl]}>مطلوب</Text>
+        <View style={styles.prizeSection}>
+          <LinearGradient
+            colors={[
+              "rgba(255, 224, 102, 0.18)",
+              "rgba(255, 186, 61, 0.24)",
+              "rgba(138, 98, 22, 0.35)",
+            ]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.prizeBadge}
+          >
+            <Text style={styles.prizeBadgeIcon}>🏆</Text>
+            <View style={styles.prizeBadgeTextWrap}>
+              <Text style={[styles.prizeBadgeLabel, textRtl]}>الجائزة الكبرى</Text>
+              <Text style={[styles.prizeValue, textRtl]}>{prizePool}</Text>
+            </View>
+          </LinearGradient>
+        </View>
+
+        <View style={styles.levelBadgeWrap}>
+          <View style={styles.levelBadge}>
+            <Text style={styles.levelBadgeIcon}>🛡️</Text>
+            <Text style={[styles.levelBadgeText, textRtl]}>مستوى {levelRequired}+ مطلوب</Text>
           </View>
         </View>
 
-        <View style={[styles.bottomRow, flexRowRtl]}>
+        <View style={styles.bottomStack}>
           <View style={styles.registrationCol}>
             <View style={[styles.registrationTop, flexRowRtl]}>
               <Text style={[styles.registrationLabel, textRtl]}>التسجيل</Text>
@@ -146,41 +161,54 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
               />
             </View>
           </View>
-          <View style={styles.joinColumn}>
-            <TouchableOpacity
-              accessibilityRole="button"
-              accessibilityLabel="انضم إلى البطولة"
-              accessibilityState={{ disabled: !canJoin }}
-              accessibilityHint={joinAccessibilityHint}
-              onPress={() => canJoin && onJoinPress?.(tournament.id)}
-              activeOpacity={canJoin ? 0.85 : 1}
-              disabled={!canJoin}
-              style={[styles.joinTouchable, !canJoin && styles.joinTouchableDisabled]}
-            >
-              <LinearGradient
-                colors={
-                  canJoin
-                    ? [colors_V2.primary, colors_V2.gradientEnd]
-                    : [colors_V2.textSecondary, colors_V2.textSecondary]
-                }
-                start={{ x: 0, y: 0 }}
-                end={{ x: 0, y: 1 }}
-                style={styles.joinGradient}
-              >
-                <Text
-                  style={[
-                    styles.joinButtonText,
-                    textRtl,
-                    !canJoin && styles.joinButtonTextDisabled,
-                  ]}
-                >
-                  انضم
+
+          <View style={[styles.joinRow, flexRowRtl]}>
+            <View style={styles.participantPill}>
+              <Text style={styles.participantPillIcon}>👥</Text>
+              <View>
+                <Text style={[styles.participantPillCount, textRtl]}>
+                  {registeredCount}/{maxPlayers}
                 </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            {joinBlockedMessage ? (
-              <Text style={[styles.joinHint, textRtl]}>{joinBlockedMessage}</Text>
-            ) : null}
+                <Text style={[styles.participantPillLabel, textRtl]}>مقعد محجوز</Text>
+              </View>
+            </View>
+
+            <View style={styles.joinColumn}>
+              <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel="انضم إلى البطولة"
+                accessibilityState={{ disabled: !canJoin }}
+                accessibilityHint={joinAccessibilityHint}
+                onPress={() => canJoin && onJoinPress?.(tournament.id)}
+                activeOpacity={canJoin ? 0.85 : 1}
+                disabled={!canJoin}
+                style={[styles.joinTouchable, !canJoin && styles.joinTouchableDisabled]}
+              >
+                <LinearGradient
+                  colors={
+                    canJoin
+                      ? [colors_V2.primary, colors_V2.gradientEnd]
+                      : [colors_V2.textSecondary, colors_V2.textSecondary]
+                  }
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                  style={styles.joinGradient}
+                >
+                  <Text
+                    style={[
+                      styles.joinButtonText,
+                      textRtl,
+                      !canJoin && styles.joinButtonTextDisabled,
+                    ]}
+                  >
+                    انضم
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              {joinBlockedMessage ? (
+                <Text style={[styles.joinHint, textRtl]}>{joinBlockedMessage}</Text>
+              ) : null}
+            </View>
           </View>
         </View>
       </View>
@@ -195,21 +223,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors_V2.card,
   },
   imageBackground: {
-    height: 232,
+    minHeight: 342,
     width: "100%",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   imageRadius: {
     borderRadius: 16,
   },
   overlay: {
     flex: 1,
-    justifyContent: "flex-end",
-    padding: 16,
+    justifyContent: "flex-start",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 20,
     borderRadius: 16,
   },
   content: {
-    gap: 10,
+    gap: 12,
   },
   pillRow: {
     alignItems: "flex-start",
@@ -229,45 +259,96 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "800",
+    fontSize: 23,
+    fontWeight: "900",
     color: colors_V2.textPrimary,
     letterSpacing: 0.3,
+    textAlign: "center",
+    alignSelf: "stretch",
   },
-  detailsRow: {
-    gap: 28,
+  prizeSection: {
+    alignItems: "center",
     marginTop: 2,
-    alignItems: "flex-start",
   },
-  detailItem: {
-    gap: 4,
-  },
-  prizeValue: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: colors_V2.accent,
-  },
-  levelValue: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: colors_V2.error,
-  },
-  detailLabel: {
-    fontSize: 10,
-    fontWeight: "600",
-    color: colors_V2.textSecondary,
-    letterSpacing: 0.4,
-  },
-  bottomRow: {
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    marginTop: 6,
+  prizeBadge: {
+    width: "100%",
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255, 214, 102, 0.32)",
   },
-  registrationCol: {
+  prizeBadgeIcon: {
+    fontSize: 28,
+    lineHeight: 30,
+  },
+  prizeBadgeTextWrap: {
     flex: 1,
     minWidth: 0,
-    gap: 6,
+    gap: 2,
+  },
+  prizeValue: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#FFD66B",
+    letterSpacing: 0.4,
+    textShadowColor: "rgba(255, 214, 107, 0.55)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
+  },
+  prizeBadgeLabel: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "rgba(255, 236, 184, 0.9)",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
+  levelBadgeWrap: {
+    alignItems: "center",
+  },
+  levelBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 214, 102, 0.13)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 214, 102, 0.22)",
+  },
+  levelBadgeIcon: {
+    fontSize: 14,
+    lineHeight: 16,
+  },
+  levelBadgeText: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#FFE2A3",
+    letterSpacing: 0.2,
+  },
+  bottomStack: {
+    marginTop: 2,
+    gap: 10,
+    padding: 12,
+    borderRadius: 18,
+    backgroundColor: "rgba(10, 8, 16, 0.64)",
+    borderWidth: 1,
+    borderColor: "rgba(216,185,255,0.1)",
+  },
+  registrationCol: {
+    gap: 8,
+    width: "100%",
+    alignSelf: "stretch",
+    paddingHorizontal: 2,
+  },
+  joinRow: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
   },
   registrationTop: {
     alignItems: "center",
@@ -284,8 +365,34 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#FFFFFF",
   },
+  participantPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 14,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: 1,
+    borderColor: "rgba(216,185,255,0.12)",
+    minWidth: 104,
+  },
+  participantPillIcon: {
+    fontSize: 18,
+  },
+  participantPillCount: {
+    fontSize: 15,
+    fontWeight: "900",
+    color: colors_V2.textPrimary,
+  },
+  participantPillLabel: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: colors_V2.textSecondary,
+    letterSpacing: 0.4,
+  },
   progressTrack: {
-    height: 5,
+    height: 6,
     borderRadius: 3,
     backgroundColor: "rgba(26, 14, 37, 0.85)",
     overflow: "hidden",
@@ -296,25 +403,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors_V2.primaryLight,
   },
   joinColumn: {
-    maxWidth: 172,
+    flex: 1,
     gap: 8,
     alignItems: "stretch",
   },
   joinTouchable: {
     borderRadius: 10,
     overflow: "hidden",
-    alignSelf: "center",
+    alignSelf: "stretch",
   },
   joinTouchableDisabled: {
     opacity: 0.85,
   },
   joinGradient: {
-    paddingHorizontal: 28,
-    paddingVertical: 12,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    minWidth: 100,
+    minWidth: 96,
   },
   joinButtonText: {
     fontSize: 14,

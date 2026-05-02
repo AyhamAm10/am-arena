@@ -22,7 +22,7 @@ function Api({ children }: PropsWithChildren) {
 
     const { data: bestPlayers, isLoading: isLoadingBestPlayers, dataUpdatedAt: dataUpdatedAtBestPlayers, isFetching: isFetchingBestPlayers } = useFetchBestPlayers({
         page: 1,
-        limit: 10,
+        limit: 4,
     });
 
     const { data: latestWinners, isLoading: isLoadingLatestWinners, dataUpdatedAt: dataUpdatedAtLatestWinners, isFetching: isFetchingLatestWinners } = useFetchHeroContents({

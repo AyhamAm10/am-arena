@@ -46,14 +46,15 @@ const TopPlayersSection: React.FC<Props> = ({
   players,
   seasonLabel,
 }) => {
-  const byId = useMemo(() => buildById(players), [players]);
+  const topPlayers = useMemo(() => players.slice(0, 4), [players]);
+  const byId = useMemo(() => buildById(topPlayers), [topPlayers]);
 
   return (
     <View style={styles.section}>
       <View style={styles.header}>
         <Text style={[styles.title, textRtl]}>قاعة الشهرة</Text>
       </View>
-      {players.map((p) => (
+      {topPlayers.map((p) => (
         <TouchableOpacity
           key={p.id}
           style={styles.cardPressable}

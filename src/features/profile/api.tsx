@@ -5,6 +5,7 @@ import {
   useFetchFriendsInfinite,
   type FriendsPageResult,
 } from "@/src/hooks/api/friends/useFetchFriendsInfinite";
+import { useAcceptFriendRequest } from "@/src/hooks/api/friends/useAcceptFriendRequest";
 import { useRemoveFriendship } from "@/src/hooks/api/friends/useRemoveFriendship";
 import { useRemovePendingFriendRequest } from "@/src/hooks/api/friends/useRemovePendingFriendRequest";
 import { useSendFriendRequest } from "@/src/hooks/api/friends/useSendFriendRequest";
@@ -48,6 +49,7 @@ function Api({ children, variant, userId }: ApiProps) {
     enabled: Boolean(profileId),
   });
   const friendRequest = useSendFriendRequest();
+  const acceptFriendMut = useAcceptFriendRequest();
   const removeFriendMut = useRemoveFriendship();
   const removePendingMut = useRemovePendingFriendRequest();
   const logoutMutation = useLogout();
@@ -64,9 +66,16 @@ function Api({ children, variant, userId }: ApiProps) {
     limit: 100,
     enabled: Boolean(currentUserId) && displayVariant === "other" && Boolean(viewedUserId),
   });
+  const incomingPending = useFetchFriendsInfinite({
+    status: "pending",
+    direction: "incoming",
+    limit: 100,
+    enabled: Boolean(currentUserId) && displayVariant === "other" && Boolean(viewedUserId),
+  });
 
   const acceptedData = acceptedFriends.data as InfiniteData<FriendsPageResult> | undefined;
   const outgoingData = outgoingPending.data as InfiniteData<FriendsPageResult> | undefined;
+  const incomingData = incomingPending.data as InfiniteData<FriendsPageResult> | undefined;
 
   const friendAction: FriendAction = useMemo(() => {
     if (displayVariant !== "other" || !viewedUserId) return "add";
@@ -77,6 +86,11 @@ function Api({ children, variant, userId }: ApiProps) {
       (r) => r.user_id === viewedUserId || r.friend_user_id === viewedUserId,
     );
     if (isFriend) return "remove";
+
+    const incomingRows: FriendEntityResponse[] =
+      incomingData?.pages.flatMap((p: FriendsPageResult) => p.data) ?? [];
+    const hasIncomingRequest = incomingRows.some((r) => r.user_id === viewedUserId);
+    if (hasIncomingRequest) return "accept";
 
     const pendingRows: FriendEntityResponse[] =
       outgoingData?.pages.flatMap((p: FriendsPageResult) => p.data) ?? [];
@@ -90,11 +104,12 @@ function Api({ children, variant, userId }: ApiProps) {
     displayVariant,
     viewedUserId,
     acceptedData?.pages,
+    incomingData?.pages,
     outgoingData?.pages,
   ]);
 
   const isFriendActionBusy =
-    friendRequest.isPending || removeFriendMut.isPending || removePendingMut.isPending;
+    friendRequest.isPending || acceptFriendMut.isPending || removeFriendMut.isPending || removePendingMut.isPending;
 
   const logout = useCallback(async () => {
     await logoutMutation.mutateAsync();
@@ -122,6 +137,8 @@ function Api({ children, variant, userId }: ApiProps) {
           await removeFriendMut.mutateAsync({ friend_user_id: id });
         } else if (friendAction === "cancel") {
           await removePendingMut.mutateAsync({ friend_user_id: id });
+        } else if (friendAction === "accept") {
+          await acceptFriendMut.mutateAsync({ user_id: id });
         } else {
           await friendRequest.mutateAsync({ friend_user_id: id });
         }
@@ -133,7 +150,20 @@ function Api({ children, variant, userId }: ApiProps) {
       }
     };
     void run();
-  }, [profileQuery.data?.user?.id, friendAction, removeFriendMut, removePendingMut, friendRequest]);
+  }, [profileQuery.data?.user?.id, friendAction, removeFriendMut, removePendingMut, acceptFriendMut, friendRequest]);
+
+  const handleRejectFriendRequest = useCallback(() => {
+    const id = profileQuery.data?.user?.id;
+    if (typeof id !== "number") return;
+    const run = async () => {
+      try {
+        await removePendingMut.mutateAsync({ friend_user_id: id });
+      } catch (e) {
+        Alert.alert("خطأ", e instanceof Error ? e.message : "فشلت العملية.");
+      }
+    };
+    void run();
+  }, [profileQuery.data?.user?.id, removePendingMut]);
 
   const isLoading =
     ((variant === "me" || needsMeForComparison) &&
@@ -159,6 +189,7 @@ function Api({ children, variant, userId }: ApiProps) {
   useMirrorRegistry("handleAddFriend", handleAddFriend, handleAddFriend);
   useMirrorRegistry("friendAction", friendAction, friendAction);
   useMirrorRegistry("handleFriendAction", handleFriendAction, handleFriendAction);
+  useMirrorRegistry("handleRejectFriendRequest", handleRejectFriendRequest, handleRejectFriendRequest);
   useMirrorRegistry("isFriendActionBusy", isFriendActionBusy, isFriendActionBusy);
   useMirrorRegistry("logout", logout, logoutMutation.mutateAsync);
   useMirrorRegistry(

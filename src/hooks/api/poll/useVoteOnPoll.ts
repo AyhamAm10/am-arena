@@ -1,6 +1,7 @@
 import { voteOnPoll } from "@/src/api/services/poll.api";
 import type { PollResponse } from "@/src/api/types/poll.types";
 import { useMutation, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
+import { useActionToast } from "@/src/lib/notifications/useActionToast";
 
 type VoteVariables = {
   pollId: number;
@@ -10,6 +11,7 @@ type VoteVariables = {
 
 export function useVoteOnPoll(): UseMutationResult<PollResponse, Error, VoteVariables> {
   const queryClient = useQueryClient();
+  const toast = useActionToast();
   return useMutation({
     mutationFn: ({ pollId, optionId }) => voteOnPoll(pollId, optionId),
     onSuccess: (_data, variables) => {
@@ -22,6 +24,10 @@ export function useVoteOnPoll(): UseMutationResult<PollResponse, Error, VoteVari
           queryKey: ["pubg-tournament", variables.tournamentId],
         });
       }
+      toast.success("Vote submitted successfully");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

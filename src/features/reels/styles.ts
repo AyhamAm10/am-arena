@@ -400,7 +400,20 @@ export const styles = StyleSheet.create({
     paddingTop: 12,
   },
   commentRow: {
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  commentCard: {
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderWidth: 1,
+    borderColor: "rgba(216,185,255,0.1)",
+    borderRadius: 12,
+    padding: 12,
+    alignItems: "flex-start",
+  },
+  commentTextGroup: {
+    flex: 1,
+    marginRight: 10,
+    alignItems: "flex-end",
   },
   commentRowFocused: {
     borderWidth: 1,
@@ -410,28 +423,23 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(147,204,255,0.08)",
   },
   commentMeta: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 6,
+    // legacy
   },
   commentUser: {
     fontSize: 14,
     fontWeight: "700",
     color: colors_V2.textPrimary,
-    writingDirection: "rtl",
+    marginBottom: 4,
   },
   commentTime: {
     fontSize: 11,
-    fontWeight: "600",
+    fontWeight: "500",
     color: colors_V2.textSecondary,
-    writingDirection: "rtl",
   },
   commentBody: {
-    fontSize: 14,
+    fontSize: 13,
     color: colors_V2.textSecondary,
-    lineHeight: 20,
-    writingDirection: "rtl",
+    lineHeight: 18,
     textAlign: "right",
   },
   commentAvatar: {
@@ -439,10 +447,9 @@ export const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     backgroundColor: colors_V2.background,
-    marginLeft: 10,
   },
   commentRowInner: {
-    flexDirection: "row-reverse",
+    // legacy
   },
   modalInputRow: {
     alignItems: "center",
@@ -477,15 +484,10 @@ export const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
   modalSend: {
-    backgroundColor: colors_V2.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
+    padding: 8,
   },
   modalSendText: {
-    color: colors_V2.textPrimary,
-    fontWeight: "800",
-    fontSize: 12,
+    display: "none",
   },
   mentionHitsWrap: {
     marginTop: 10,

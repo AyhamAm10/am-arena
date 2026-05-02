@@ -1,7 +1,7 @@
 import { colors as c } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
 
-/** Friends screen — Aether Arena mock (deep purple, cyan tabs, cards). */
+/** Friends screen — AM ARENA mock (deep purple, cyan tabs, cards). */
 export const friendsColors = {
   bg: c.screenBackground,
   cardBg: c.darkBackground1,
@@ -101,14 +101,15 @@ export const styles = StyleSheet.create({
     backgroundColor: friendsColors.cardBg,
     borderRadius: 18,
     padding: 16,
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "center",
+    gap: 12,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.06)",
   },
   cardPressable: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "stretch",
     flex: 1,
     minWidth: 0,
@@ -143,6 +144,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     alignItems: "flex-end",
+    marginRight: 6,
   },
   gamerName: {
     fontSize: 18,
@@ -185,7 +187,6 @@ export const styles = StyleSheet.create({
   requestActions: {
     flexDirection: "row",
     gap: 8,
-    marginLeft: 12,
   },
   acceptBtn: {
     backgroundColor: "rgba(34, 197, 94, 0.08)",
@@ -194,51 +195,6 @@ export const styles = StyleSheet.create({
   rejectBtn: {
     backgroundColor: "rgba(244, 114, 182, 0.08)",
     borderColor: c.error,
-  },
-  discoverHeader: {
-    marginTop: 20,
-    marginBottom: 12,
-    fontSize: 14,
-    fontWeight: "700",
-    letterSpacing: 0.2,
-    color: friendsColors.labelMuted,
-  },
-  suggestedRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 24,
-  },
-  suggestedCard: {
-    flex: 1,
-    minHeight: 156,
-    backgroundColor: friendsColors.cardBg,
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 12,
-  },
-  suggestedSilhouette: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: c.darkBackground1,
-    marginBottom: 12,
-  },
-  suggestedBar: {
-    width: "80%",
-    height: 10,
-    borderRadius: 4,
-    backgroundColor: c.darkBackground1,
-  },
-  suggestedGamerName: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: friendsColors.white,
-    marginBottom: 10,
-    textAlign: "center",
-    width: "100%",
   },
   centerMessage: {
     paddingVertical: 48,

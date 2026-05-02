@@ -43,6 +43,7 @@ export interface PubgTournamentDetail {
   game: Game;
   registration_fields?: RegistrationField[];
   registered_count?: number;
+    participant_count?: number;
   /** Present on inactive tournament list items when API loads winners relation. */
   winners?: PubgTournamentWinnerSummary[];
   polls?: PollResponse[];

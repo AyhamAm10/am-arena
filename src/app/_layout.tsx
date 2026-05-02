@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { AuthBootstrap } from "@/src/components/auth/AuthBootstrap";
+import { ToastHost } from "@/src/components/notifications/ToastHost";
 import { isRtl } from "@/src/lib/rtl";
 import { RegisterNotifications } from "@/src/lib/notifications/registerNotifications";
 import { colors } from "@/src/theme/colors";
@@ -36,6 +37,7 @@ export default function RootLayout() {
         <AuthBootstrap>
           <>
             <RegisterNotifications />
+            <ToastHost />
             <Stack
               screenOptions={{
                 ...stackChrome,

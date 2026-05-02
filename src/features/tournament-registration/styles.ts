@@ -128,6 +128,37 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.5,
   },
+  participantBadgeRow: {
+    gap: 8,
+  },
+  participantBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    gap: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: "rgba(147,204,255,0.14)",
+    borderWidth: 1,
+    borderColor: "rgba(147,204,255,0.24)",
+  },
+  participantBadgeIcon: {
+    fontSize: 13,
+    fontWeight: "900",
+  },
+  participantBadgeText: {
+    color: colors_V2.textPrimary,
+    fontSize: 12,
+    fontWeight: "800",
+    letterSpacing: 0.2,
+  },
+  participantBadgeMeta: {
+    color: colors_V2.accent,
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 0.4,
+  },
   progressRow: {
     flexDirection: "row",
     justifyContent: "space-between",

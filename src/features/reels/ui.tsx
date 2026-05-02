@@ -15,6 +15,8 @@ import { formatCompactCount } from "@/src/lib/utils/format-compact-count";
 import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
 import { useIsFocused } from "@react-navigation/native";
+import { MailSend01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react-native";
 import type { AVPlaybackStatus } from "expo-av";
 import { Audio, ResizeMode, Video } from "expo-av";
 import { Image } from "expo-image";
@@ -606,6 +608,7 @@ export function Ui() {
     pollId?: string;
   }>();
   const activeTab = useMirror("activeTab");
+  const router = useRouter();
   const setActiveTab = useMirror("setActiveTab");
   const reels = useMirror("reels");
   const globalPolls = useMirror("globalPolls");
@@ -1108,27 +1111,33 @@ export function Ui() {
                     Number(c.id) === focusedCommentId;
                   return (
                     <View style={[styles.commentRow, isFocusedComment && styles.commentRowFocused]}>
-                      <View style={[styles.commentRowInner, flexRowRtl]}>
-                        {avatarUri ? (
-                          <Image
-                            source={{ uri: avatarUri }}
-                            style={styles.commentAvatar}
-                            contentFit="cover"
-                          />
-                        ) : (
-                          <View style={styles.commentAvatar} />
-                        )}
-                        <View style={{ flex: 1 }}>
-                          <View style={[styles.commentMeta, flexRowRtl]}>
-                            <Text style={styles.commentUser}>
-                              {commentAuthor(c.user)}
-                            </Text>
-                            <Text style={styles.commentTime}>
-                              {formatCommentTimeAgo(c.created_at)}
-                            </Text>
-                          </View>
+                      <View style={[styles.commentCard, flexRowRtl]}>
+                        <Text style={styles.commentTime}>
+                          {formatCommentTimeAgo(c.created_at)}
+                        </Text>
+                        <View style={styles.commentTextGroup}>
+                          <Text style={styles.commentUser}>
+                            {commentAuthor(c.user)}
+                          </Text>
                           <Text style={styles.commentBody}>{c.comment}</Text>
                         </View>
+                        <Pressable
+                          onPress={() => {
+                            if (c.user?.id) {
+                              router.push(`/profile/${c.user.id}`);
+                            }
+                          }}
+                        >
+                          {avatarUri ? (
+                            <Image
+                              source={{ uri: avatarUri }}
+                              style={styles.commentAvatar}
+                              contentFit="cover"
+                            />
+                          ) : (
+                            <View style={styles.commentAvatar} />
+                          )}
+                        </Pressable>
                       </View>
                     </View>
                   );
@@ -1153,7 +1162,13 @@ export function Ui() {
                     }
                     style={styles.modalSend}
                   >
-                    <Text style={styles.modalSendText}>إرسال</Text>
+                    <HugeiconsIcon
+                      icon={MailSend01Icon}
+                      size={20}
+                      color={colors_V2.primaryLight}
+                      strokeWidth={1.9}
+                      absoluteStrokeWidth
+                    />
                   </Pressable>
                 </View>
               </View>

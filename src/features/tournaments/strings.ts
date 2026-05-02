@@ -1,8 +1,8 @@
 /** Arabic UI copy for the Tournaments tab (import from `strings`, not English literals). */
 export const tournamentsAr = {
-  screenTitle: "كينيتك أرينا",
-  shareMessage: "كينيتك أرينا — البطولات والفعاليات المباشرة.",
-  shareTitle: "كينيتك أرينا",
+  screenTitle: "AM ARENA",
+  shareMessage: "AM ARENA — البطولات والفعاليات المباشرة.",
+  shareTitle: "AM ARENA",
   backA11y: "رجوع",
   shareA11y: "مشاركة",
   liveOperations: "عمليات مباشرة",

@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
     content: {
-        paddingBottom: 16,
+        paddingBottom: 28,
     },
     section: {
-        marginTop: 16,
+        marginTop: 18,
     },
     loaderSection: {
         marginTop: 24,

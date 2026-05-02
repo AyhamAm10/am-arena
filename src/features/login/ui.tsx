@@ -38,7 +38,7 @@ export function Ui() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled'>
-        <Text style={styles.brand}>ساحة AM</Text>
+        <Text style={styles.brand}>AM ARENA</Text>
 
         <Image source={heroBanner} style={styles.heroImage} resizeMode='cover' />
 

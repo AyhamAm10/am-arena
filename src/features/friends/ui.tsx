@@ -15,6 +15,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 import type { FriendListItem } from "./friendList.types";
 import { useMirror } from "./store";
+import { textRtl } from "@/src/lib/rtl";
 import { friendsColors, styles } from "./styles";
 import { requesterIdFromIncomingRow } from "./utils";
 
@@ -57,8 +58,6 @@ export function Ui() {
   const busyFriendId = useMirror("busyFriendId");
   const currentUserId = useMirror("currentUserId");
   const pendingOutgoingUserIds = useMirror("pendingOutgoingUserIds");
-  const suggestedUsers = useMirror("suggestedUsers");
-  const isLoadingSuggested = useMirror("isLoadingSuggested");
   const focusUserId = Number(params.focusUserId ?? 0);
 
   React.useEffect(() => {
@@ -148,12 +147,11 @@ export function Ui() {
           ? resolveMediaUrl(u.avatarUrl, "image")
           : null;
         const busy = busyFriendId === u.id;
-        const outgoingPending =
-          u.friend_status === "pending" || pendingOutgoingUserIds.includes(u.id);
+        const outgoingPending = pendingOutgoingUserIds.includes(u.id);
         const isFriend = u.friend_status === "accepted";
 
         const actionLabel = isFriend
-          ? "إزالة الصديق"
+          ? "إلغاء الصداقة"
           : outgoingPending
             ? "إلغاء الطلب"
             : "إضافة صديق";
@@ -183,12 +181,13 @@ export function Ui() {
                 />
               </View>
               <View style={styles.cardBody}>
-                <Text style={styles.gamerName} numberOfLines={1}>
+                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>
                   {u.gamer_name}
                 </Text>
                 <Text
                   style={[
                     styles.statusText,
+                    textRtl,
                     online ? styles.statusOnlineText : styles.statusOfflineText,
                   ]}
                 >
@@ -240,12 +239,13 @@ export function Ui() {
                 />
               </View>
               <View style={styles.cardBody}>
-                <Text style={styles.gamerName} numberOfLines={1}>
+                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>
                   {u.gamer_name}
                 </Text>
                 <Text
                   style={[
                     styles.statusText,
+                    textRtl,
                     online ? styles.statusOnlineText : styles.statusOfflineText,
                   ]}
                 >
@@ -275,8 +275,8 @@ export function Ui() {
 
       return (
         <View style={styles.card}>
-          <TouchableOpacity
-            style={styles.cardPressable}
+            <TouchableOpacity
+              style={styles.cardPressable}
             onPress={() => router.push(`/profile/${u.id}`)}
           >
             <View style={styles.avatarWrap}>
@@ -293,12 +293,13 @@ export function Ui() {
               />
             </View>
             <View style={styles.cardBody}>
-              <Text style={styles.gamerName} numberOfLines={1}>
+                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>
                 {u.gamer_name}
               </Text>
               <Text
                 style={[
-                  styles.statusText,
+                    styles.statusText,
+                    textRtl,
                   online ? styles.statusOnlineText : styles.statusOfflineText,
                 ]}
               >
@@ -414,63 +415,6 @@ export function Ui() {
     </>
   );
 
-  const renderSuggestedSlot = useCallback(
-    (u: UserPublicSummary | undefined, key: string) => {
-      if (!u) {
-        return (
-          <View key={key} style={styles.suggestedCard}>
-            <View style={styles.suggestedSilhouette} />
-            <View style={styles.suggestedBar} />
-          </View>
-        );
-      }
-      const uri = u.avatarUrl
-        ? resolveMediaUrl(u.avatarUrl, "image")
-        : null;
-      const busy = busyFriendId === u.id;
-      const outgoingPending = pendingOutgoingUserIds.includes(u.id);
-      return (
-        <View key={key} style={styles.suggestedCard}>
-          {uri ? (
-            <Image source={{ uri }} style={styles.suggestedSilhouette} />
-          ) : (
-            <View style={styles.suggestedSilhouette} />
-          )}
-          <Text
-            style={styles.suggestedGamerName}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >
-            {u.gamer_name}
-          </Text>
-          <TouchableOpacity
-            style={[styles.actionBtn, busy && styles.actionBtnDisabled]}
-            onPress={() =>
-              void (outgoingPending
-                ? onCancelOutgoingPending(u.id)
-                : onAddRequest(u.id))
-            }
-            disabled={busy}
-          >
-            {busy ? (
-              <ActivityIndicator color={friendsColors.white} size="small" />
-            ) : (
-              <Text style={styles.actionBtnText}>
-                {outgoingPending ? "إلغاء الطلب" : "إضافة صديق"}
-              </Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      );
-    },
-    [
-      busyFriendId,
-      onAddRequest,
-      onCancelOutgoingPending,
-      pendingOutgoingUserIds,
-    ]
-  );
-
   const ListFooter = (
     <>
       {isFetchingMore ? (
@@ -478,22 +422,6 @@ export function Ui() {
           style={{ marginVertical: 16 }}
           color={friendsColors.tabActive}
         />
-      ) : null}
-      {activeTab === "public" ? (
-        <>
-          <Text style={styles.discoverHeader}>مقترحات لك</Text>
-          {isLoadingSuggested && suggestedUsers.length === 0 ? (
-            <ActivityIndicator
-              style={{ marginVertical: 20 }}
-              color={friendsColors.tabActive}
-            />
-          ) : (
-            <View style={styles.suggestedRow}>
-              {renderSuggestedSlot(suggestedUsers[0], "s0")}
-              {renderSuggestedSlot(suggestedUsers[1], "s1")}
-            </View>
-          )}
-        </>
       ) : null}
     </>
   );

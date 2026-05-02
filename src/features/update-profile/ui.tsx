@@ -100,7 +100,7 @@ export function Ui() {
               />
             </Pressable>
             <View style={styles.headerCenter}>
-              <Text style={styles.brandTitle}>إيثير آرينا</Text>
+              <Text style={styles.brandTitle}>AM ARENA</Text>
               <Text style={styles.editLabel}>تعديل الملف</Text>
             </View>
             <View style={{ width: 44, alignItems: "flex-end" }}>

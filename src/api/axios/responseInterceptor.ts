@@ -43,12 +43,18 @@ export const responseInterceptor = {
   onError: async (error: AxiosError) => {
     const status = error.response?.status;
     const config = error.config as InternalAxiosRequestConfig | undefined;
-    const data = error.response?.data as { error?: string } | undefined;
-    const rateLimitMessage =
-      typeof data?.error === "string" ? data.error : undefined;
+    const data = error.response?.data as
+      | { error?: string; message?: string }
+      | undefined;
+    const responseMessage =
+      typeof data?.message === "string"
+        ? data.message
+        : typeof data?.error === "string"
+          ? data.error
+          : undefined;
 
     if (status !== 401 || !config) {
-      handleApiError(status, rateLimitMessage);
+      handleApiError(status, responseMessage);
       return Promise.reject(error);
     }
 

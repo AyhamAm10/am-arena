@@ -12,6 +12,8 @@ function Api({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"reels" | "voting">("reels");
   const [commentReelId, setCommentReelId] = useState<string | null>(null);
+  const [votePendingPollId, setVotePendingPollId] = useState<number | null>(null);
+  const [votePendingOptionId, setVotePendingOptionId] = useState<number | null>(null);
 
   const reelsQuery = useFetchReels({ page: 1, limit: 20 });
   const globalPollsQuery = useHydratedGlobalPolls();
@@ -62,7 +64,14 @@ function Api({ children }: PropsWithChildren) {
   const voteOnPoll = useCallback(
     async (pollId: number, optionId: number) => {
       if (voteMutation.isPending) return;
-      await voteMutation.mutateAsync({ pollId, optionId });
+      setVotePendingPollId(pollId);
+      setVotePendingOptionId(optionId);
+      try {
+        await voteMutation.mutateAsync({ pollId, optionId });
+      } finally {
+        setVotePendingPollId((current) => (current === pollId ? null : current));
+        setVotePendingOptionId((current) => (current === optionId ? null : current));
+      }
     },
     [voteMutation]
   );
@@ -103,6 +112,8 @@ function Api({ children }: PropsWithChildren) {
   useMirrorRegistry("isReelLikeBusy", isReelLikeBusy, isReelLikeBusy);
   useMirrorRegistry("voteOnPoll", voteOnPoll, voteOnPoll);
   useMirrorRegistry("isVotingPoll", voteMutation.isPending, voteMutation.isPending);
+  useMirrorRegistry("votePendingPollId", votePendingPollId, votePendingPollId);
+  useMirrorRegistry("votePendingOptionId", votePendingOptionId, votePendingOptionId);
   useMirrorRegistry("addReelComment", addReelComment, addReelComment);
   useMirrorRegistry(
     "isAddingComment",

@@ -31,6 +31,7 @@ export function Ui() {
   const isProfileError = useMirror("isProfileError");
   const friendAction = useMirror("friendAction");
   const handleFriendAction = useMirror("handleFriendAction");
+  const handleRejectFriendRequest = useMirror("handleRejectFriendRequest");
   const isFriendActionBusy = useMirror("isFriendActionBusy");
   const logout = useMirror("logout");
   const isLoggingOut = useMirror("isLoggingOut");
@@ -83,11 +84,28 @@ export function Ui() {
             />
 
             {showFriendButton ? (
-              <AddFriendButton
-                action={friendAction}
-                onPress={handleFriendAction}
-                loading={isFriendActionBusy}
-              />
+              friendAction === "accept" ? (
+                <View style={styles.friendActionsRow}>
+                  <AddFriendButton
+                    action="reject"
+                    onPress={handleRejectFriendRequest}
+                    loading={isFriendActionBusy}
+                    style={styles.friendActionButton}
+                  />
+                  <AddFriendButton
+                    action="accept"
+                    onPress={handleFriendAction}
+                    loading={isFriendActionBusy}
+                    style={styles.friendActionButton}
+                  />
+                </View>
+              ) : (
+                <AddFriendButton
+                  action={friendAction}
+                  onPress={handleFriendAction}
+                  loading={isFriendActionBusy}
+                />
+              )
             ) : null}
 
             <AchievementBadgesSection
@@ -131,5 +149,14 @@ const styles = StyleSheet.create({
     color: colors_V2.textSecondary,
     fontSize: 16,
     textAlign: "center",
+  },
+  friendActionsRow: {
+    flexDirection: "row-reverse",
+    gap: 10,
+    marginBottom: 26,
+  },
+  friendActionButton: {
+    flex: 1,
+    marginBottom: 0,
   },
 });

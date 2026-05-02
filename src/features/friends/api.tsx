@@ -64,7 +64,6 @@ function Api({ children }: PropsWithChildren) {
 
   const publicInfinite = useSearchUsersInfinite({
     gamer_name: debouncedSearch || undefined,
-    exclude_friends: true,
     limit: 10,
     enabled: Boolean(currentUserId) && activeTab === "public",
   });
@@ -73,11 +72,6 @@ function Api({ children }: PropsWithChildren) {
     status: "pending",
     direction: "outgoing",
     limit: 100,
-    enabled: Boolean(currentUserId) && activeTab === "public",
-  });
-
-  const suggestedInfinite = useSearchUsersInfinite({
-    limit: 30,
     enabled: Boolean(currentUserId) && activeTab === "public",
   });
 
@@ -99,9 +93,6 @@ function Api({ children }: PropsWithChildren) {
     | undefined;
   const outgoingPendingData = outgoingPendingInfinite.data as
     | InfiniteData<FriendsPageResult>
-    | undefined;
-  const suggestedData = suggestedInfinite.data as
-    | InfiniteData<SearchUsersPageResult>
     | undefined;
 
   const friendsRowsRaw = useMemo(
@@ -167,26 +158,6 @@ function Api({ children }: PropsWithChildren) {
     return ids;
   }, [outgoingPendingRowsRaw, currentUserId]);
 
-  const suggestedUsers = useMemo((): UserPublicSummary[] => {
-    if (currentUserId == null) return [];
-    const discoverIds = new Set(publicListItems.map((u) => u.id));
-    const picked: UserPublicSummary[] = [];
-    const pages = suggestedData?.pages ?? [];
-    outer: for (const page of pages) {
-      for (const u of page.data) {
-        if (u.id === currentUserId) continue;
-        if (discoverIds.has(u.id)) continue;
-        picked.push(u);
-        if (picked.length >= 2) break outer;
-      }
-    }
-    return picked;
-  }, [suggestedData?.pages, currentUserId, publicListItems]);
-
-  const isLoadingSuggested =
-    !suggestedInfinite.data &&
-    (suggestedInfinite.isLoading || suggestedInfinite.isFetching);
-
   const totalFriends =
     friendsData?.pages[0]?.meta?.total ?? friendsListItems.length;
   const totalRequests =
@@ -199,7 +170,6 @@ function Api({ children }: PropsWithChildren) {
     requestsInfinite.error?.message ??
     publicInfinite.error?.message ??
     outgoingPendingInfinite.error?.message ??
-    suggestedInfinite.error?.message ??
     null;
 
   const onCancelRequest = useCallback(
@@ -299,12 +269,6 @@ function Api({ children }: PropsWithChildren) {
     "pendingOutgoingUserIds",
     pendingOutgoingUserIds,
     pendingOutgoingUserIds
-  );
-  useMirrorRegistry("suggestedUsers", suggestedUsers, suggestedUsers);
-  useMirrorRegistry(
-    "isLoadingSuggested",
-    isLoadingSuggested,
-    isLoadingSuggested
   );
   useMirrorRegistry("totalFriends", totalFriends, totalFriends);
   useMirrorRegistry("totalRequests", totalRequests, totalRequests);
