@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
+import { KeyboardAwareScreenScrollView } from '@/src/components/layout'
 import { MotionPressable } from '@/src/components/motion'
 import { colors } from '@/src/theme/colors'
 import { styles } from './styles'
@@ -65,11 +63,7 @@ export function Ui() {
   useEffect(() => setConfirmPasswordLocal(confirmPassword), [confirmPassword])
 
   return (
-    <KeyboardAvoidingView
-      style={styles.root}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled'>
+    <KeyboardAwareScreenScrollView style={styles.root} contentContainerStyle={styles.content}>
         <View style={styles.topBar}>
           <Text style={styles.title}>انضم إلى الساحة</Text>
         </View>
@@ -197,7 +191,6 @@ export function Ui() {
             <Text style={styles.buttonText}>إنشاء حساب</Text>
           )}
         </MotionPressable>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScreenScrollView>
   )
 }

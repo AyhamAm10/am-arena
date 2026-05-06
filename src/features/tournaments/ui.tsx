@@ -9,13 +9,13 @@ import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { KeyboardAwareScreenScrollView } from "@/src/components/layout";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import { styles } from "./styles";
@@ -55,7 +55,7 @@ export function Ui() {
   return (
     <View style={[styles.safe, { paddingTop: insets.top }]}>
       <TournamentsScreenHeader />
-      <ScrollView
+      <KeyboardAwareScreenScrollView
         contentContainerStyle={[styles.scrollContent, arDirection]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
@@ -163,7 +163,7 @@ export function Ui() {
             ))
           )}
         </View>
-      </ScrollView>
+      </KeyboardAwareScreenScrollView>
     </View>
   );
 }

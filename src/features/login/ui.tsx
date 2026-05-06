@@ -2,15 +2,13 @@ import React from 'react'
 import {
   ActivityIndicator,
   Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
 import { useRouter } from 'expo-router'
+import { KeyboardAwareScreenScrollView } from '@/src/components/layout'
 import { MotionPressable } from '@/src/components/motion'
 import { styles } from './styles'
 import { colors } from '@/src/theme/colors'
@@ -33,11 +31,7 @@ export function Ui() {
   const error = useMirror('error')
 
   return (
-    <KeyboardAvoidingView
-      style={styles.root}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps='handled'>
+    <KeyboardAwareScreenScrollView style={styles.root} contentContainerStyle={styles.content}>
         <Text style={styles.brand}>AM ARENA</Text>
 
         <Image source={heroBanner} style={styles.heroImage} resizeMode='cover' />
@@ -99,7 +93,6 @@ export function Ui() {
             </Text>
           </Text>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScreenScrollView>
   )
 }

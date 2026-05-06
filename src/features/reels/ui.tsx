@@ -23,6 +23,7 @@ import {
   Share01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react-native";
+import { KeyboardStickyView } from "react-native-keyboard-controller";
 import type { AVPlaybackStatus } from "expo-av";
 import { Audio, ResizeMode, Video } from "expo-av";
 import { Image } from "expo-image";
@@ -1170,46 +1171,48 @@ export function Ui() {
                 </Text>
               ) : null}
 
-              <View style={[styles.modalInputRow, flexRowRtl]}>
-                {currentUser.profileImageUrl ? (
-                  <Image
-                    source={{ uri: currentUser.profileImageUrl }}
-                    style={styles.modalInputAvatar}
-                    contentFit="cover"
-                  />
-                ) : (
-                  <View style={styles.modalInputAvatar} />
-                )}
-                <View style={[styles.modalInputWrap, flexRowRtl]}>
-                  <TextInput
-                    style={styles.modalInput}
-                    placeholder={
-                      currentUser.gamerName
-                        ? `أضف تعليقاً يا @${currentUser.gamerName}…`
-                        : "أضف تعليقاً…"
-                    }
-                    placeholderTextColor={colors_V2.textSecondary}
-                    value={commentDraft}
-                    onChangeText={setCommentDraft}
-                    editable={!isAddingComment}
-                  />
-                  <Pressable
-                    onPress={() => void sendComment()}
-                    disabled={
-                      isAddingComment || commentDraft.trim().length === 0
-                    }
-                    style={{ padding: 8 }}
-                  >
-                    <HugeiconsIcon
-                      icon={Navigation03Icon}
-                      size={INTERACTION_ICON_SIZE}
-                      color={"#9047FF"}
-                      strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
-                      absoluteStrokeWidth
+              <KeyboardStickyView offset={{ opened: 8, closed: 0 }}>
+                <View style={[styles.modalInputRow, flexRowRtl]}>
+                  {currentUser.profileImageUrl ? (
+                    <Image
+                      source={{ uri: currentUser.profileImageUrl }}
+                      style={styles.modalInputAvatar}
+                      contentFit="cover"
                     />
-                  </Pressable>
+                  ) : (
+                    <View style={styles.modalInputAvatar} />
+                  )}
+                  <View style={[styles.modalInputWrap, flexRowRtl]}>
+                    <TextInput
+                      style={styles.modalInput}
+                      placeholder={
+                        currentUser.gamerName
+                          ? `أضف تعليقاً يا @${currentUser.gamerName}…`
+                          : "أضف تعليقاً…"
+                      }
+                      placeholderTextColor={colors_V2.textSecondary}
+                      value={commentDraft}
+                      onChangeText={setCommentDraft}
+                      editable={!isAddingComment}
+                    />
+                    <Pressable
+                      onPress={() => void sendComment()}
+                      disabled={
+                        isAddingComment || commentDraft.trim().length === 0
+                      }
+                      style={{ padding: 8 }}
+                    >
+                      <HugeiconsIcon
+                        icon={Navigation03Icon}
+                        size={INTERACTION_ICON_SIZE}
+                        color={"#9047FF"}
+                        strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
+                        absoluteStrokeWidth
+                      />
+                    </Pressable>
+                  </View>
                 </View>
-              </View>
+              </KeyboardStickyView>
               {mentionLoading ? (
                 <Text style={styles.muted}>جاري البحث عن المستخدم…</Text>
               ) : null}

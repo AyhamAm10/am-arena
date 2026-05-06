@@ -1,9 +1,10 @@
 // src/components/AppLayout.tsx
 import { useHeaderUser } from "@/src/hooks/auth/useHeaderUser";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { colors_V2 } from '@/src/theme/colors';
-import { TopBar } from '../TopBar';
+import { colors_V2 } from "@/src/theme/colors";
+import { TopBar } from "../TopBar";
+import { KeyboardAwareScreenScrollView } from "./KeyboardAwareScreenScrollView";
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -33,7 +34,9 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         achievementName={header.achievementName}
       />
       {scrollable ? (
-        <ScrollView style={contentStyle}>{children}</ScrollView>
+        <KeyboardAwareScreenScrollView style={contentStyle}>
+          {children}
+        </KeyboardAwareScreenScrollView>
       ) : (
         <View style={contentStyle}>{children}</View>
       )}

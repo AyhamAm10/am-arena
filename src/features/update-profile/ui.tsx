@@ -3,15 +3,13 @@ import { Image } from "expo-image";
 import React from "react";
 import {
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAwareScreenScrollView } from "@/src/components/layout";
 import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
@@ -76,16 +74,10 @@ export function Ui() {
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
-      <KeyboardAvoidingView
-        style={styles.keyboard}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <KeyboardAwareScreenScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
       >
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
           <View style={styles.headerRow}>
             <Pressable
               style={styles.backBtn}
@@ -255,8 +247,7 @@ export function Ui() {
               <Text style={styles.footerCaption}>{footerCaption}</Text>
             ) : null}
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScreenScrollView>
     </SafeAreaView>
   );
 }
