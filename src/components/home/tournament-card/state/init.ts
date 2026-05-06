@@ -3,6 +3,7 @@ import { ImageSourcePropType } from "react-native";
 export type TournamentCardState = {
   title: string;
   prize: string;
+  rewardText?: string | null;
   participantsCurrent: number;
   participantsMax: number;
   timeRemaining: string;

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "56325090909",
+    "project_id": "am-arena-a3e0c",
+    "storage_bucket": "am-arena-a3e0c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56325090909:android:4f39298c1f6436163467b4",
+        "android_client_info": {
+          "package_name": "com.ayhamam10.organization.amarena"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9KSIj2xQqS0UOIQ0v8_4nXrlZA5s4HTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

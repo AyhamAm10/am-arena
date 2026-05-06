@@ -31,6 +31,7 @@ export default function TournamentCardView({ card }: Props) {
   const {
     title,
     prize,
+    rewardText,
     participantsCurrent,
     participantsMax,
     timeRemaining,
@@ -87,6 +88,15 @@ export default function TournamentCardView({ card }: Props) {
                     style={[styles.progressFill, { width: `${Math.max(8, progressPct * 100)}%` }]}
                   />
                 </View>
+              </View>
+
+              <View style={styles.rewardSection}>
+                <Text style={[styles.rewardLabel, textRtl]} numberOfLines={1}>
+                  XP Reward: {prize}
+                </Text>
+                <Text style={[styles.rewardLabel, textRtl]} numberOfLines={2}>
+                  Flexible reward: {rewardText?.trim() || "—"}
+                </Text>
               </View>
             </View>
           </LinearGradient>
@@ -189,6 +199,14 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: colors_V2.gradientEnd,
     borderRadius: 999,
+  },
+  rewardSection: {
+    gap: 3,
+  },
+  rewardLabel: {
+    fontSize: 11,
+    color: colors_V2.textSecondary,
+    fontWeight: "700",
   },
   meta: {
     flexDirection: "row",

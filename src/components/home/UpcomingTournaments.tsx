@@ -15,6 +15,7 @@ export type TournamentItem = {
   id: string;
   title: string;
   prize: string;
+  rewardText?: string | null;
   participantsCurrent: number;
   participantsMax: number;
   timeRemaining?: string;
@@ -35,6 +36,7 @@ function buildById(
     byId[t.id] = {
       title: t.title,
       prize: t.prize,
+      rewardText: t.rewardText ?? null,
       participantsCurrent: t.participantsCurrent,
       participantsMax: t.participantsMax,
       timeRemaining: t.timeRemaining ?? "",

@@ -50,6 +50,7 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
     ? resolveMediaUrl(tournament.game.image, "image")
     : undefined;
   const prizePool = formatPrizeWithDollar(tournament.prize_pool);
+  const rewardText = tournament.reward_text?.trim() || null;
   const registeredCount = tournament.registered_count ?? 0;
   const maxPlayers = tournament.max_players ?? 0;
   const xpThreshold = xpThresholdFromTournament(tournament);
@@ -134,6 +135,11 @@ export default function EliteSquadCard({ tournament, onJoinPress }: Props) {
               <Text style={[styles.prizeValue, textRtl]}>{prizePool}</Text>
             </View>
           </LinearGradient>
+          {rewardText ? (
+            <Text style={[styles.rewardText, textRtl]} numberOfLines={2}>
+              مكافأة مرنة: {rewardText}
+            </Text>
+          ) : null}
         </View>
 
         <View style={styles.levelBadgeWrap}>
@@ -305,6 +311,12 @@ const styles = StyleSheet.create({
     color: "rgba(255, 236, 184, 0.9)",
     letterSpacing: 0.8,
     textTransform: "uppercase",
+  },
+  rewardText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: colors_V2.primaryLight,
+    paddingHorizontal: 2,
   },
   levelBadgeWrap: {
     alignItems: "center",

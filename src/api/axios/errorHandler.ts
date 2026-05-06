@@ -1,31 +1,32 @@
 import { router } from "expo-router";
+import { notifyError } from "@/src/lib/notifications/toast";
 
 export const handleApiError = (status?: number, detail?: string) => {
+  const message = detail?.trim();
   switch (status) {
     case 401:
+      notifyError(message, undefined, status);
       router.replace("/login");
       break;
 
     case 403:
-      console.log("Forbidden");
+      notifyError(message, undefined, status);
       break;
 
     case 400:
-      console.log("Validation error");
+      notifyError(message, undefined, status);
       break;
 
     case 429:
-      console.log(
-        detail?.trim() ||
-          "Too many requests, please try again later."
-      );
+      notifyError(message || "أنت ترسل طلبات بسرعة كبيرة.", undefined, status);
       break;
 
     case 500:
-      console.log("Server error");
+      notifyError(message || "خطأ في الخادم.", undefined, status);
       break;
 
     default:
+      if (message) notifyError(message, undefined, status);
       break;
   }
 };

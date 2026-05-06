@@ -53,6 +53,17 @@ export const responseInterceptor = {
           ? data.error
           : undefined;
 
+    // Prefer the backend-provided message where available so callers
+    // that read `error.message` will display the server message.
+    if (responseMessage) {
+      try {
+        (error as any).serverMessage = responseMessage;
+        error.message = responseMessage;
+      } catch {
+        // ignore; best-effort only
+      }
+    }
+
     if (status !== 401 || !config) {
       handleApiError(status, responseMessage);
       return Promise.reject(error);

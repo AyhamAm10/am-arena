@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Image,
@@ -46,6 +46,24 @@ export function Ui() {
   const isLoading = useMirror('isLoading')
   const profileImageUri = useMirror('profileImageUri')
 
+  // Local state to preserve native cursor behavior during typing
+  const [phoneLocal, setPhoneLocal] = useState(phone)
+  const [fullNameLocal, setFullNameLocal] = useState(fullName)
+  const [gamerNameLocal, setGamerNameLocal] = useState(gamerName)
+  const [countryLocal, setCountryLocal] = useState(country)
+  const [emailLocal, setEmailLocal] = useState(email)
+  const [passwordLocal, setPasswordLocal] = useState(password)
+  const [confirmPasswordLocal, setConfirmPasswordLocal] = useState(confirmPassword)
+
+  // Keep locals in sync if external store changes
+  useEffect(() => setPhoneLocal(phone), [phone])
+  useEffect(() => setFullNameLocal(fullName), [fullName])
+  useEffect(() => setGamerNameLocal(gamerName), [gamerName])
+  useEffect(() => setCountryLocal(country), [country])
+  useEffect(() => setEmailLocal(email), [email])
+  useEffect(() => setPasswordLocal(password), [password])
+  useEffect(() => setConfirmPasswordLocal(confirmPassword), [confirmPassword])
+
   return (
     <KeyboardAvoidingView
       style={styles.root}
@@ -71,11 +89,12 @@ export function Ui() {
         <Text style={styles.label}>رقم الهاتف</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={phone}
-            onChangeText={setPhone}
+            value={phoneLocal}
+            onChangeText={setPhoneLocal}
+            onBlur={() => setPhone(phoneLocal)}
             placeholder="05xxxxxxxx"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: phoneLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
             keyboardType='phone-pad'
           />
         </View>
@@ -83,22 +102,24 @@ export function Ui() {
         <Text style={styles.label}>الاسم الكامل</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={fullName}
-            onChangeText={setFullName}
+            value={fullNameLocal}
+            onChangeText={setFullNameLocal}
+            onBlur={() => setFullName(fullNameLocal)}
             placeholder="أدخل اسمك الكامل"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: fullNameLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
           />
         </View>
 
         <Text style={styles.label}>اسم اللاعب</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={gamerName}
-            onChangeText={setGamerName}
+            value={gamerNameLocal}
+            onChangeText={setGamerNameLocal}
+            onBlur={() => setGamerName(gamerNameLocal)}
             placeholder="اسمك في اللعبة"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: gamerNameLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
             autoCapitalize='none'
           />
         </View>
@@ -106,22 +127,24 @@ export function Ui() {
         <Text style={styles.label}>الدولة</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={country}
-            onChangeText={setCountry}
+            value={countryLocal}
+            onChangeText={setCountryLocal}
+            onBlur={() => setCountry(countryLocal)}
             placeholder="أدخل الدولة"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: countryLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
           />
         </View>
 
         <Text style={styles.label}>البريد الإلكتروني</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={email}
-            onChangeText={setEmail}
+            value={emailLocal}
+            onChangeText={setEmailLocal}
+            onBlur={() => setEmail(emailLocal)}
             placeholder="أدخل بريدك الإلكتروني"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: emailLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
             keyboardType='email-address'
             autoCapitalize='none'
             autoCorrect={false}
@@ -131,11 +154,12 @@ export function Ui() {
         <Text style={styles.label}>كلمة المرور</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={password}
-            onChangeText={setPassword}
+            value={passwordLocal}
+            onChangeText={setPasswordLocal}
+            onBlur={() => setPassword(passwordLocal)}
             placeholder="••••••"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: passwordLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -146,11 +170,12 @@ export function Ui() {
         <Text style={styles.label}>تأكيد كلمة المرور</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            value={confirmPasswordLocal}
+            onChangeText={setConfirmPasswordLocal}
+            onBlur={() => setConfirmPassword(confirmPasswordLocal)}
             placeholder="••••••"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: confirmPasswordLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
             secureTextEntry={!showConfirmPassword}
           />
           <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>

@@ -127,6 +127,7 @@ function tabLabel(tab: TournamentDetailsTab): string {
 
 function TournamentRulesGrid({ tournament }: { tournament: PubgTournamentDetail }) {
   const prizeText = `${formatPrizePoolDisplay(tournament.prize_pool)} KP`;
+  const rewardText = tournament.reward_text?.trim() || "—";
   const cells: Array<{
     key: string;
     icon: string;
@@ -150,11 +151,11 @@ function TournamentRulesGrid({ tournament }: { tournament: PubgTournamentDetail 
       iconColor: colors_V2.primaryLight,
     },
     {
-      key: "platform",
-      icon: "games",
-      label: "المنصة",
-      value: "جوال / كمبيوتر",
-      iconColor: colors_V2.primaryLight,
+      key: "reward",
+      icon: "card-giftcard",
+      label: "المكافأة المرنة",
+      value: rewardText,
+      iconColor: colors_V2.accent,
     },
     {
       key: "prize",

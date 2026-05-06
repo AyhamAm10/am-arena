@@ -8,6 +8,7 @@ import {
   SheetDimmedBackdrop,
   SheetSlidePanel,
 } from "@/src/components/motion";
+import { useCurrentUser } from "@/src/hooks/auth/useCurrentUser";
 import { useHeaderUser } from "@/src/hooks/auth/useHeaderUser";
 import { flexRowRtl } from "@/src/lib/rtl";
 import { formatCommentTimeAgo } from "@/src/lib/utils/comment-time-ago";
@@ -613,6 +614,7 @@ export function Ui() {
   const commentReelId = useMirror("commentReelId");
   const addReelComment = useMirror("addReelComment");
   const isAddingComment = useMirror("isAddingComment");
+  const currentUser = useCurrentUser();
 
   const { width: windowWidth } = useWindowDimensions();
   const screenFocused = useIsFocused() && activeTab === "reels";
@@ -714,6 +716,9 @@ export function Ui() {
   const focusedCommentId = Number(params.commentId ?? 0);
   const modalCommentCount =
     modalReel?.comments_count ?? modalComments.length ?? 0;
+  const currentUserLabel = currentUser.gamerName
+    ? `${currentUser.fullName ? `${currentUser.fullName} · ` : ""}@${currentUser.gamerName}`
+    : currentUser.fullName || "مستخدم";
 
   useEffect(() => {
     const commentId = (params.commentId || "").trim();
@@ -1147,12 +1152,42 @@ export function Ui() {
                 }}
               />
 
+              {currentUser.fullName || currentUser.gamerName ? (
+                <Text
+                  style={[
+                    styles.muted,
+                    {
+                      marginTop: 10,
+                      marginBottom: 6,
+                      marginHorizontal: 12,
+                      textAlign: "right",
+                      fontSize: 12,
+                    },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {currentUserLabel}
+                </Text>
+              ) : null}
+
               <View style={[styles.modalInputRow, flexRowRtl]}>
-                <View style={styles.modalInputAvatar} />
+                {currentUser.profileImageUrl ? (
+                  <Image
+                    source={{ uri: currentUser.profileImageUrl }}
+                    style={styles.modalInputAvatar}
+                    contentFit="cover"
+                  />
+                ) : (
+                  <View style={styles.modalInputAvatar} />
+                )}
                 <View style={[styles.modalInputWrap, flexRowRtl]}>
                   <TextInput
                     style={styles.modalInput}
-                    placeholder="أضف تعليقاً…"
+                    placeholder={
+                      currentUser.gamerName
+                        ? `أضف تعليقاً يا @${currentUser.gamerName}…`
+                        : "أضف تعليقاً…"
+                    }
                     placeholderTextColor={colors_V2.textSecondary}
                     value={commentDraft}
                     onChangeText={setCommentDraft}

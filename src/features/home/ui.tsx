@@ -72,6 +72,7 @@ export function Ui() {
                 id: game.id.toString(),
                 title: game.title,
                 prize: formatPrizePool(game.prize_pool),
+                rewardText: game.reward_text ?? null,
                 participantsCurrent: game.registered_count ?? 0,
                 participantsMax: game.max_players,
                 timeRemaining: formatTournamentTimeRemaining(game.start_date),

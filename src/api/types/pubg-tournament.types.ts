@@ -29,6 +29,7 @@ export interface PubgTournamentDetail {
   entry_fee: number | string;
   max_players: number;
   prize_pool: number | string;
+  reward_text?: string | null;
   start_date?: string | null;
   end_date?: string | null;
   is_active?: boolean;
@@ -72,6 +73,7 @@ export interface CreatePubgTournamentBody {
     type: string;
     entry_fee: number;
     prize_pool: number;
+    reward_text?: string | null;
     max_players: number;
     start_date: string;
     end_date: string;

@@ -83,47 +83,47 @@ function getMethodLabel(method?: string) {
 export function getSuccessToastFallback(method?: string) {
   switch (method?.toLowerCase()) {
     case "get":
-      return "Loaded successfully";
+      return "تم التحميل بنجاح";
     case "post":
-      return "Saved successfully";
+      return "تم الحفظ بنجاح";
     case "put":
     case "patch":
-      return "Updated successfully";
+      return "تم التحديث بنجاح";
     case "delete":
-      return "Deleted successfully";
+      return "تم الحذف بنجاح";
     default:
-      return "Request completed";
+      return "اكتمل الطلب";
   }
 }
 
 export function getErrorToastFallback(method?: string, status?: number) {
   switch (status) {
     case 401:
-      return "Session expired. Please sign in again.";
+      return "انتهت صلاحية الجلسة. الرجاء تسجيل الدخول مرة أخرى.";
     case 403:
-      return "Access denied.";
+      return "تم رفض الوصول.";
     case 404:
-      return "Resource not found.";
+      return "المورد غير موجود.";
     case 429:
-      return "You are sending requests too quickly.";
+      return "أنت ترسل طلبات بسرعة كبيرة.";
     case 500:
-      return "Server error.";
+      return "خطأ في الخادم.";
     default:
       break;
   }
 
   switch (method?.toLowerCase()) {
     case "get":
-      return "Failed to load data.";
+      return "فشل في تحميل البيانات.";
     case "post":
-      return "Failed to save changes.";
+      return "فشل في حفظ التغييرات.";
     case "put":
     case "patch":
-      return "Failed to update changes.";
+      return "فشل في تحديث التغييرات.";
     case "delete":
-      return "Failed to delete item.";
+      return "فشل في حذف العنصر.";
     default:
-      return "Request failed.";
+      return "فشل الطلب.";
   }
 }
 
