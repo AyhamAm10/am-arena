@@ -7,6 +7,8 @@ import type { ChannelMessage } from "@/src/api/types/chat.types";
 export function useSocket(channelId: number | null) {
   const socketRef = useRef<Socket | null>(null);
   const callbackRef = useRef<((msg: ChannelMessage) => void) | null>(null);
+  const updatedRef = useRef<((msg: ChannelMessage) => void) | null>(null);
+  const deletedRef = useRef<((payload: { id: number }) => void) | null>(null);
 
   useEffect(() => {
     if (channelId == null) return;
@@ -32,6 +34,14 @@ export function useSocket(channelId: number | null) {
       callbackRef.current?.(msg);
     });
 
+    socket.on("message-updated", (msg: ChannelMessage) => {
+      updatedRef.current?.(msg);
+    });
+
+    socket.on("message-deleted", (payload: { id: number }) => {
+      deletedRef.current?.(payload);
+    });
+
     socket.on("error-message", (msg: string) => {
       console.warn(`[Socket] server error for channel ${channelId}:`, msg);
     });
@@ -51,5 +61,13 @@ export function useSocket(channelId: number | null) {
     callbackRef.current = cb;
   }, []);
 
-  return { onNewMessage };
+  const onMessageUpdated = useCallback((cb: (msg: ChannelMessage) => void) => {
+    updatedRef.current = cb;
+  }, []);
+
+  const onMessageDeleted = useCallback((cb: (payload: { id: number }) => void) => {
+    deletedRef.current = cb;
+  }, []);
+
+  return { onNewMessage, onMessageUpdated, onMessageDeleted };
 }

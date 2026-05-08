@@ -483,8 +483,10 @@ export const styles = StyleSheet.create({
   },
   modalInputRow: {
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingTop: 12,
+    backgroundColor: colors_V2.background,
+    // borderRadius: 24,
+    
+    padding: 12,
     gap: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "rgba(255,255,255,0.08)",
@@ -507,6 +509,9 @@ export const styles = StyleSheet.create({
   },
   modalInput: {
     flex: 1,
+    borderColor:colors_V2.card,
+    borderWidth: 1,
+    borderRadius: 22,
     color: colors_V2.textPrimary,
     fontSize: 14,
     paddingVertical: 8,

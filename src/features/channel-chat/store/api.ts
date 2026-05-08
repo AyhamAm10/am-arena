@@ -8,6 +8,7 @@ type ApiState = {
   isError: boolean;
   errorMessage: string | null;
   onRefresh: () => void;
+  allowUserMessages: boolean;
 };
 
 const store = (): ApiState => ({
@@ -18,6 +19,7 @@ const store = (): ApiState => ({
   isError: false,
   errorMessage: null,
   onRefresh: () => {},
+  allowUserMessages: false,
 });
 
 export { store as ApiState };

@@ -1,4 +1,5 @@
 import { useFetchChannelMessages } from "@/src/hooks/api/chat/useFetchChannelMessages";
+import { useFetchPublicChannels } from "@/src/hooks/api/chat/useFetchPublicChannels";
 import type { ChannelMessage } from "@/src/api/types/chat.types";
 import { type PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -25,10 +26,16 @@ function Api({ children }: PropsWithChildren) {
     [messagesQuery.data?.data],
   );
 
+  const publicChannelsQuery = useFetchPublicChannels({ page: 1, limit: 100 }, { enabled: channelId > 0 });
+  const channelMeta = useMemo(() => {
+    const list = publicChannelsQuery.data?.data ?? [];
+    return list.find((c) => c.id === channelId) ?? null;
+  }, [publicChannelsQuery.data?.data, channelId]);
+
   const messagesRef = useRef<ChannelMessage[]>(messages);
   messagesRef.current = messages;
 
-  const { onNewMessage } = useSocket(channelId > 0 ? channelId : null);
+  const { onNewMessage, onMessageUpdated, onMessageDeleted } = useSocket(channelId > 0 ? channelId : null);
 
   useEffect(() => {
     onNewMessage((msg: ChannelMessage) => {
@@ -43,6 +50,30 @@ function Api({ children }: PropsWithChildren) {
       );
     });
   }, [channelId, onNewMessage, queryClient]);
+
+  useEffect(() => {
+    onMessageUpdated((msg: ChannelMessage) => {
+      queryClient.setQueryData(
+        ["chat", "messages", channelId, MESSAGES_QUERY],
+        (old: { data: ChannelMessage[]; meta?: unknown } | undefined) => {
+          if (!old) return { data: [msg] };
+          return { ...old, data: old.data.map((m) => (m.id === msg.id ? msg : m)) };
+        },
+      );
+    });
+  }, [channelId, onMessageUpdated, queryClient]);
+
+  useEffect(() => {
+    onMessageDeleted(({ id }) => {
+      queryClient.setQueryData(
+        ["chat", "messages", channelId, MESSAGES_QUERY],
+        (old: { data: ChannelMessage[]; meta?: unknown } | undefined) => {
+          if (!old) return old;
+          return { ...old, data: old.data.filter((m) => m.id !== id) };
+        },
+      );
+    });
+  }, [channelId, onMessageDeleted, queryClient]);
 
   const onRefresh = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: ["chat", "messages", channelId] });
@@ -66,6 +97,7 @@ function Api({ children }: PropsWithChildren) {
   useMirrorRegistry("isError", messagesQuery.isError, messagesQuery.isError);
   useMirrorRegistry("errorMessage", errorMessage, errorMessage);
   useMirrorRegistry("onRefresh", onRefresh, onRefresh);
+  useMirrorRegistry("allowUserMessages", Boolean(channelMeta?.allow_user_messages), channelMeta?.allow_user_messages ?? false);
 
   return children;
 }

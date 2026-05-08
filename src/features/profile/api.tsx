@@ -176,10 +176,18 @@ function Api({ children, variant, userId }: ApiProps) {
 
   useMirrorRegistry("variant", variant, variant);
   useMirrorRegistry("displayVariant", displayVariant, displayVariant);
-  useMirrorRegistry("targetUserId", variant === "other" ? targetId : null, targetId);
-  useMirrorRegistry("profile", profileQuery.data ?? null, profileQuery.dataUpdatedAt);
-  useMirrorRegistry("isLoadingProfile", isLoading, isLoading);
-  useMirrorRegistry("isProfileError", isError, isError);
+  useMirrorRegistry(
+    "targetUserId",
+    variant === "other" ? targetId : null,
+    `${displayVariant}:${targetId}`,
+  );
+  useMirrorRegistry(
+    "profile",
+    profileQuery.data ?? null,
+    `${displayVariant}:${profileId}:${profileQuery.dataUpdatedAt ?? ""}`,
+  );
+  useMirrorRegistry("isLoadingProfile", isLoading, `${displayVariant}:${profileId}`);
+  useMirrorRegistry("isProfileError", isError, `${displayVariant}:${profileId}`);
   useMirrorRegistry("sendFriendRequest", sendFriendRequest, sendFriendRequest);
   useMirrorRegistry(
     "isSendingFriendRequest",

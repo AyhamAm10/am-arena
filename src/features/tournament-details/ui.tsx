@@ -578,9 +578,9 @@ export function Ui() {
               </View>
 
               <Text style={styles.heroTitle}>{tournament.title}</Text>
-              <Text style={styles.heroDescription} numberOfLines={3}>
+              {/* <Text style={styles.heroDescription} numberOfLines={3}>
                 {tournament.description}
-              </Text>
+              </Text> */}
 
               <View style={styles.heroStatsRow}>
                 <View style={styles.heroStat}>

@@ -1198,6 +1198,23 @@ export function Ui() {
               ) : null}
 
               <KeyboardStickyView offset={{ opened: 8, closed: 0 }}>
+                {mentionLoading ? (
+                  <Text style={[styles.muted, styles.mentionLoading]}>جاري البحث عن المستخدم…</Text>
+                ) : null}
+                {mentionHits.length > 0 ? (
+                  <View style={styles.mentionHitsWrap}>
+                    {mentionHits.map((user) => (
+                      <Pressable
+                        key={user.id}
+                        onPress={() => attachMention(user)}
+                        style={styles.mentionHitItem}
+                      >
+                        <Text style={styles.mentionHitLabel}>@{user.gamer_name}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                ) : null}
+
                 <View style={[styles.modalInputRow, flexRowRtl]}>
                   {currentUser.profileImageUrl ? (
                     <Image
@@ -1239,22 +1256,7 @@ export function Ui() {
                   </View>
                 </View>
               </KeyboardStickyView>
-              {mentionLoading ? (
-                <Text style={styles.muted}>جاري البحث عن المستخدم…</Text>
-              ) : null}
-              {mentionHits.length > 0 ? (
-                <View style={styles.mentionHitsWrap}>
-                  {mentionHits.map((user) => (
-                    <Pressable
-                      key={user.id}
-                      onPress={() => attachMention(user)}
-                      style={styles.mentionHitItem}
-                    >
-                      <Text style={styles.mentionHitLabel}>@{user.gamer_name}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              ) : null}
+              
             </SheetSlidePanel>
           </KeyboardAvoidingView>
         </View>
