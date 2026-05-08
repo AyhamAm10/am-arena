@@ -3,6 +3,8 @@ import type { UserPublicSummary } from "@/src/api/types/user.types";
 import { AppLayout } from "@/src/components/layout";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo } from "react";
+import { RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import {
   ActivityIndicator,
   FlatList,
@@ -49,6 +51,8 @@ export function Ui() {
   const fetchMoreRequests = useMirror("fetchMoreRequests");
   const fetchMorePublic = useMirror("fetchMorePublic");
   const listError = useMirror("listError");
+  const refreshFriends = useMirror("refreshFriends");
+  const { refreshing, onRefresh } = usePullToRefresh(() => (refreshFriends ? refreshFriends() : Promise.resolve()));
 
   const onCancelRequest = useMirror("onCancelRequest");
   const onCancelOutgoingPending = useMirror("onCancelOutgoingPending");
@@ -431,6 +435,14 @@ export function Ui() {
   return (
     <AppLayout scrollable={false}>
       <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={friendsColors.tabActive}
+            colors={[friendsColors.tabActive]}
+          />
+        }
         style={styles.flex}
         data={listData}
         keyExtractor={keyExtractor}

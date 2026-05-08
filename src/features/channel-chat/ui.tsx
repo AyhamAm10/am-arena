@@ -3,6 +3,7 @@ import { FadeInListRow } from "@/src/components/motion";
 import { colors } from "@/src/theme/colors";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useRef } from "react";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import {
   ActivityIndicator,
   FlatList,
@@ -33,6 +34,9 @@ export function Ui() {
   const isError = useMirror("isError");
   const errorMessage = useMirror("errorMessage");
   const onRefresh = useMirror("onRefresh");
+  const { refreshing, onRefresh: onRefreshWrapped } = usePullToRefresh(() =>
+    onRefresh ? onRefresh() : Promise.resolve()
+  );
 
   const flatListRef = useRef<FlatList<ChannelMessage>>(null);
   const didJumpRef = useRef<string | null>(null);
@@ -145,8 +149,8 @@ export function Ui() {
           }}
           refreshControl={
             <RefreshControl
-              refreshing={isLoading && messages.length > 0}
-              onRefresh={onRefresh}
+              refreshing={refreshing}
+              onRefresh={onRefreshWrapped}
               tintColor={colors.primaryPurple}
               colors={[colors.primaryPurple]}
             />

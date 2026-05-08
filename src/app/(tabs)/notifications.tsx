@@ -5,7 +5,7 @@ import { useFetchNotifications } from "@/src/hooks/api/notification/useFetchNoti
 import { useAuthStore } from "@/src/stores/authStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -20,6 +20,8 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import type { UserNotificationDto } from "@/src/api/types/notification.types";
 import { FadeInListRow, ScreenEnterTransition } from "@/src/components/motion";
 import { markNotificationRead } from "@/src/api/services/notification.api";
+import { setLastSeenNotificationsAt } from "@/src/lib/notifications/lastSeenNotifications";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 
 const LIST_QUERY = { page: 1, limit: 50 } as const;
 
@@ -56,7 +58,21 @@ export default function NotificationsScreen() {
     enabled: !!accessToken,
   });
 
+  const { refreshing, onRefresh } = usePullToRefresh(() => listQuery.refetch());
+
   const items = listQuery.data?.data ?? [];
+
+  useEffect(() => {
+    if (!items.length) return;
+    (async () => {
+      try {
+        const latest = items[0]?.created_at ?? new Date().toISOString();
+        await setLastSeenNotificationsAt(latest);
+      } catch {
+        /* ignore */
+      }
+    })();
+  }, [items]);
 
   const byId = useMemo(() => {
     const m: Record<string, NotificationItemState> = {};
@@ -100,8 +116,8 @@ export default function NotificationsScreen() {
           data={items}
           keyExtractor={(n) => String(n.id)}
           contentContainerStyle={styles.list}
-          refreshing={listQuery.isFetching}
-          onRefresh={() => void listQuery.refetch()}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
           renderItem={({ item, index }) => (
             <FadeInListRow index={index}>
               <NotificationItem instanceId={String(item.id)} byId={byId} />

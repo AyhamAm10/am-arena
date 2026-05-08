@@ -12,6 +12,7 @@ export function KeyboardAwareScreenScrollView({
   bottomOffset,
   keyboardShouldPersistTaps = "handled",
   showsVerticalScrollIndicator = false,
+  refreshControl,
   ...props
 }: KeyboardAwareScreenScrollViewProps) {
   const insets = useSafeAreaInsets();
@@ -23,6 +24,7 @@ export function KeyboardAwareScreenScrollView({
       bottomOffset={effectiveBottomOffset}
       keyboardShouldPersistTaps={keyboardShouldPersistTaps}
       showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+      refreshControl={refreshControl}
     />
   );
 }

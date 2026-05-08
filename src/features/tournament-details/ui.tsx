@@ -6,8 +6,12 @@ import { formatTournamentTimeRemaining } from "@/src/lib/utils/tournament-time-r
 import { flexRowRtl, isRtl, rtlMirrorIconStyle, textRtl, writingRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
+import { RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
+import { useFetchPubgTournamentById } from "@/src/hooks/api/tournament/useFetchPubgTournamentById";
+import { useFetchTournamentPolls } from "@/src/hooks/api/poll/useFetchTournamentPolls";
 import {
   ActivityIndicator,
   Image,
@@ -485,6 +489,18 @@ export function Ui() {
 
   const tabsInOrder = useMemo(() => tabButtonOrder(), []);
 
+  const params = useLocalSearchParams<{ id?: string | string[] }>();
+  const tournamentId = React.useMemo(() => {
+    if (Array.isArray(params.id)) return params.id[0] ?? "";
+    return params.id ?? "";
+  }, [params.id]);
+
+  const tournamentQuery = useFetchPubgTournamentById(tournamentId);
+  const pollsQuery = useFetchTournamentPolls(tournamentId, { enabled: Boolean(tournamentId) });
+  const { refreshing, onRefresh } = usePullToRefresh(async () => {
+    await Promise.allSettled([tournamentQuery.refetch?.(), pollsQuery.refetch?.()]);
+  });
+
   if (isLoadingTournament && !tournament) {
     return (
       <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -511,6 +527,7 @@ export function Ui() {
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors_V2.primary} colors={[colors_V2.primary]} />}
       >
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.iconButton} onPress={() => router.back()}>
@@ -522,7 +539,20 @@ export function Ui() {
             />
           </TouchableOpacity>
           <Text style={styles.pageTitle}>تفاصيل البطولة</Text>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity
+            style={styles.iconButton}
+            onPress={async () => {
+              if (!tournament?.id) return;
+              try {
+                const { shareDeepLink } = await import("@/src/lib/share/deepShare");
+                await shareDeepLink("tournament", String(tournament.id), tournament.title || "تفاصيل البطولة");
+              } catch (e) {
+                await Share.share({
+                  message: `${tournament.title || "تفاصيل البطولة"}\n\namarena://tournament/${tournament.id}`,
+                });
+              }
+            }}
+          >
             <Icon name="share" size={20} color={colors_V2.textPrimary} />
           </TouchableOpacity>
         </View>

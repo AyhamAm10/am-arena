@@ -4,11 +4,60 @@ import RankAvatar from "@/src/components/avatar/RankAvatar";
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useMirror } from "../store";
+import { useFetchNotifications } from "@/src/hooks/api/notification/useFetchNotifications";
+import { useAuthStore } from "@/src/stores/authStore";
+import { getLastSeenNotificationsAt, setLastSeenNotificationsToNow } from "@/src/lib/notifications/lastSeenNotifications";
 
 const LOGO = require("../../../assets/main_Logo.png");
+
+type NotificationsButtonProps = { router: any };
+
+function NotificationsButton({ router }: NotificationsButtonProps) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const listQuery = useFetchNotifications({ page: 1, limit: 1 }, { enabled: !!accessToken });
+  const [hasNew, setHasNew] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    async function check() {
+      const latest = listQuery.data?.data?.[0];
+      if (!latest) {
+        if (mounted) setHasNew(false);
+        return;
+      }
+      const latestAt = latest.created_at;
+      const lastSeen = await getLastSeenNotificationsAt();
+      const isNew = !lastSeen || new Date(latestAt) > new Date(lastSeen);
+      if (mounted) setHasNew(isNew);
+    }
+    void check();
+    return () => {
+      mounted = false;
+    };
+  }, [listQuery.data]);
+
+  const onPress = async () => {
+    // Clear badge immediately and navigate
+    await setLastSeenNotificationsToNow();
+    setHasNew(false);
+    router.push("/(tabs)/notifications" as never);
+  };
+
+  return (
+    <TouchableOpacity
+      style={styles.actionBtn}
+      accessibilityRole="button"
+      accessibilityLabel="الإشعارات"
+      onPress={onPress}
+    >
+      <NotificationsIcon width={20} height={22} color={colors_V2.gradientEnd} />
+      {hasNew ? <View style={styles.notifBadge} /> : null}
+    </TouchableOpacity>
+  );
+}
 
 const LoggedInTopBar: React.FC = () => {
   const router = useRouter();
@@ -71,15 +120,7 @@ const LoggedInTopBar: React.FC = () => {
         </View>
 
         <View style={[styles.actionsRow, flexRowRtl]}>
-          <TouchableOpacity
-            style={styles.actionBtn}
-            accessibilityRole="button"
-            accessibilityLabel="الإشعارات"
-            onPress={() => router.push("/(tabs)/notifications" as never)}
-          >
-            <NotificationsIcon width={20} height={22} color={colors_V2.gradientEnd} />
-            <View style={styles.notifDot} />
-          </TouchableOpacity>
+          <NotificationsButton router={router} />
           <TouchableOpacity
             style={styles.actionBtn}
             accessibilityRole="button"
@@ -186,14 +227,21 @@ const styles = StyleSheet.create({
     position: "relative",
     padding: 4,
   },
-  notifDot: {
+  notifBadge: {
     position: "absolute",
-    top: 2,
-    end: 2,
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: colors_V2.accent,
+    top: 3,
+    end: 3,
+    width: 8,
+    height: 8,
+    borderRadius: 6,
+    backgroundColor: colors_V2.primaryLight,
+    borderWidth: 1,
+    borderColor: colors_V2.card,
+    shadowColor: colors_V2.primaryLight,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.18,
+    shadowRadius: 6,
+    elevation: 3,
   },
 });
 

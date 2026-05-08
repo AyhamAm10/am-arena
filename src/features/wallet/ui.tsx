@@ -6,7 +6,8 @@ import {
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import { useIsFocused } from "@react-navigation/native";
 import {
   ActivityIndicator,
@@ -35,7 +36,9 @@ export function WalletScreen() {
   const wasFocusedRef = useRef(false);
   const walletQuery = useFetchWallet({ enabled: true });
   const txQuery = useFetchWalletTransactionsInfinite({ enabled: true, limit: 15 });
-  const [refreshing, setRefreshing] = useState(false);
+  const { refreshing, onRefresh } = usePullToRefresh(async () => {
+    await Promise.all([walletQuery.refetch(), txQuery.refetch()]);
+  });
 
   const transactions = useMemo(
     () => txQuery.data?.pages.flatMap((p) => p.data) ?? [],
@@ -43,12 +46,7 @@ export function WalletScreen() {
   );
 
   const refreshAll = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      await Promise.all([walletQuery.refetch(), txQuery.refetch()]);
-    } finally {
-      setRefreshing(false);
-    }
+    await Promise.all([walletQuery.refetch(), txQuery.refetch()]);
   }, [txQuery.refetch, walletQuery.refetch]);
 
   useEffect(() => {
@@ -91,9 +89,7 @@ export function WalletScreen() {
           refreshControl={
             <RefreshControl
               refreshing={refreshing || walletQuery.isRefetching || txQuery.isRefetching}
-              onRefresh={() => {
-                void refreshAll();
-              }}
+              onRefresh={onRefresh}
               tintColor={colors_V2.accent}
               colors={[colors_V2.primary, colors_V2.accent]}
             />

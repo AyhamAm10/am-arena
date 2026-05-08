@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScreenScrollView } from "@/src/components/layout";
+import { RefreshControl } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useMirror } from "./store";
 import { styles } from "./styles";
@@ -59,6 +60,17 @@ export function Ui() {
         contentContainerStyle={[styles.scrollContent, arDirection]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => {
+              void Promise.allSettled([
+                Promise.resolve(refetchActive?.()),
+                Promise.resolve(refetchPast?.()),
+              ]);
+            }}
+          />
+        }
       >
         <View style={styles.sectionPad}>
           <Text

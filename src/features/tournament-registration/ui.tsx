@@ -3,7 +3,7 @@ import type { PubgGameType } from "@/src/api/types/pubg-tournament.types";
 import type { TournamentRegistrationField } from "@/src/api/types/pubg-tournament-registration.types";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -14,6 +14,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
+import { useFetchWallet } from "@/src/hooks/api/wallet/useFetchWallet";
+import InsufficientBalanceModal from "@/src/components/modals/InsufficientBalanceModal";
+import { KeyboardAwareScreenScrollView } from "@/src/components/layout";
 import {
   AnimatedBottomSheet,
   SheetDimmedBackdrop,
@@ -89,6 +94,7 @@ export function Ui() {
   const setFieldValue = useMirror("setFieldValue");
   const selectedFriendIds = useMirror("selectedFriendIds");
   const toggleFriendSelection = useMirror("toggleFriendSelection");
+  const refreshFriends = useMirror("refreshFriends");
   const selectedCountLabel = useMirror("selectedCountLabel");
   const onFriendsListEndReached = useMirror("onFriendsListEndReached");
   const onConfirmJoin = useMirror("onConfirmJoin");
@@ -103,11 +109,33 @@ export function Ui() {
   const setTermsAccepted = useMirror("setTermsAccepted");
   const friendSearch = useMirror("friendSearch");
   const setFriendSearch = useMirror("setFriendSearch");
+  const [friendSearchLocal, setFriendSearchLocal] = useState(friendSearch);
+  useEffect(() => setFriendSearchLocal(friendSearch), [friendSearch]);
   const levelGateMessage = useMirror("levelGateMessage") as string | null;
 
   const [selectModalFieldId, setSelectModalFieldId] = useState<number | null>(
     null
   );
+
+  // Local map for dynamic field inputs to preserve cursor behavior
+  const [localFieldValues, setLocalFieldValues] = useState<Record<number, string>>(() => {
+    const init: Record<number, string> = {};
+    registrationFields.forEach((f) => {
+      init[f.id] = fieldValues[f.id] ?? "";
+    });
+    return init;
+  });
+
+  // Keep localFieldValues in sync when store changes externally
+  useEffect(() => {
+    setLocalFieldValues((cur) => {
+      const next = { ...cur };
+      registrationFields.forEach((f) => {
+        next[f.id] = fieldValues[f.id] ?? "";
+      });
+      return next;
+    });
+  }, [registrationFields, fieldValues]);
 
   const gameType = tournament?.game?.type;
   const maxPlayers = tournament?.max_players ?? 16;
@@ -129,10 +157,25 @@ export function Ui() {
     ? parseSelectOptions(selectModalField)
     : [];
 
+  const { refreshing, onRefresh } = usePullToRefresh(() => (refreshFriends ? refreshFriends() : Promise.resolve()));
+
   const loadingGate =
     isLoadingTournament ||
     isLoadingRegistrationFields ||
     isLoadingFriends;
+
+  const walletQuery = useFetchWallet({ enabled: true });
+  const walletBalance = Number(walletQuery.data?.balance ?? 0);
+  const [showInsufficientModal, setShowInsufficientModal] = useState(false);
+
+  const entryFee = Number(tournament?.entry_fee ?? 0);
+  const handleJoinPress = () => {
+    if (entryFee > 0 && entryFee > walletBalance) {
+      setShowInsufficientModal(true);
+      return;
+    }
+    void onConfirmJoin();
+  };
 
   if (loadingGate) {
     return (
@@ -150,15 +193,12 @@ export function Ui() {
         <View key={field.id} style={styles.fieldBlock}>
           <Text style={styles.fieldLabel}>{field.label.toUpperCase()}</Text>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, { textAlign: 'right' }]}
             placeholderTextColor={trColors.labelMuted}
             placeholder={field.label}
-            value={
-              fieldValues[field.id] !== undefined
-                ? fieldValues[field.id]
-                : ""
-            }
-            onChangeText={(t) => setFieldValue(field.id, t)}
+            value={localFieldValues[field.id] !== undefined ? localFieldValues[field.id] : ""}
+            onChangeText={(t) => setLocalFieldValues((s) => ({ ...s, [field.id]: t }))}
+            onBlur={() => setFieldValue(field.id, localFieldValues[field.id] ?? "")}
             autoCapitalize="none"
             autoCorrect={false}
           />
@@ -171,16 +211,13 @@ export function Ui() {
         <View key={field.id} style={styles.fieldBlock}>
           <Text style={styles.fieldLabel}>{field.label.toUpperCase()}</Text>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, { textAlign: 'left', writingDirection: 'ltr' }]}
             placeholderTextColor={trColors.labelMuted}
             placeholder={field.label}
             keyboardType="numeric"
-            value={
-              fieldValues[field.id] !== undefined
-                ? fieldValues[field.id]
-                : ""
-            }
-            onChangeText={(t) => setFieldValue(field.id, t)}
+            value={localFieldValues[field.id] !== undefined ? localFieldValues[field.id] : ""}
+            onChangeText={(t) => setLocalFieldValues((s) => ({ ...s, [field.id]: t }))}
+            onBlur={() => setFieldValue(field.id, localFieldValues[field.id] ?? "")}
           />
         </View>
       );
@@ -320,7 +357,7 @@ export function Ui() {
             }
             activeOpacity={0.9}
             disabled={!canSubmit || isSubmitting}
-            onPress={() => void onConfirmJoin()}
+            onPress={handleJoinPress}
           >
             <LinearGradient
               colors={[trColors.purple, colors_V2.gradientEnd]}
@@ -385,11 +422,12 @@ export function Ui() {
           <View style={styles.searchRow}>
             <Icon name="search" size={18} color={trColors.labelMuted} />
             <TextInput
-              style={styles.searchInput}
+              style={[styles.searchInput, { textAlign: 'right' }]}
               placeholder="ابحث عن الأصدقاء…"
               placeholderTextColor={trColors.labelMuted}
-              value={friendSearch}
-              onChangeText={setFriendSearch}
+              value={friendSearchLocal}
+              onChangeText={setFriendSearchLocal}
+              onBlur={() => setFriendSearch(friendSearchLocal)}
             />
           </View>
         </>
@@ -414,6 +452,15 @@ export function Ui() {
 
   return (
     <SafeAreaView style={styles.root}>
+      {/** Pull-to-refresh wired to mirror-registered friends refresh if available */}
+      <KeyboardAwareScreenScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <FlatList
           data={showSquadFriends ? filteredFriends : []}
           keyExtractor={(item: FriendOption) => String(item.id)}
@@ -466,6 +513,7 @@ export function Ui() {
           }}
           ListFooterComponent={showSquadFriends ? listFooter : null}
         />
+      </KeyboardAwareScreenScrollView>
 
       <AnimatedBottomSheet
         visible={selectModalFieldId !== null}
@@ -494,6 +542,12 @@ export function Ui() {
           </SheetSlidePanel>
         </View>
       </AnimatedBottomSheet>
+      <InsufficientBalanceModal
+        visible={showInsufficientModal}
+        onRequestClose={() => setShowInsufficientModal(false)}
+        balance={walletBalance}
+        required={entryFee}
+      />
     </SafeAreaView>
   );
 }

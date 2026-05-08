@@ -1,5 +1,5 @@
 import { useGetPubgTournaments } from '@/src/hooks/api/usePubgTournaments';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 import { useMirrorRegistry } from './store';
 import { useFetchBestPlayers } from '@/src/hooks/api/players/useFetchBestPlayers';
 import { useFetchHeroContents } from '@/src/hooks/api/hero/useFetchHeroContents';
@@ -7,37 +7,48 @@ import { useFetchHeroContents } from '@/src/hooks/api/hero/useFetchHeroContents'
 function Api({ children }: PropsWithChildren) {
 
 
-    const { data, isLoading  , dataUpdatedAt    , isFetching } = useGetPubgTournaments({
+    const tournamentsQuery = useGetPubgTournaments({
         page: 1,
         limit: 10,
         is_active: true,
     });
 
-    const { data: superData, isLoading: isLoadingSuper, dataUpdatedAt: dataUpdatedAtSuper, isFetching: isFetchingSuper } = useGetPubgTournaments({
+    const superTournamentsQuery = useGetPubgTournaments({
         page: 1,
         limit: 10,
         is_active: true,
         is_super: true,
     });
 
-    const { data: bestPlayers, isLoading: isLoadingBestPlayers, dataUpdatedAt: dataUpdatedAtBestPlayers, isFetching: isFetchingBestPlayers } = useFetchBestPlayers({
+    const bestPlayersQuery = useFetchBestPlayers({
         page: 1,
         limit: 4,
     });
 
-    const { data: latestWinners, isLoading: isLoadingLatestWinners, dataUpdatedAt: dataUpdatedAtLatestWinners, isFetching: isFetchingLatestWinners } = useFetchHeroContents({
+    const latestWinnersQuery = useFetchHeroContents({
         page: 1,
         limit: 10,
     });
 
-    useMirrorRegistry("latestWinners", latestWinners?.data, dataUpdatedAtLatestWinners);
-    useMirrorRegistry("IsLoadingLatestWinners", isLoadingLatestWinners, isFetchingLatestWinners);
-    useMirrorRegistry("tournaments", data , dataUpdatedAt);
-    useMirrorRegistry("IsLoadingTournaments", isLoading, isFetching);
-    useMirrorRegistry("superTournaments", superData, dataUpdatedAtSuper);
-    useMirrorRegistry("IsLoadingSuperTournaments", isLoadingSuper, isFetchingSuper);
-    useMirrorRegistry("bestPlayers", bestPlayers?.data, dataUpdatedAtBestPlayers);
-    useMirrorRegistry("IsLoadingBestPlayers", isLoadingBestPlayers, isFetchingBestPlayers);
+    useMirrorRegistry("latestWinners", latestWinnersQuery.data?.data, latestWinnersQuery.dataUpdatedAt);
+    useMirrorRegistry("IsLoadingLatestWinners", latestWinnersQuery.isLoading, latestWinnersQuery.isFetching);
+    useMirrorRegistry("tournaments", tournamentsQuery.data, tournamentsQuery.dataUpdatedAt);
+    useMirrorRegistry("IsLoadingTournaments", tournamentsQuery.isLoading, tournamentsQuery.isFetching);
+    useMirrorRegistry("superTournaments", superTournamentsQuery.data, superTournamentsQuery.dataUpdatedAt);
+    useMirrorRegistry("IsLoadingSuperTournaments", superTournamentsQuery.isLoading, superTournamentsQuery.isFetching);
+    useMirrorRegistry("bestPlayers", bestPlayersQuery.data?.data, bestPlayersQuery.dataUpdatedAt);
+    useMirrorRegistry("IsLoadingBestPlayers", bestPlayersQuery.isLoading, bestPlayersQuery.isFetching);
+
+    const refreshHome = useCallback(async () => {
+        await Promise.allSettled([
+            tournamentsQuery.refetch?.(),
+            superTournamentsQuery.refetch?.(),
+            bestPlayersQuery.refetch?.(),
+            latestWinnersQuery.refetch?.(),
+        ]);
+    }, [tournamentsQuery, superTournamentsQuery, bestPlayersQuery, latestWinnersQuery]);
+
+    useMirrorRegistry("refreshHome", refreshHome, refreshHome);
 
     return children;
 }

@@ -24,8 +24,9 @@ export function TournamentsScreenHeader() {
 
   const onShare = async () => {
     try {
+      // share the tournaments message and include app scheme so recipients can open the app
       await Share.share({
-        message: tournamentsAr.shareMessage,
+        message: `${tournamentsAr.shareMessage}\n\namarena://`,
         title: tournamentsAr.shareTitle,
       });
     } catch {

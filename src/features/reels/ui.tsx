@@ -32,6 +32,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import { ReelLikeAnimationHost } from "./reel-like-animation";
 import {
   ActivityIndicator,
   Dimensions,
@@ -49,6 +50,7 @@ import {
 import Svg, { Path } from "react-native-svg";
 import { useMirror } from "./store";
 import { styles } from "./styles";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 
 const COMMENT_DRAG_DISMISS_PX = 16;
 
@@ -599,6 +601,9 @@ export function Ui() {
   const isFetchingReels = useMirror("isFetchingReels");
   const isReelsError = useMirror("isReelsError");
   const refreshReels = useMirror("refreshReels");
+  const { refreshing: reelsRefreshing, onRefresh: onReelsRefresh } = usePullToRefresh(
+    () => refreshReels()
+  );
   const currentIndex = useMirror("currentIndex");
   const viewportHeight = useMirror("viewportHeight");
   const flatListRef = useMirror("flatListRef");
@@ -792,18 +797,22 @@ export function Ui() {
   }, []);
 
   const shareReel = useCallback(async (item: ReelEntity) => {
-    const text = [item.title?.trim(), item.description?.trim()]
-      .filter(Boolean)
-      .join("\n");
-    await Share.share({
-      title: item.title || "KINETIC ARENA",
-      message: text || "شاهد هذا الريل في KINETIC ARENA",
-    });
+    const text = [item.title?.trim(), item.description?.trim()].filter(Boolean).join("\n");
+    try {
+      await (await import("@/src/lib/share/deepShare")).shareDeepLink("reel", String(item.id ?? ""), text || item.title || "شاهد هذا الريل");
+    } catch (e) {
+      // fallback to share API if deepShare fails
+      await Share.share({
+        title: item.title || "AM ARENA",
+        message: (text || "شاهد هذا الريل في AM ARENA") + "\n\namarena://",
+      });
+    }
   }, []);
 
   return (
     <View style={styles.screen}>
       <ArenaHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+      <ReelLikeAnimationHost />
 
       <View style={styles.contentArea}>
         {activeTab === "reels" ? (
@@ -831,6 +840,14 @@ export function Ui() {
                   data={reels}
                   keyExtractor={(item, index) => reelKey(item, index)}
                   extraData={{ activeTab, currentIndex, playbackRatio }}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={reelsRefreshing}
+                      onRefresh={onReelsRefresh}
+                      tintColor={colors_V2.primary}
+                      colors={[colors_V2.primary]}
+                    />
+                  }
                   renderItem={({ item, index }) => {
                     const videoUri = resolveMediaUrl(item.video_url, "video");
                     const isActive = index === currentIndex;
@@ -878,21 +895,31 @@ export function Ui() {
 
                           <View style={styles.overlayRight} pointerEvents="box-none">
                             <View style={styles.overlayAction}>
-                              <Pressable
-                                disabled={isReelLikeBusy}
-                                onPress={() => {
-                                  const id = String(item.id ?? "");
-                                  if (liked) void removeReelLike(id);
-                                  else void likeReel(id);
-                                }}
-                                style={[
-                                  styles.overlayCircle,
-                                  liked && styles.overlayCircleActive,
-                                ]}
-                              >
-                                {liked ? (
-                                  <>
-                                  
+                                <Pressable
+                                  disabled={isReelLikeBusy}
+                                  onPress={() => {
+                                    const id = String(item.id ?? "");
+                                    // optimistically update is handled in mutations; trigger animation locally
+                                    void (async () => {
+                                      // run floating heart animation (if available)
+                                      try {
+                                        // import lazy to avoid bundle cost when not used
+                                        const mod = await import("./reel-like-animation");
+                                        mod.spawnLikeAnimation(id);
+                                      } catch (e) {
+                                        /* ignore */
+                                      }
+
+                                      if (liked) void removeReelLike(id);
+                                      else void likeReel(id);
+                                    })();
+                                  }}
+                                  style={[
+                                    styles.overlayCircle,
+                                    liked && styles.overlayCircleActive,
+                                  ]}
+                                >
+                                  {liked ? (
                                     <HugeiconsIcon
                                       icon={FavouriteIcon}
                                       size={INTERACTION_ICON_SIZE}
@@ -900,17 +927,16 @@ export function Ui() {
                                       strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
                                       absoluteStrokeWidth
                                     />
-                                  </>
-                                ) : (
-                                  <HugeiconsIcon
-                                    icon={FavouriteIcon}
-                                    size={INTERACTION_ICON_SIZE}
-                                    color={colors_V2.primaryLight}
-                                    strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
-                                    absoluteStrokeWidth
-                                  />
-                                )}
-                              </Pressable>
+                                  ) : (
+                                    <HugeiconsIcon
+                                      icon={FavouriteIcon}
+                                      size={INTERACTION_ICON_SIZE}
+                                      color={colors_V2.primaryLight}
+                                      strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
+                                      absoluteStrokeWidth
+                                    />
+                                  )}
+                                </Pressable>
                               <Text style={styles.overlayCount}>
                                 {formatCompactCount(likesCount)}
                               </Text>

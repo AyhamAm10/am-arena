@@ -4,6 +4,7 @@ import { useFetchPackages } from "@/src/hooks/api/wallet/useFetchPackages";
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import React, { useState } from "react";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import {
   ActivityIndicator,
   Pressable,
@@ -12,6 +13,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Linking,
 } from "react-native";
 
 export function PackagesScreen() {
@@ -19,27 +21,16 @@ export function PackagesScreen() {
   const createRequest = useCreatePaymentRequest();
   const [selectedPackageId, setSelectedPackageId] = useState<number | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshingLocal, setRefreshingLocal] = useState(false);
+  const { refreshing, onRefresh } = usePullToRefresh(async () => {
+    await packagesQuery.refetch();
+  });
 
   return (
     <AppLayout scrollable={false}>
       <ScrollView
         contentContainerStyle={styles.wrap}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing || packagesQuery.isRefetching}
-            onRefresh={async () => {
-              setRefreshing(true);
-              try {
-                await packagesQuery.refetch();
-              } finally {
-                setRefreshing(false);
-              }
-            }}
-            tintColor={colors_V2.accent}
-            colors={[colors_V2.primary, colors_V2.accent]}
-          />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing || packagesQuery.isRefetching} onRefresh={onRefresh} tintColor={colors_V2.accent} colors={[colors_V2.primary, colors_V2.accent]} />}
       >
         <Text style={[styles.title, textRtl]}>شراء عملات</Text>
         <Text style={[styles.subtitle, textRtl]}>
@@ -101,9 +92,22 @@ export function PackagesScreen() {
 
         <View style={styles.noteBox}>
           {message ? <Text style={[styles.noteText, textRtl]}>{message}</Text> : null}
-          <Text style={[styles.contactText, textRtl]}>
-            📞 +9639378729364
-          </Text>
+          <Pressable
+            onPress={async () => {
+              const raw = "+963938729364";
+              const digits = raw.replace(/\D/g, "");
+              const appUrl = `whatsapp://send?phone=${digits}`;
+              const webUrl = `https://wa.me/${digits}`;
+              try {
+                const supported = await Linking.canOpenURL(appUrl);
+                await Linking.openURL(supported ? appUrl : webUrl);
+              } catch (e) {
+                await Linking.openURL(webUrl);
+              }
+            }}
+          >
+            <Text style={[styles.contactText, textRtl]}>📞 +963938729364</Text>
+          </Pressable>
           <Text style={[styles.contactText, textRtl]}>
             يرجى التواصل مع الإدارة لإتمام عملية الدفع
           </Text>

@@ -101,7 +101,8 @@ export function Ui() {
             onBlur={() => setFullName(fullNameLocal)}
             placeholder="أدخل اسمك الكامل"
             placeholderTextColor={colors.grey}
-            style={[styles.input, { textAlign: fullNameLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
+            style={[styles.input, { textAlign: 'right' }]}
+            // style={[styles.input, { textAlign: fullNameLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
           />
         </View>
 
@@ -113,7 +114,7 @@ export function Ui() {
             onBlur={() => setGamerName(gamerNameLocal)}
             placeholder="اسمك في اللعبة"
             placeholderTextColor={colors.grey}
-            style={[styles.input, { textAlign: gamerNameLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
+            style={[styles.input, { textAlign: 'right' }]}
             autoCapitalize='none'
           />
         </View>
@@ -126,7 +127,7 @@ export function Ui() {
             onBlur={() => setCountry(countryLocal)}
             placeholder="أدخل الدولة"
             placeholderTextColor={colors.grey}
-            style={[styles.input, { textAlign: countryLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
+            style={[styles.input, { textAlign: 'right' }]}
           />
         </View>
 
@@ -136,9 +137,9 @@ export function Ui() {
             value={emailLocal}
             onChangeText={setEmailLocal}
             onBlur={() => setEmail(emailLocal)}
-            placeholder="أدخل بريدك الإلكتروني"
+            placeholder="userName@gmail.com"
             placeholderTextColor={colors.grey}
-            style={[styles.input, { textAlign: emailLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
+           style={[styles.input, { textAlign: 'left' }]}
             keyboardType='email-address'
             autoCapitalize='none'
             autoCorrect={false}
@@ -153,7 +154,7 @@ export function Ui() {
             onBlur={() => setPassword(passwordLocal)}
             placeholder="••••••"
             placeholderTextColor={colors.grey}
-            style={[styles.input, { textAlign: passwordLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
+            style={[styles.input, { textAlign: 'right' }]}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -169,7 +170,7 @@ export function Ui() {
             onBlur={() => setConfirmPassword(confirmPasswordLocal)}
             placeholder="••••••"
             placeholderTextColor={colors.grey}
-            style={[styles.input, { textAlign: confirmPasswordLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
+            style={[styles.input, { textAlign: 'right' }]}
             secureTextEntry={!showConfirmPassword}
           />
           <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>

@@ -10,11 +10,13 @@ type AppLayoutProps = {
   children: React.ReactNode;
   /** When false, children manage their own scroll (e.g. FlatList). */
   scrollable?: boolean;
+  refreshControl?: React.ReactElement | null;
 };
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
   children,
   scrollable = true,
+  refreshControl = null,
 }) => {
   const header = useHeaderUser();
   const contentStyle = { flex: 1, paddingHorizontal: 16, paddingTop: 8 } as const;
@@ -34,7 +36,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
         achievementName={header.achievementName}
       />
       {scrollable ? (
-        <KeyboardAwareScreenScrollView style={contentStyle}>
+        <KeyboardAwareScreenScrollView style={contentStyle} refreshControl={refreshControl}>
           {children}
         </KeyboardAwareScreenScrollView>
       ) : (

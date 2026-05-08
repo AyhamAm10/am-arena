@@ -75,6 +75,16 @@ function Api({ children }: PropsWithChildren) {
     enabled: Boolean(currentUserId) && activeTab === "public",
   });
 
+  const refreshAll = useCallback(async () => {
+    await Promise.allSettled([
+      friendsInfinite.refetch(),
+      requestsInfinite.refetch(),
+      publicInfinite.refetch(),
+      outgoingPendingInfinite.refetch(),
+    ]);
+  }, [friendsInfinite, requestsInfinite, publicInfinite, outgoingPendingInfinite]);
+
+  useMirrorRegistry("refreshFriends", refreshAll, refreshAll);
   const acceptMut = useAcceptFriendRequest();
   const removeFriendMut = useRemoveFriendship();
   const removePendingMut = useRemovePendingFriendRequest();

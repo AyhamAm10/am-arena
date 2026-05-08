@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   ActivityIndicator,
   Image,
@@ -25,6 +25,14 @@ export function Ui() {
   const setPassword = useMirror('setPassword')
   const setShowPassword = useMirror('setShowPassword')
 
+  // Local state to preserve native cursor behavior during typing
+  const [emailLocal, setEmailLocal] = useState(email)
+  const [passwordLocal, setPasswordLocal] = useState(password)
+
+  // Keep locals in sync if external store changes
+  useEffect(() => setEmailLocal(email), [email])
+  useEffect(() => setPasswordLocal(password), [password])
+
   const canSubmit = useMirror('canSubmit')
   const onSubmit = useMirror('onSubmit')
   const isLoading = useMirror('isLoading')
@@ -42,11 +50,12 @@ export function Ui() {
         <Text style={styles.label}>البريد الإلكتروني</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="أدخل بريدك الإلكتروني"
+            value={emailLocal}
+            onChangeText={setEmailLocal}
+            onBlur={() => setEmail(emailLocal)}
+            placeholder="username@gmail.com"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: 'left' }]}
             keyboardType='email-address'
             autoCapitalize='none'
             autoCorrect={false}
@@ -56,11 +65,12 @@ export function Ui() {
         <Text style={styles.label}>كلمة المرور</Text>
         <View style={styles.inputWrap}>
           <TextInput
-            value={password}
-            onChangeText={setPassword}
+            value={passwordLocal}
+            onChangeText={setPasswordLocal}
+            onBlur={() => setPassword(passwordLocal)}
             placeholder="••••••••"
             placeholderTextColor={colors.grey}
-            style={styles.input}
+            style={[styles.input, { textAlign: 'right' }]}
             secureTextEntry={!showPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>

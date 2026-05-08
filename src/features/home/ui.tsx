@@ -5,6 +5,9 @@ import {
   UpcomingTournaments,
 } from "@/src/components/home";
 import { AppLayout } from "@/src/components/layout";
+import { RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
+import { useMirror } from "./store";
 import { PubgGame } from "@/src/api/types/pubg-tournament.types";
 import { UserPublicSummary } from "@/src/api/types/user.types";
 import { computeLevelAndProgress } from "@/src/lib/utils/level-from-xp";
@@ -14,7 +17,6 @@ import { colors_V2 } from "@/src/theme/colors";
 import { useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import { useMirror } from "./store";
 import { styles } from "./styles";
 
 function formatPrizePool(value: number | string): string {
@@ -32,8 +34,11 @@ export function Ui() {
   const isLoadingBestPlayers = useMirror("IsLoadingBestPlayers");
   const latestWinners = useMirror("latestWinners");
 
+  const refreshHome = useMirror("refreshHome");
+  const { refreshing, onRefresh } = usePullToRefresh(() => (refreshHome ? refreshHome() : Promise.resolve()));
+
   return (
-    <AppLayout>
+    <AppLayout refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <View style={styles.content}>
         {/* Elite Squad - Super Tournaments */}
         <View style={styles.section}>

@@ -1,6 +1,8 @@
 import { useRouter } from "expo-router";
 import { Image } from "expo-image";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { RefreshControl } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import {
   ActivityIndicator,
   Pressable,
@@ -29,6 +31,18 @@ export function Ui() {
   const setEmail = useMirror("setEmail");
   const setPhone = useMirror("setPhone");
 
+  // Local state to preserve native cursor behavior during typing
+  const [fullNameLocal, setFullNameLocal] = useState(fullName);
+  const [gamerNameLocal, setGamerNameLocal] = useState(gamerName);
+  const [emailLocal, setEmailLocal] = useState(email);
+  const [phoneLocal, setPhoneLocal] = useState(phone);
+
+  // Keep locals in sync if external store changes
+  useEffect(() => setFullNameLocal(fullName), [fullName]);
+  useEffect(() => setGamerNameLocal(gamerName), [gamerName]);
+  useEffect(() => setEmailLocal(email), [email]);
+  useEffect(() => setPhoneLocal(phone), [phone]);
+
   const pickImage = useMirror("pickImage");
   const onSubmit = useMirror("onSubmit");
   const canSubmit = useMirror("canSubmit");
@@ -40,6 +54,11 @@ export function Ui() {
   const footerCaption = useMirror("footerCaption");
   const remoteAvatarUrl = useMirror("remoteAvatarUrl");
   const showInitialSpinner = useMirror("showInitialSpinner");
+
+  const { refreshing, onRefresh } = usePullToRefresh(async () => {
+    // profile store doesn't expose a dedicated refresh method here; no-op placeholder
+    return Promise.resolve();
+  });
 
   const mainAvatarSource = profileImageUri
     ? { uri: profileImageUri }
@@ -77,6 +96,9 @@ export function Ui() {
       <KeyboardAwareScreenScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primaryPurple} colors={[colors.primaryPurple]} />
+        }
       >
           <View style={styles.headerRow}>
             <Pressable
@@ -151,11 +173,12 @@ export function Ui() {
               <Text style={styles.labelText}>الاسم الكامل</Text>
             </View>
             <TextInput
-              value={fullName}
-              onChangeText={setFullName}
+              value={fullNameLocal}
+              onChangeText={setFullNameLocal}
+              onBlur={() => setFullName(fullNameLocal)}
               placeholder="الاسم الكامل"
               placeholderTextColor={colors.grey}
-              style={styles.input}
+              style={[styles.input, { textAlign: 'right' }]}
               autoCapitalize="words"
             />
           </View>
@@ -166,11 +189,12 @@ export function Ui() {
               <Text style={styles.labelText}>اسم اللاعب</Text>
             </View>
             <TextInput
-              value={gamerName}
-              onChangeText={setGamerName}
+              value={gamerNameLocal}
+              onChangeText={setGamerNameLocal}
+              onBlur={() => setGamerName(gamerNameLocal)}
               placeholder="اسم اللاعب"
               placeholderTextColor={colors.grey}
-              style={[styles.input, styles.inputGamer]}
+              style={[styles.input, styles.inputGamer, { textAlign: 'right' }]}
               autoCapitalize="none"
               autoCorrect={false}
             />
@@ -190,11 +214,12 @@ export function Ui() {
               <Text style={styles.labelText}>البريد الإلكتروني</Text>
             </View>
             <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="البريد الإلكتروني"
+              value={emailLocal}
+              onChangeText={setEmailLocal}
+              onBlur={() => setEmail(emailLocal)}
+              placeholder="username@gmail.com"
               placeholderTextColor={colors.grey}
-              style={styles.input}
+              style={[styles.input, { textAlign: 'left' }]}
               keyboardType="email-address"
               autoCapitalize="none"
             />
@@ -206,11 +231,12 @@ export function Ui() {
               <Text style={styles.labelText}>رقم الهاتف</Text>
             </View>
             <TextInput
-              value={phone}
-              onChangeText={setPhone}
+              value={phoneLocal}
+              onChangeText={setPhoneLocal}
+              onBlur={() => setPhone(phoneLocal)}
               placeholder="رقم الهاتف"
               placeholderTextColor={colors.grey}
-              style={styles.input}
+              style={[styles.input, { textAlign: phoneLocal.length > 0 ? 'left' : 'right', writingDirection: 'ltr' }]}
               keyboardType="phone-pad"
             />
           </View>

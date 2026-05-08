@@ -16,11 +16,13 @@ import {
   Alert,
   FlatList,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Switch,
   Text,
   View,
 } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type TabKey = "all" | "mine";
@@ -168,8 +170,17 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
   const router = useRouter();
   const params = useLocalSearchParams<{ achievementId?: string }>();
   const [activeTab, setActiveTab] = useState<TabKey>("all");
-  const { data: myRows, isLoading: loadingMine, isError: mineError } = useFetchMyAchievements();
-  const { data: catalog, isLoading: loadingCatalog, isError: catalogError } = useFetchAchievementCatalog();
+  const myQuery = useFetchMyAchievements();
+  const catalogQuery = useFetchAchievementCatalog();
+  const myRows = myQuery.data;
+  const loadingMine = myQuery.isLoading;
+  const mineError = myQuery.isError;
+  const catalog = catalogQuery.data;
+  const loadingCatalog = catalogQuery.isLoading;
+  const catalogError = catalogQuery.isError;
+  const { refreshing, onRefresh } = usePullToRefresh(async () => {
+    await Promise.allSettled([myQuery.refetch?.(), catalogQuery.refetch?.()]);
+  });
   const toggleMutation = useToggleAchievementDisplay();
   const setActiveMutation = useSetActiveAchievement();
 
@@ -296,6 +307,14 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
               data={orderedRows}
               keyExtractor={(item) => `${activeTab}-${item.achievement.id}`}
               contentContainerStyle={styles.list}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor={colors_V2.primary}
+                  colors={[colors_V2.primary]}
+                />
+              }
               ListEmptyComponent={
                 <Text style={[styles.muted, writingRtl]}>
                   {activeTab === "mine" ? "لم تكسب ألقاباً بعد." : "لا توجد إنجازات حالياً."}

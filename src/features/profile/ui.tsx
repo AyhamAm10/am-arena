@@ -7,7 +7,10 @@ import {
   StyleSheet,
   Text,
   View,
+  RefreshControl,
 } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
+import { useFetchUserProfile } from "@/src/hooks/api/profile/useFetchUserProfile";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { writingRtl } from "@/src/lib/rtl";
 import { useMirror } from "./store";
@@ -41,12 +44,20 @@ export function Ui() {
     else router.replace("/");
   };
 
+  const profileMirror = useMirror("profile");
+  const userId = profileMirror?.user?.id ? String(profileMirror.user.id) : "";
+  const profileQuery = useFetchUserProfile(userId, { enabled: Boolean(userId) });
+  const { refreshing, onRefresh } = usePullToRefresh(async () => {
+    await profileQuery.refetch();
+  });
+
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <ProfileHeader
           title={headerTitle}

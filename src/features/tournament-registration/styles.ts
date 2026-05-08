@@ -144,19 +144,20 @@ export const styles = StyleSheet.create({
     borderColor: "rgba(147,204,255,0.24)",
   },
   participantBadgeIcon: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "900",
+    lineHeight: 18,
   },
   participantBadgeText: {
     color: colors_V2.textPrimary,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "800",
     letterSpacing: 0.2,
   },
   participantBadgeMeta: {
     color: colors_V2.accent,
-    fontSize: 11,
-    fontWeight: "700",
+    fontSize: 13,
+    fontWeight: "800",
     letterSpacing: 0.4,
   },
   progressRow: {

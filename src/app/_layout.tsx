@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import { AuthBootstrap } from "@/src/components/auth/AuthBootstrap";
 import { ToastHost } from "@/src/components/notifications/ToastHost";
 import { KeyboardProvider } from "react-native-keyboard-controller";
@@ -8,6 +8,8 @@ import { RegisterNotifications } from "@/src/lib/notifications/registerNotificat
 import { colors } from "@/src/theme/colors";
 import { useEffect } from "react";
 import { Platform } from "react-native";
+import { Linking } from "react-native";
+import { resolveDeepLink } from "@/src/lib/deeplink";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,45 @@ export default function RootLayout() {
       document.documentElement.setAttribute("dir", "rtl");
       document.body?.setAttribute("dir", "rtl");
     }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function handleUrl(raw: string | null) {
+      if (!mounted || !raw) return;
+      const href = resolveDeepLink(raw);
+      if (!href) return;
+      try {
+        // push resolved internal href
+        await router.push(href as any);
+      } catch (e) {
+        // ignore navigation errors
+      }
+    }
+
+    // initial
+    (async () => {
+      try {
+        const initial = await Linking.getInitialURL();
+        await handleUrl(initial);
+      } catch (e) {
+        // ignore
+      }
+    })();
+
+    const sub = Linking.addEventListener("url", (ev) => {
+      void handleUrl(ev.url);
+    });
+
+    return () => {
+      mounted = false;
+      try {
+        sub.remove();
+      } catch (e) {
+        /* noop */
+      }
+    };
   }, []);
 
   return (

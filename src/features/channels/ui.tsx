@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { rtlMirrorIconStyle } from "@/src/lib/rtl";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -67,6 +68,10 @@ export function Ui() {
   const isChannelsError = useMirror("isChannelsError");
   const channelsErrorMessage = useMirror("channelsErrorMessage");
   const onRefreshChannelsPress = useMirror("onRefreshChannelsPress");
+
+  const { refreshing, onRefresh } = usePullToRefresh(() =>
+    onRefreshChannelsPress ? onRefreshChannelsPress() : Promise.resolve()
+  );
 
   const [filterTab, setFilterTab] = useState<FilterTab>("tournaments");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -273,8 +278,8 @@ export function Ui() {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={isLoadingChannels && channels.length > 0}
-              onRefresh={onRefreshChannelsPress}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
               tintColor={colors.primaryPurple}
               colors={[colors.primaryPurple]}
             />

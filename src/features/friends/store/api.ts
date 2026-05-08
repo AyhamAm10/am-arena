@@ -34,6 +34,8 @@ type ApiState = {
   fetchMoreFriends: () => Promise<unknown>;
   fetchMorePublic: () => Promise<unknown>;
   fetchMoreRequests: () => Promise<unknown>;
+  /** Optional: refresh everything (used by pull-to-refresh). */
+  refreshFriends: () => Promise<unknown>;
   listError: string | null;
   onCancelRequest: (friendUserId: number) => Promise<void>;
   /** Withdraw an outgoing pending request (DISCOVER). */
@@ -75,6 +77,7 @@ const store = (): ApiState => ({
   fetchMoreFriends: async () => undefined,
   fetchMorePublic: async () => undefined,
   fetchMoreRequests: async () => undefined,
+  refreshFriends: async () => undefined,
   listError: null,
   onCancelRequest: async () => undefined,
   onCancelOutgoingPending: async () => undefined,
