@@ -93,6 +93,21 @@ export const responseInterceptor = {
   },
 
   onError: async (error: AxiosError) => {
+    // If the server returned a response with update metadata (e.g., 426 forced upgrade)
+    // make sure we parse it and set the global update store before any rejection
+    try {
+      if (error.response) {
+        // Best-effort: inspect error response for update metadata so modal can show
+        try {
+          responseInterceptor._onSuccessWithUpdate(error.response as AxiosResponse);
+        } catch {
+          // ignore
+        }
+      }
+    } catch {
+      // ignore
+    }
+
     const status = error.response?.status;
     const config = error.config as InternalAxiosRequestConfig | undefined;
     const data = error.response?.data as

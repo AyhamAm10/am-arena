@@ -2,11 +2,19 @@ import { InternalAxiosRequestConfig, AxiosHeaders } from "axios";
 import { useAuthStore } from "@/src/stores/authStore";
 import { Platform } from "react-native";
 import * as Application from "expo-application";
+import { APP_BUILD } from "@/src/constants/appBuild";
 
 function getAppBuildHeader(): string {
+  // Use centralized static build constant. Keep fallback to native values
+  // for completeness but prefer the constant for deterministic behavior.
+  try {
+    if (typeof APP_BUILD !== "undefined" && APP_BUILD !== null) return String(APP_BUILD);
+  } catch {
+    // ignore and fallback
+  }
+
   try {
     if (Platform.OS !== "web") {
-      // prefer native build number; fall back to application version
       const build = (Application.nativeBuildVersion || Application.nativeApplicationVersion) as
         | string
         | undefined;
@@ -15,6 +23,7 @@ function getAppBuildHeader(): string {
   } catch (e) {
     // ignore
   }
+
   return "0";
 }
 

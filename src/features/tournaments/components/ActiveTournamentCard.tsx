@@ -187,7 +187,7 @@ export function ActiveTournamentCard({
             end={{ x: 1, y: 0.5 }}
             style={styles.joinGradient}
           >
-            <Text style={[styles.joinText, arText]}>{tournamentsAr.join}</Text>
+            <Text style={[styles.joinText, arText]}>التفاصيل</Text>
           </LinearGradient>
         </TouchableOpacity>
 
