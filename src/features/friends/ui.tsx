@@ -1,7 +1,7 @@
 import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import type { UserPublicSummary } from "@/src/api/types/user.types";
 import { AppLayout } from "@/src/components/layout";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useSegments } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import { RefreshControl } from "react-native";
 import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
@@ -31,6 +31,7 @@ export function Ui() {
   const sectionTitle = useMirror("sectionTitle");
   const toggleSort = useMirror("toggleSort");
 
+  const segments = useSegments();
   const friendsListItems = useMirror("friendsListItems");
   const requestsListItems = useMirror("requestsListItems");
   const publicListItems = useMirror("publicListItems");
@@ -169,7 +170,11 @@ export function Ui() {
           <View style={styles.card}>
             <TouchableOpacity
               style={styles.cardPressable}
-              onPress={() => router.push(`/profile/${u.id}`)}
+              onPress={() => {
+                const isProfileRoute = segments.includes("profile");
+                if (isProfileRoute) router.replace(`/profile/${u.id}`);
+                else router.push(`/profile/${u.id}`);
+              }}
             >
               <View style={styles.avatarWrap}>
                 {uri ? (
@@ -227,7 +232,11 @@ export function Ui() {
           <View style={styles.card}>
             <TouchableOpacity
               style={styles.cardPressable}
-              onPress={() => router.push(`/profile/${u.id}`)}
+              onPress={() => {
+                const isProfileRoute = segments.includes("profile");
+                if (isProfileRoute) router.replace(`/profile/${u.id}`);
+                else router.push(`/profile/${u.id}`);
+              }}
             >
               <View style={styles.avatarWrap}>
                 {uri ? (
@@ -281,7 +290,11 @@ export function Ui() {
         <View style={styles.card}>
             <TouchableOpacity
               style={styles.cardPressable}
-            onPress={() => router.push(`/profile/${u.id}`)}
+            onPress={() => {
+              const isProfileRoute = segments.includes("profile");
+              if (isProfileRoute) router.replace(`/profile/${u.id}`);
+              else router.push(`/profile/${u.id}`);
+            }}
           >
             <View style={styles.avatarWrap}>
               {uri ? (

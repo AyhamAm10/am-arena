@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack, router } from "expo-router";
 import { AuthBootstrap } from "@/src/components/auth/AuthBootstrap";
@@ -6,7 +7,6 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { isRtl } from "@/src/lib/rtl";
 import { RegisterNotifications } from "@/src/lib/notifications/registerNotifications";
 import { colors } from "@/src/theme/colors";
-import { useEffect } from "react";
 import { Platform } from "react-native";
 import { Linking } from "react-native";
 import { resolveDeepLink } from "@/src/lib/deeplink";
@@ -81,6 +81,18 @@ export default function RootLayout() {
             <>
               <RegisterNotifications />
               <ToastHost />
+                  {/* App update modal sits at root so it can block interaction when required */}
+                  {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                  {/* @ts-ignore */}
+                  {typeof window !== 'undefined' ? null : null}
+                  {/* Importing dynamically to avoid SSR/type issues in stack file */}
+                  {/* AppUpdateModal */}
+                  {/* We render lazily to avoid import cycles in native modules during startup. */}
+                  <React.Suspense fallback={null}>
+                    {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+                    {/* @ts-ignore */}
+                    {require("@/src/components/update/AppUpdateModal").AppUpdateModal ? require("@/src/components/update/AppUpdateModal").AppUpdateModal() : null}
+                  </React.Suspense>
               <Stack
                 screenOptions={{
                   ...stackChrome,

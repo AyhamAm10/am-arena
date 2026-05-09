@@ -13,6 +13,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  FlatList,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KeyboardAwareScreenScrollView } from "@/src/components/layout";
@@ -28,6 +29,12 @@ export function Ui() {
 
   const activeTournaments = useMirror("activeTournaments");
   const pastTournaments = useMirror("pastTournaments");
+  const fetchMoreActive = useMirror("fetchMoreActiveTournaments");
+  const isFetchingMoreActive = useMirror("isFetchingMoreActiveTournaments");
+  const hasNextActive = useMirror("hasNextActiveTournaments");
+  const fetchMorePast = useMirror("fetchMorePastTournaments");
+  const isFetchingMorePast = useMirror("isFetchingMorePastTournaments");
+  const hasNextPast = useMirror("hasNextPastTournaments");
   const isLoadingActive = useMirror("IsLoadingActiveTournaments");
   const isLoadingPast = useMirror("IsLoadingPastTournaments");
   const activeError = useMirror("ActiveTournamentsError");
@@ -101,14 +108,24 @@ export function Ui() {
               <Text style={styles.muted}>{tournamentsAr.noActiveEvents}</Text>
             </View>
           ) : (
-            (activeTournaments ?? []).map((t: PubgTournamentDetail) => (
-              <ActiveTournamentCard
-                key={t.id}
-                tournament={t}
-                joinGate={joinGates[t.id]}
-                onJoinPress={(id) => router.push(`/tournament/${id}/details` as never)}
-              />
-            ))
+            <FlatList
+              data={activeTournaments ?? []}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({ item: t }) => (
+                <ActiveTournamentCard
+                  key={t.id}
+                  tournament={t}
+                  joinGate={joinGates[t.id]}
+                  onJoinPress={(id) => router.push(`/tournament/${id}/details` as never)}
+                />
+              )}
+              onEndReached={() => {
+                if (!hasNextActive || isFetchingMoreActive) return;
+                if (fetchMoreActive) void fetchMoreActive();
+              }}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={isFetchingMoreActive ? <ActivityIndicator color={tournamentsTheme.openEntry} /> : null}
+            />
           )}
         </View>
 
@@ -166,13 +183,23 @@ export function Ui() {
               <Text style={styles.muted}>{tournamentsAr.noMatches}</Text>
             </View>
           ) : (
-            filteredPast.map((t) => (
-              <PastTournamentCard
-                key={t.id}
-                tournament={t}
-                onReplayPress={(id) => router.push(`/tournament/${id}/details` as never)}
-              />
-            ))
+            <FlatList
+              data={filteredPast}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({ item: t }) => (
+                <PastTournamentCard
+                  key={t.id}
+                  tournament={t}
+                  onReplayPress={(id) => router.push(`/tournament/${id}/details` as never)}
+                />
+              )}
+              onEndReached={() => {
+                if (!hasNextPast || isFetchingMorePast) return;
+                if (fetchMorePast) void fetchMorePast();
+              }}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={isFetchingMorePast ? <ActivityIndicator color={tournamentsTheme.openEntry} /> : null}
+            />
           )}
         </View>
       </KeyboardAwareScreenScrollView>

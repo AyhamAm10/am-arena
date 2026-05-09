@@ -3,7 +3,7 @@ import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIco
 import RankAvatar from "@/src/components/avatar/RankAvatar";
 import { flexRowRtl, textRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
-import { useRouter } from "expo-router";
+import { useRouter, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useMirror } from "../store";
@@ -61,6 +61,7 @@ function NotificationsButton({ router }: NotificationsButtonProps) {
 
 const LoggedInTopBar: React.FC = () => {
   const router = useRouter();
+  const segments = useSegments();
   const avatarSource = useMirror("avatarSource");
   const achievementColor = useMirror("achievementColor") as string | null;
   const achievementIconUrl = useMirror("achievementIconUrl") as string | null;
@@ -94,7 +95,11 @@ const LoggedInTopBar: React.FC = () => {
           style={styles.avatarContainer}
           accessibilityRole="button"
           accessibilityLabel="الملف الشخصي"
-          onPress={() => router.push("/(tabs)/profile" as never)}
+          onPress={() => {
+            const isProfileRoute = segments.includes("profile");
+            if (isProfileRoute) router.replace("/(tabs)/profile" as never);
+            else router.push("/(tabs)/profile" as never);
+          }}
           activeOpacity={0.85}
         >
           <RankAvatar

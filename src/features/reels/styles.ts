@@ -429,6 +429,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
   },
+  mentionLoading: {
+    color: colors_V2.textSecondary,
+    fontSize: 13,
+    textAlign: "right",
+    writingDirection: "rtl",
+  },
   commentRow: {
     marginBottom: 12,
   },

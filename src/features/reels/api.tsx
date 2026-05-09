@@ -1,7 +1,7 @@
 import { useHydratedGlobalPolls } from "@/src/hooks/api/poll/useHydratedGlobalPolls";
 import { useVoteOnPoll } from "@/src/hooks/api/poll/useVoteOnPoll";
 import { useAddReelComment } from "@/src/hooks/api/reels/useAddReelComment";
-import { useFetchReels } from "@/src/hooks/api/reels/useFetchReels";
+import { useFetchReelsInfinite } from "@/src/hooks/api/reels/useFetchReelsInfinite";
 import { useLikeReel } from "@/src/hooks/api/reels/useLikeReel";
 import { useRemoveReelLike } from "@/src/hooks/api/reels/useRemoveReelLike";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +15,7 @@ function Api({ children }: PropsWithChildren) {
   const [votePendingPollId, setVotePendingPollId] = useState<number | null>(null);
   const [votePendingOptionId, setVotePendingOptionId] = useState<number | null>(null);
 
-  const reelsQuery = useFetchReels({ page: 1, limit: 20 });
+  const reelsQuery = useFetchReelsInfinite({ initialPage: 1, limit: 20 });
   const globalPollsQuery = useHydratedGlobalPolls();
 
   const likeMutation = useLikeReel();
@@ -42,10 +42,10 @@ function Api({ children }: PropsWithChildren) {
     [addCommentMutation]
   );
 
-  const reels = useMemo(
-    () => reelsQuery.data?.data ?? [],
-    [reelsQuery.data?.data]
-  );
+  const reels = useMemo(() => {
+    const pages = reelsQuery.data?.pages ?? [];
+    return pages.flatMap((p) => p.data ?? []);
+  }, [reelsQuery.data?.pages]);
   const globalPolls = useMemo(
     () => globalPollsQuery.data?.data ?? [],
     [globalPollsQuery.data?.data]
@@ -78,15 +78,14 @@ function Api({ children }: PropsWithChildren) {
 
   useMirrorRegistry("activeTab", activeTab, activeTab);
   useMirrorRegistry("setActiveTab", setActiveTab, setActiveTab);
-  useMirrorRegistry("reels", reels, reelsQuery.dataUpdatedAt);
-  useMirrorRegistry("reelsMeta", reelsQuery.data?.meta, reelsQuery.dataUpdatedAt);
+  useMirrorRegistry("reels", reels, reelsQuery.dataUpdatedAt ?? Date.now());
+  useMirrorRegistry("reelsMeta", reelsQuery.data?.pages?.[reelsQuery.data.pages.length - 1]?.meta ?? null, reelsQuery.dataUpdatedAt ?? Date.now());
   /** Initial load only — do not use isFetching or refetches hide the whole feed. */
   useMirrorRegistry("isLoadingReels", reelsQuery.isLoading, reelsQuery.isLoading);
-  useMirrorRegistry(
-    "isFetchingReels",
-    reelsQuery.isFetching,
-    reelsQuery.isFetching
-  );
+  useMirrorRegistry("isFetchingReels", reelsQuery.isFetching, reelsQuery.isFetching);
+  useMirrorRegistry("fetchMoreReels", reelsQuery.fetchNextPage, reelsQuery.fetchNextPage);
+  useMirrorRegistry("isFetchingMoreReels", reelsQuery.isFetchingNextPage, reelsQuery.isFetchingNextPage);
+  useMirrorRegistry("hasNextReels", Boolean(reelsQuery.hasNextPage), reelsQuery.dataUpdatedAt ?? Date.now());
   useMirrorRegistry("refreshReels", refreshReels, refreshReels);
   useMirrorRegistry("isReelsError", reelsQuery.isError, reelsQuery.isError);
   useMirrorRegistry("globalPolls", globalPolls, globalPollsQuery.dataUpdatedAt);

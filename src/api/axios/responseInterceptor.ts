@@ -7,6 +7,9 @@ import axios, {
 import { handleApiError } from "./errorHandler";
 import { refreshSession, clearAuthSession } from "./authSession";
 import { useAuthStore } from "@/src/stores/authStore";
+import { Platform, Linking } from "react-native";
+import * as Application from "expo-application";
+import useUpdateStore, { setAppUpdate } from "@/src/stores/updateStore";
 
 const RETRY_HEADER = "x-retry-after-refresh";
 
@@ -38,7 +41,56 @@ function applyAuthHeaders(
 }
 
 export const responseInterceptor = {
-  onSuccess: (response: AxiosResponse) => response,
+  onSuccess: (response: AxiosResponse) => {
+    // run update detection as a best-effort side-effect and return response
+    try {
+      responseInterceptor._onSuccessWithUpdate(response);
+    } catch {
+      /* ignore */
+    }
+    return response;
+  },
+
+  // Inspect successful responses for update metadata and set the global update store.
+  // Backend may include update info in headers (e.g. `x-app-update`) as JSON string
+  // or in the response body under `update` / `app_update` keys.
+  _onSuccessWithUpdate: (response: AxiosResponse) => {
+    try {
+      const headers = response.headers as Record<string, any> | undefined;
+      let payload: any = undefined;
+      if (headers && headers["x-app-update"]) {
+        try {
+          payload = JSON.parse(headers["x-app-update"]);
+        } catch {
+          payload = headers["x-app-update"];
+        }
+      }
+
+      if (!payload && response.data) {
+        payload = response.data.update || response.data.app_update || response.data.appUpdate;
+      }
+
+      if (!payload) return response;
+
+      // normalize fields
+      const latest = payload.latest_build ?? payload.latest ?? null;
+      const minSupported = payload.min_supported_build ?? payload.min_supported ?? null;
+      const url = payload.update_url ?? payload.url ?? payload.updateUrl ?? null;
+      const mandatory = typeof payload.mandatory === "boolean" ? payload.mandatory : !!payload.force;
+
+      if (latest == null || minSupported == null || !url) return response;
+
+      setAppUpdate({
+        latest_build: Number(latest) || latest,
+        min_supported_build: Number(minSupported) || minSupported,
+        update_url: String(url),
+        mandatory: Boolean(mandatory),
+      });
+    } catch (e) {
+      // best-effort only
+    }
+    return response;
+  },
 
   onError: async (error: AxiosError) => {
     const status = error.response?.status;

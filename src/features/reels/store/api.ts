@@ -30,6 +30,9 @@ type ApiState = {
   isAddingComment: boolean;
   commentReelId: string | null;
   setCommentReelId: (reelId: string | null) => void;
+  fetchMoreReels?: (...args: any[]) => Promise<any>;
+  isFetchingMoreReels?: boolean;
+  hasNextReels?: boolean;
 };
 
 const store = (): ApiState => ({
@@ -58,6 +61,9 @@ const store = (): ApiState => ({
   isAddingComment: false,
   commentReelId: null,
   setCommentReelId: () => {},
+  fetchMoreReels: async (..._args: any[]) => {},
+  isFetchingMoreReels: false,
+  hasNextReels: false,
 });
 
 export { store as ApiState };

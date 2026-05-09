@@ -28,7 +28,7 @@ import type { AVPlaybackStatus } from "expo-av";
 import { Audio, ResizeMode, Video } from "expo-av";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter, useSegments } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
@@ -363,6 +363,7 @@ function ArenaHeader({
 }) {
   const router = useRouter();
   const header = useHeaderUser();
+  const segments = useSegments();
 
   return (
     <View style={styles.headerWrap}>
@@ -371,7 +372,11 @@ function ArenaHeader({
           style={styles.headerIconWrap}
           accessibilityRole="button"
           accessibilityLabel="الملف الشخصي"
-          onPress={() => router.push("/(tabs)/profile" as never)}
+          onPress={() => {
+            const isProfileRoute = segments.includes("profile");
+            if (isProfileRoute) router.replace("/(tabs)/profile" as never);
+            else router.push("/(tabs)/profile" as never);
+          }}
         >
           {header.avatarUri ? (
             <Image source={{ uri: header.avatarUri }} style={styles.headerAvatar} contentFit="cover" />
@@ -588,6 +593,7 @@ export function Ui() {
   }>();
   const activeTab = useMirror("activeTab");
   const router = useRouter();
+  const segments = useSegments();
   const setActiveTab = useMirror("setActiveTab");
   const reels = useMirror("reels");
   const globalPolls = useMirror("globalPolls");
@@ -601,6 +607,9 @@ export function Ui() {
   const isFetchingReels = useMirror("isFetchingReels");
   const isReelsError = useMirror("isReelsError");
   const refreshReels = useMirror("refreshReels");
+  const fetchMoreReels = useMirror("fetchMoreReels");
+  const isFetchingMoreReels = useMirror("isFetchingMoreReels");
+  const hasNextReels = useMirror("hasNextReels");
   const { refreshing: reelsRefreshing, onRefresh: onReelsRefresh } = usePullToRefresh(
     () => refreshReels()
   );
@@ -840,6 +849,18 @@ export function Ui() {
                   data={reels}
                   keyExtractor={(item, index) => reelKey(item, index)}
                   extraData={{ activeTab, currentIndex, playbackRatio }}
+                  onEndReached={() => {
+                    if (!hasNextReels || isFetchingMoreReels) return;
+                    if (fetchMoreReels) void fetchMoreReels();
+                  }}
+                  onEndReachedThreshold={0.5}
+                  ListFooterComponent={
+                    isFetchingMoreReels ? (
+                      <View style={{ paddingVertical: 12 }}>
+                        <ActivityIndicator color={colors_V2.primary} />
+                      </View>
+                    ) : null
+                  }
                   refreshControl={
                     <RefreshControl
                       refreshing={reelsRefreshing}
@@ -1158,9 +1179,10 @@ export function Ui() {
                         </View>
                         <Pressable
                           onPress={() => {
-                            if (c.user?.id) {
-                              router.push(`/profile/${c.user.id}`);
-                            }
+                            if (!c.user?.id) return;
+                            const isProfileRoute = segments.includes("profile");
+                            if (isProfileRoute) router.replace(`/profile/${c.user.id}`);
+                            else router.push(`/profile/${c.user.id}`);
                           }}
                         >
                           {avatarUri ? (

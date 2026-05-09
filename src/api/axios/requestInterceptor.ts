@@ -1,5 +1,22 @@
 import { InternalAxiosRequestConfig, AxiosHeaders } from "axios";
 import { useAuthStore } from "@/src/stores/authStore";
+import { Platform } from "react-native";
+import * as Application from "expo-application";
+
+function getAppBuildHeader(): string {
+  try {
+    if (Platform.OS !== "web") {
+      // prefer native build number; fall back to application version
+      const build = (Application.nativeBuildVersion || Application.nativeApplicationVersion) as
+        | string
+        | undefined;
+      if (build) return String(build);
+    }
+  } catch (e) {
+    // ignore
+  }
+  return "0";
+}
 
 export const requestInterceptor = (
   config: InternalAxiosRequestConfig
@@ -21,6 +38,18 @@ export const requestInterceptor = (
     config.headers.set("Accept-Language", "en");
   } else {
     (config.headers as Record<string, string>)["Accept-Language"] = "en";
+  }
+
+  // App build header for centralized update checks
+  try {
+    const buildHeader = getAppBuildHeader();
+    if (config.headers instanceof AxiosHeaders) {
+      config.headers.set("x-app-build", buildHeader);
+    } else {
+      (config.headers as Record<string, string>)["x-app-build"] = buildHeader;
+    }
+  } catch {
+    /* best-effort */
   }
 
   // Multipart: default instance `Content-Type: application/json` breaks RN file uploads.

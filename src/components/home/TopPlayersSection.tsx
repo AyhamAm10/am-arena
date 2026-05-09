@@ -2,6 +2,7 @@ import { textRtl } from "@/src/lib/rtl";
 import { colors_V2 } from "@/src/theme/colors";
 import React, { useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter, useSegments } from "expo-router";
 import { TopPlayer } from "./top-player";
 import type { TopPlayerCardState } from "./top-player";
 import { router } from "expo-router";
@@ -48,6 +49,7 @@ const TopPlayersSection: React.FC<Props> = ({
 }) => {
   const topPlayers = useMemo(() => players.slice(0, 4), [players]);
   const byId = useMemo(() => buildById(topPlayers), [topPlayers]);
+  const segments = useSegments();
 
   return (
     <View style={styles.section}>
@@ -60,7 +62,9 @@ const TopPlayersSection: React.FC<Props> = ({
           style={styles.cardPressable}
           activeOpacity={0.85}
           onPress={() => {
-            router.push(`/profile/${p.id}`);
+            const isProfileRoute = segments.includes("profile");
+            if (isProfileRoute) router.replace(`/profile/${p.id}`);
+            else router.push(`/profile/${p.id}`);
           }}
         >
           <TopPlayer
