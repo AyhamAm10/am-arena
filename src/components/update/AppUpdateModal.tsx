@@ -17,6 +17,8 @@ function useAppBuildValue() {
 export function AppUpdateModal() {
   const update = useUpdateStore((s) => s.update);
   const clearUpdate = useUpdateStore((s) => s.clearUpdate);
+  const hasDismissedOptionalUpdate = useUpdateStore((s) => s.hasDismissedOptionalUpdate);
+  const setHasDismissedOptionalUpdate = useUpdateStore((s) => s.setHasDismissedOptionalUpdate);
   const buildValue = useAppBuildValue();
   const [visible, setVisible] = useState(false);
   const scale = useMemo(() => new Animated.Value(0.95), []);
@@ -59,8 +61,17 @@ export function AppUpdateModal() {
   };
 
   const onLater = () => {
+    // mark dismissed for this session to avoid repeated optional modals
+    try {
+      setHasDismissedOptionalUpdate(true);
+    } catch {
+      /* ignore */
+    }
     clearUpdate();
   };
+
+  // If update is optional and user already dismissed it this session, don't show again
+  if (!isMandatory && hasDismissedOptionalUpdate) return null;
 
   const handleRequestClose = () => {
     if (isMandatory) return; // ignore back button

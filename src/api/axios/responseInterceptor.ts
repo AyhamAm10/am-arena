@@ -80,12 +80,24 @@ export const responseInterceptor = {
 
       if (latest == null || minSupported == null || !url) return response;
 
-      setAppUpdate({
+      const normalized = {
         latest_build: Number(latest) || latest,
         min_supported_build: Number(minSupported) || minSupported,
         update_url: String(url),
         mandatory: Boolean(mandatory),
-      });
+      };
+
+      // If update is optional and user dismissed it this session, suppress showing again.
+      try {
+        const state = useUpdateStore.getState ? useUpdateStore.getState() : null;
+        if (state && !normalized.mandatory && state.hasDismissedOptionalUpdate) {
+          return response;
+        }
+      } catch {
+        // ignore and proceed to set update
+      }
+
+      setAppUpdate(normalized);
     } catch (e) {
       // best-effort only
     }

@@ -31,12 +31,17 @@ type State = {
   update: AppUpdateInfo;
   setUpdate: (u: AppUpdateInfo) => void;
   clearUpdate: () => void;
+  // Session-scoped flag: user dismissed an optional update this run.
+  hasDismissedOptionalUpdate: boolean;
+  setHasDismissedOptionalUpdate: (v: boolean) => void;
 };
 
 const useUpdateStore = (createFactory as any)((set: any) => ({
   update: null,
   setUpdate: (u: AppUpdateInfo) => set(() => ({ update: u })),
   clearUpdate: () => set(() => ({ update: null })),
+  hasDismissedOptionalUpdate: false,
+  setHasDismissedOptionalUpdate: (v: boolean) => set(() => ({ hasDismissedOptionalUpdate: v })),
 })) as any;
 
 export default useUpdateStore;
