@@ -5,6 +5,7 @@ import type {
   RegisterForTournamentBody,
 } from "@/src/api/types/pubg-tournament-registration.types";
 import { useActionToast } from "@/src/lib/notifications/useActionToast";
+import { useRouter } from "expo-router";
 
 type RegisterVariables = {
   tournamentId: string;
@@ -22,6 +23,7 @@ export function useRegisterForTournament(): UseMutationResult<
 > {
   const queryClient = useQueryClient();
   const toast = useActionToast();
+  const router = useRouter();
   return useMutation({
     mutationFn: ({ tournamentId, body }) =>
       registerForTournament(tournamentId, body),
@@ -36,6 +38,12 @@ export function useRegisterForTournament(): UseMutationResult<
         ],
       });
       toast.success("Successfully joined tournament!");
+      // After successful registration, navigate to tournament details
+      try {
+        router.replace(`/tournament/${variables.tournamentId}/details`);
+      } catch (err) {
+        // ignore navigation errors
+      }
     },
     onError: (error) => {
       toast.error(error.message);

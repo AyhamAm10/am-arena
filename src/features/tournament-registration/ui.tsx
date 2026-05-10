@@ -98,6 +98,7 @@ export function Ui() {
   const selectedCountLabel = useMirror("selectedCountLabel");
   const onFriendsListEndReached = useMirror("onFriendsListEndReached");
   const onConfirmJoin = useMirror("onConfirmJoin");
+  const isRegistered = useMirror("isRegistered");
   const canSubmit = useMirror("canSubmit");
   const isSubmitting = useMirror("isSubmitting");
   const isLoadingTournament = useMirror("isLoadingTournament");
@@ -181,6 +182,18 @@ export function Ui() {
     return (
       <SafeAreaView style={styles.rootLoading}>
         <ActivityIndicator size="large" color={trColors.purple} />
+      </SafeAreaView>
+    );
+  }
+
+  if (isRegistered) {
+    return (
+      <SafeAreaView style={styles.root}>
+        <View style={styles.registeredMessageWrap}>
+          <Text style={[styles.registeredMessageText, textRtl]}>
+            لقد قمت بالتسجيل في هذه البطولة بنجاح، سيتم التواصل معك قريباً.
+          </Text>
+        </View>
       </SafeAreaView>
     );
   }
@@ -345,18 +358,18 @@ export function Ui() {
         <View
           style={[
             styles.joinButtonWrap,
-            (!canSubmit || isSubmitting) && styles.joinButtonDisabled,
+            (!canSubmit || isSubmitting || isRegistered) && styles.joinButtonDisabled,
           ]}
         >
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel="انضم للبطولة"
-            accessibilityState={{ disabled: !canSubmit || isSubmitting }}
+            accessibilityState={{ disabled: !canSubmit || isSubmitting || isRegistered }}
             accessibilityHint={
               levelGateMessage && !canSubmit ? levelGateMessage : undefined
             }
             activeOpacity={0.9}
-            disabled={!canSubmit || isSubmitting}
+            disabled={!canSubmit || isSubmitting || isRegistered}
             onPress={handleJoinPress}
           >
             <LinearGradient
@@ -367,6 +380,8 @@ export function Ui() {
             >
               {isSubmitting ? (
                 <ActivityIndicator color={trColors.white} />
+              ) : isRegistered ? (
+                <Text style={styles.joinButtonText}>You have already registered for this tournament</Text>
               ) : (
                 <Text style={styles.joinButtonText}>انضم للبطولة</Text>
               )}

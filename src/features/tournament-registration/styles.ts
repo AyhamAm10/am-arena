@@ -423,4 +423,17 @@ export const styles = StyleSheet.create({
     color: colors_V2.textPrimary,
     fontSize: 16,
   },
+  registeredMessageWrap: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+  },
+  registeredMessageText: {
+    color: colors_V2.textPrimary,
+    fontSize: 18,
+    fontWeight: "800",
+    textAlign: "center",
+    lineHeight: 26,
+  },
 });

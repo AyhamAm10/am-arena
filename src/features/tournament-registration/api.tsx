@@ -4,6 +4,7 @@ import { useFetchTournamentRegistrationFields } from "@/src/hooks/api/tournament
 import { useRegisterForTournament } from "@/src/hooks/api/tournament/useRegisterForTournament";
 import { useLocalSearchParams } from "expo-router";
 import { type PropsWithChildren, useMemo } from "react";
+import { useFetchMyRegistration } from "@/src/hooks/api/tournament/useFetchMyRegistration";
 import type { InfiniteData } from "@tanstack/react-query";
 import type { FriendEntityResponse } from "@/src/api/types/friend.types";
 import type { FriendsPageResult } from "@/src/hooks/api/friends/useFetchFriendsInfinite";
@@ -56,6 +57,7 @@ function Api({ children }: PropsWithChildren) {
       isSquadTournament,
   });
   const registerMutation = useRegisterForTournament();
+  const myRegQuery = useFetchMyRegistration(tournamentId);
 
   const friendsData = friendsQuery.data as
     | InfiniteData<FriendsPageResult>
@@ -117,6 +119,11 @@ function Api({ children }: PropsWithChildren) {
     "friendsTotalCount",
     friendsTotalCount,
     friendsTotalCount
+  );
+  useMirrorRegistry(
+    "isRegistered",
+    Boolean(myRegQuery.data?.registered ?? false),
+    myRegQuery.dataUpdatedAt
   );
 
   return children;

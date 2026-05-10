@@ -25,6 +25,8 @@ type ApiState = {
   }) => Promise<unknown>;
   isSubmitting: boolean;
   friendsTotalCount: number;
+  isRegistered: boolean;
+  myRegistration?: unknown | null;
 };
 
 const store = (): ApiState => ({
@@ -41,6 +43,8 @@ const store = (): ApiState => ({
   submitRegistration: async () => undefined,
   isSubmitting: false,
   friendsTotalCount: 0,
+  isRegistered: false,
+  myRegistration: null,
 });
 
 export { store as ApiState };

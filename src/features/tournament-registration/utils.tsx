@@ -69,6 +69,7 @@ function Utils({ children }: PropsWithChildren) {
   const friendSearch = useMirror("friendSearch");
   const registrationFields = useMirror("registrationFields");
   const friends = useMirror("friends");
+  const isRegistered = useMirror("isRegistered");
   const submitRegistration = useMirror("submitRegistration");
   const fetchMoreFriends = useMirror("fetchMoreFriends");
   const hasNextFriendsPage = useMirror("hasNextFriendsPage");
@@ -135,6 +136,7 @@ function Utils({ children }: PropsWithChildren) {
     if (!tournamentId || isSubmitting) {
       return false;
     }
+    if (isRegistered) return false;
     if (!canJoinByLevel) {
       return false;
     }
@@ -151,6 +153,7 @@ function Utils({ children }: PropsWithChildren) {
     registrationFields,
     termsAccepted,
     tournamentId,
+    isRegistered,
   ]);
 
   const selectedCountLabel = useMemo(
