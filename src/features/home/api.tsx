@@ -32,9 +32,10 @@ function Api({ children }: PropsWithChildren) {
 
     useMirrorRegistry("latestWinners", latestWinnersQuery.data?.data, latestWinnersQuery.dataUpdatedAt);
     useMirrorRegistry("IsLoadingLatestWinners", latestWinnersQuery.isLoading, latestWinnersQuery.isFetching);
-    useMirrorRegistry("tournaments", tournamentsQuery.data, tournamentsQuery.dataUpdatedAt);
+    // `tournamentsQuery.data` is { data, meta } — register the inner array for UI
+    useMirrorRegistry("tournaments", tournamentsQuery.data?.data, tournamentsQuery.dataUpdatedAt);
     useMirrorRegistry("IsLoadingTournaments", tournamentsQuery.isLoading, tournamentsQuery.isFetching);
-    useMirrorRegistry("superTournaments", superTournamentsQuery.data, superTournamentsQuery.dataUpdatedAt);
+    useMirrorRegistry("superTournaments", superTournamentsQuery.data?.data, superTournamentsQuery.dataUpdatedAt);
     useMirrorRegistry("IsLoadingSuperTournaments", superTournamentsQuery.isLoading, superTournamentsQuery.isFetching);
     useMirrorRegistry("bestPlayers", bestPlayersQuery.data?.data, bestPlayersQuery.dataUpdatedAt);
     useMirrorRegistry("IsLoadingBestPlayers", bestPlayersQuery.isLoading, bestPlayersQuery.isFetching);

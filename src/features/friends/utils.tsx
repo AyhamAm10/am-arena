@@ -16,6 +16,8 @@ function accountToPublic(u: UserAccountDto): UserPublicSummary {
     coins: u.coins,
     role: u.role,
     is_active: u.is_active,
+    // include selected achievement if backend provided it on the user object
+    selected_achievement: (u as any).selected_achievement ?? null,
     created_at: u.created_at,
     updated_at: u.updated_at,
   };

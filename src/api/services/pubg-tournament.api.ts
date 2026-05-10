@@ -15,7 +15,17 @@ export const getPubgTournaments = async (
     params: query,
   });
 
-  return parseApiResponse(res);
+  // The backend returns an envelope { success, data, meta }
+  // For infinite queries we need both `data` and `meta` per page.
+  const apiResponse = res.data as any;
+  if (!apiResponse.success) {
+    throw new Error(apiResponse.message || "Failed to fetch tournaments");
+  }
+
+  return {
+    data: apiResponse.data as PubgTournamentDetail[],
+    meta: apiResponse.meta,
+  };
 };
 
 export const getPubgTournamentById = async (

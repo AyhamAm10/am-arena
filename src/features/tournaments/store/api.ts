@@ -15,6 +15,13 @@ type ApiState = {
   refetchActiveTournaments: () => Promise<unknown>;
   refetchPastTournaments: () => Promise<unknown>;
   joinGatesByTournamentId: Record<number, TournamentJoinGate>;
+  // Pagination / infinite query helpers
+  fetchMoreActiveTournaments?: () => Promise<unknown>;
+  isFetchingMoreActiveTournaments: boolean;
+  hasNextActiveTournaments: boolean;
+  fetchMorePastTournaments?: () => Promise<unknown>;
+  isFetchingMorePastTournaments: boolean;
+  hasNextPastTournaments: boolean;
 };
 
 const store = (): ApiState => ({
@@ -27,6 +34,12 @@ const store = (): ApiState => ({
   refetchActiveTournaments: async () => {},
   refetchPastTournaments: async () => {},
   joinGatesByTournamentId: {},
+  fetchMoreActiveTournaments: undefined,
+  isFetchingMoreActiveTournaments: false,
+  hasNextActiveTournaments: false,
+  fetchMorePastTournaments: undefined,
+  isFetchingMorePastTournaments: false,
+  hasNextPastTournaments: false,
 });
 
 export { store as ApiState };

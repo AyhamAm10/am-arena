@@ -492,9 +492,7 @@ export function Ui() {
                 )}
                 <View style={styles.friendTextWrap}>
                   <Text style={styles.friendName}>{item.name}</Text>
-                  <Text style={styles.friendStatus}>
-                    {item.status || "متصل"}
-                  </Text>
+                  {/* Removed fake online/last-seen status per requirements */}
                 </View>
                 <View
                   style={[

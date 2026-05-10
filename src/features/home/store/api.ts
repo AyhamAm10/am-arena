@@ -14,6 +14,8 @@ type ApiState = {
     IsLoadingBestPlayers: boolean
     latestWinners: HeroContent[] | undefined
     IsLoadingLatestWinners: boolean
+    // Refresh action registered from API layer
+    refreshHome?: () => Promise<unknown>;
 };
 
 const store = (): ApiState => ({
@@ -25,6 +27,7 @@ const store = (): ApiState => ({
     IsLoadingBestPlayers: false,
     latestWinners: undefined,
     IsLoadingLatestWinners: false,
+    refreshHome: undefined,
 });
 
 export { store as ApiState };

@@ -62,7 +62,7 @@ export function ProfileAvatarSection({
           )}
         </View>
         {achievementIconUri ? (
-          <View style={[styles.levelBadge, { backgroundColor: accent }]}>
+          <View style={[styles.levelBadge, { backgroundColor: accent }]}> 
             <Image source={{ uri: achievementIconUri }} style={styles.levelBadgeIcon} contentFit="contain" />
           </View>
         ) : null}

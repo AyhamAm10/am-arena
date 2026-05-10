@@ -145,26 +145,18 @@ export function Ui() {
 
   const renderItem = useCallback(
     ({ item }: { item: FriendListItem | UserPublicSummary }) => {
+      // Public list (discovery)
       if (activeTab === "public") {
         const u = item as UserPublicSummary;
-        const online = u.is_active;
-        const uri = u.avatarUrl
-          ? resolveMediaUrl(u.avatarUrl, "image")
-          : null;
+        const uri = u.avatarUrl ? resolveMediaUrl(u.avatarUrl, "image") : null;
         const busy = busyFriendId === u.id;
+        const achievement = u.selected_achievement ?? null;
+        const themeColor = achievement?.color_theme ?? null;
         const outgoingPending = pendingOutgoingUserIds.includes(u.id);
         const isFriend = u.friend_status === "accepted";
 
-        const actionLabel = isFriend
-          ? "إلغاء الصداقة"
-          : outgoingPending
-            ? "إلغاء الطلب"
-            : "إضافة صديق";
-        const actionHandler = isFriend
-          ? () => void onCancelRequest(u.id)
-          : outgoingPending
-            ? () => void onCancelOutgoingPending(u.id)
-            : () => void onAddRequest(u.id);
+        const actionLabel = isFriend ? "إلغاء الصداقة" : outgoingPending ? "إلغاء الطلب" : "إضافة صديق";
+        const actionHandler = isFriend ? () => void onCancelRequest(u.id) : outgoingPending ? () => void onCancelOutgoingPending(u.id) : () => void onAddRequest(u.id);
 
         return (
           <View style={styles.card}>
@@ -177,56 +169,49 @@ export function Ui() {
               }}
             >
               <View style={styles.avatarWrap}>
-                {uri ? (
-                  <Image source={{ uri }} style={styles.avatar} />
-                ) : (
-                  <View style={styles.avatar} />
-                )}
-                <View
-                  style={[
-                    styles.statusDot,
-                    online ? styles.statusOnline : styles.statusOffline,
-                  ]}
-                />
+                {uri ? <Image source={{ uri }} style={styles.avatar} /> : <View style={styles.avatar} />}
+                {achievement ? (
+                  <>
+                    <View
+                      style={[
+                        styles.avatarGlow,
+                        themeColor
+                          ? { borderColor: themeColor, shadowColor: themeColor }
+                          : {},
+                      ]}
+                    />
+                    <Image
+                      source={{ uri: resolveMediaUrl(achievement.icon_url, "achievementIcon") }}
+                      style={styles.achievementIcon}
+                    />
+                  </>
+                ) : null}
               </View>
+
               <View style={styles.cardBody}>
-                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>
-                  {u.gamer_name}
-                </Text>
-                <Text
-                  style={[
-                    styles.statusText,
-                    textRtl,
-                    online ? styles.statusOnlineText : styles.statusOfflineText,
-                  ]}
-                >
-                  {online ? "متصل" : "غير متصل"}
+                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>{u.gamer_name}</Text>
+                <Text style={[styles.achievementTitle, textRtl]} numberOfLines={1}>
+                  {u.selected_achievement?.name ?? u.full_name}
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.actionBtn, busy && styles.actionBtnDisabled]}
-              onPress={actionHandler}
-              disabled={busy}
-            >
-              {busy ? (
-                <ActivityIndicator color={friendsColors.white} size="small" />
-              ) : (
-                <Text style={styles.actionBtnText}>{actionLabel}</Text>
-              )}
+
+            <TouchableOpacity style={[styles.actionBtn, busy && styles.actionBtnDisabled]} onPress={actionHandler} disabled={busy}>
+              {busy ? <ActivityIndicator color={friendsColors.white} size="small" /> : <Text style={styles.actionBtnText}>{actionLabel}</Text>}
             </TouchableOpacity>
           </View>
         );
       }
 
+      // Friends list or requests list share similar layout
       const fi = item as FriendListItem;
-      const u = fi.user;
-      const online = u.is_active;
-      const uri = u.avatarUrl
-        ? resolveMediaUrl(u.avatarUrl, "image")
-        : null;
+        const u = (fi as any).user as UserPublicSummary;
+      const uri = u?.avatarUrl ? resolveMediaUrl(u.avatarUrl, "image") : null;
       const busy = busyFriendId === u.id;
+      const achievement = u.selected_achievement ?? null;
+      const themeColor = achievement?.color_theme ?? null;
 
+      // Friends
       if (activeTab === "friends") {
         return (
           <View style={styles.card}>
@@ -239,125 +224,62 @@ export function Ui() {
               }}
             >
               <View style={styles.avatarWrap}>
-                {uri ? (
-                  <Image source={{ uri }} style={styles.avatar} />
-                ) : (
-                  <View style={styles.avatar} />
-                )}
-                <View
-                  style={[
-                    styles.statusDot,
-                    online ? styles.statusOnline : styles.statusOffline,
-                  ]}
-                />
+                {uri ? <Image source={{ uri }} style={styles.avatar} /> : <View style={styles.avatar} />}
+                {achievement ? (
+                  <>
+                    <View style={[styles.avatarGlow, themeColor ? { borderColor: themeColor, shadowColor: themeColor } : {}]} />
+                    <Image source={{ uri: resolveMediaUrl(achievement.icon_url, "achievementIcon") }} style={styles.achievementIcon} />
+                  </>
+                ) : null}
               </View>
+
               <View style={styles.cardBody}>
-                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>
-                  {u.gamer_name}
-                </Text>
-                <Text
-                  style={[
-                    styles.statusText,
-                    textRtl,
-                    online ? styles.statusOnlineText : styles.statusOfflineText,
-                  ]}
-                >
-                  {online ? "متصل" : "غير متصل"}
+                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>{u.gamer_name}</Text>
+                <Text style={[styles.achievementTitle, textRtl]} numberOfLines={1}>
+                  {u.selected_achievement?.name ?? u.full_name}
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.actionBtn, busy && styles.actionBtnDisabled]}
-              onPress={() => void onCancelRequest(u.id)}
-              disabled={busy}
-            >
-              {busy ? (
-                <ActivityIndicator color={friendsColors.white} size="small" />
-              ) : (
-                <Text style={styles.actionBtnText}>إزالة الصديق</Text>
-              )}
+
+            <TouchableOpacity style={[styles.actionBtn, busy && styles.actionBtnDisabled]} onPress={() => void onCancelRequest(u.id)} disabled={busy}>
+              {busy ? <ActivityIndicator color={friendsColors.white} size="small" /> : <Text style={styles.actionBtnText}>إزالة الصديق</Text>}
             </TouchableOpacity>
           </View>
         );
       }
 
-      const requesterId =
-        currentUserId != null
-          ? requesterIdFromIncomingRow(fi.row, currentUserId)
-          : null;
-
+      // Requests
+      const requesterId = currentUserId != null ? requesterIdFromIncomingRow(fi.row, currentUserId) : null;
       return (
         <View style={styles.card}>
-            <TouchableOpacity
-              style={styles.cardPressable}
-            onPress={() => {
-              const isProfileRoute = segments.includes("profile");
-              if (isProfileRoute) router.replace(`/profile/${u.id}`);
-              else router.push(`/profile/${u.id}`);
-            }}
-          >
+          <TouchableOpacity style={styles.cardPressable} onPress={() => {
+            const isProfileRoute = segments.includes("profile");
+            if (isProfileRoute) router.replace(`/profile/${u.id}`);
+            else router.push(`/profile/${u.id}`);
+          }}>
             <View style={styles.avatarWrap}>
-              {uri ? (
-                <Image source={{ uri }} style={styles.avatar} />
-              ) : (
-                <View style={styles.avatar} />
-              )}
-              <View
-                style={[
-                  styles.statusDot,
-                  online ? styles.statusOnline : styles.statusOffline,
-                ]}
-              />
+              {uri ? <Image source={{ uri }} style={styles.avatar} /> : <View style={styles.avatar} />}
+              {achievement ? (
+                <>
+                  <View style={[styles.avatarGlow, themeColor ? { borderColor: themeColor, shadowColor: themeColor } : {}]} />
+                  <Image source={{ uri: resolveMediaUrl(achievement.icon_url, "achievementIcon") }} style={styles.achievementIcon} />
+                </>
+              ) : null}
             </View>
+
             <View style={styles.cardBody}>
-                <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>
-                {u.gamer_name}
-              </Text>
-              <Text
-                style={[
-                    styles.statusText,
-                    textRtl,
-                  online ? styles.statusOnlineText : styles.statusOfflineText,
-                ]}
-              >
-                {online ? "متصل" : "غير متصل"}
+              <Text style={[styles.gamerName, textRtl]} numberOfLines={1}>{u.gamer_name}</Text>
+              <Text style={[styles.achievementTitle, textRtl]} numberOfLines={1}>
+                {u.selected_achievement?.name ?? u.full_name}
               </Text>
             </View>
           </TouchableOpacity>
           <View style={styles.requestActions}>
-            <TouchableOpacity
-              style={[
-                styles.actionBtn,
-                styles.acceptBtn,
-                busy && styles.actionBtnDisabled,
-              ]}
-              onPress={() => {
-                if (requesterId != null) void onAcceptRequest(requesterId);
-              }}
-              disabled={busy || requesterId == null}
-            >
-              {busy ? (
-                <ActivityIndicator color={friendsColors.white} size="small" />
-              ) : (
-                <Text style={styles.actionBtnText}>قبول</Text>
-              )}
+            <TouchableOpacity style={[styles.actionBtn, styles.acceptBtn, busy && styles.actionBtnDisabled]} onPress={() => { if (requesterId != null) void onAcceptRequest(requesterId); }} disabled={busy || requesterId == null}>
+              {busy ? <ActivityIndicator color={friendsColors.white} size="small" /> : <Text style={styles.actionBtnText}>قبول</Text>}
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.actionBtn,
-                styles.rejectBtn,
-                busy && styles.actionBtnDisabled,
-              ]}
-              onPress={() => {
-                if (requesterId != null) void onRejectRequest(requesterId);
-              }}
-              disabled={busy || requesterId == null}
-            >
-              {busy ? (
-                <ActivityIndicator color={friendsColors.white} size="small" />
-              ) : (
-                <Text style={styles.actionBtnText}>رفض</Text>
-              )}
+            <TouchableOpacity style={[styles.actionBtn, styles.rejectBtn, busy && styles.actionBtnDisabled]} onPress={() => { if (requesterId != null) void onRejectRequest(requesterId); }} disabled={busy || requesterId == null}>
+              {busy ? <ActivityIndicator color={friendsColors.white} size="small" /> : <Text style={styles.actionBtnText}>رفض</Text>}
             </TouchableOpacity>
           </View>
         </View>

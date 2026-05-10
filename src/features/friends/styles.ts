@@ -1,4 +1,4 @@
-import { colors as c } from "@/src/theme/colors";
+import { colors as c, colors_V2 } from "@/src/theme/colors";
 import { StyleSheet } from "react-native";
 
 /** Friends screen — AM ARENA mock (deep purple, cyan tabs, cards). */
@@ -124,15 +124,22 @@ export const styles = StyleSheet.create({
     borderRadius: 29,
     backgroundColor: c.darkBackground1,
   },
-  statusDot: {
+  // Thin glowing outline to indicate selected achievement (subtle)
+  avatarGlow: {
     position: "absolute",
-    bottom: 2,
-    right: 2,
-    width: 13,
-    height: 13,
-    borderRadius: 6.5,
-    borderWidth: 2,
-    borderColor: friendsColors.cardBg,
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    borderRadius: 31,
+    borderWidth: 1.2,
+    // default glow color will be overridden inline from achievement theme
+    borderColor: "transparent",
+    shadowColor: "transparent",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.9,
+    shadowRadius: 6,
+    elevation: 2,
   },
   statusOnline: {
     backgroundColor: friendsColors.online,
@@ -152,17 +159,22 @@ export const styles = StyleSheet.create({
     color: friendsColors.white,
     textAlign: "right",
   },
-  statusText: {
-    marginTop: 3,
+  achievementTitle: {
     fontSize: 12,
-    fontWeight: "700",
+    color: "#fff",
+    marginTop: 4,
     textAlign: "right",
   },
-  statusOnlineText: {
-    color: friendsColors.online,
-  },
-  statusOfflineText: {
-    color: friendsColors.offline,
+  achievementIcon: {
+    position: "absolute",
+    bottom: -4,
+    right: -4,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: c.darkBackground1,
+    backgroundColor: friendsColors.cardBg,
   },
   actionBtn: {
     minWidth: 74,
