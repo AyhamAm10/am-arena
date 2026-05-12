@@ -54,6 +54,12 @@
         "projectId": "4a8aae98-e4f4-4920-baf9-9e409846d7cd"
       }
     },
-    "owner": "ayhamam10s-organization"
+    "owner": "ayhamam10s-organization",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/4a8aae98-e4f4-4920-baf9-9e409846d7cd"
+    }
   }
 }
