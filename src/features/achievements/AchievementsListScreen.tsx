@@ -5,6 +5,7 @@ import { useFetchAchievementCatalog } from "@/src/hooks/api/achievement/useFetch
 import { useFetchMyAchievements } from "@/src/hooks/api/achievement/useFetchMyAchievements";
 import { useSetActiveAchievement } from "@/src/hooks/api/achievement/useSetActiveAchievement";
 import { useToggleAchievementDisplay } from "@/src/hooks/api/achievement/useToggleAchievementDisplay";
+import { useFetchCurrentUser } from "@/src/hooks/api/auth/useFetchCurrentUser";
 import { flexRowRtl, progressFillRtl, textRtl, writingRtl } from "@/src/lib/rtl";
 import { resolveMediaUrl } from "@/src/lib/utils/resolve-media-url";
 import { colors_V2 } from "@/src/theme/colors";
@@ -131,13 +132,19 @@ function AchievementCard({
         <View style={[styles.actionsRow, flexRowRtl]}>
           <View style={styles.switchWrap}>
             <Text style={[styles.switchLabel, writingRtl]}>إظهار في الملف</Text>
-            <Switch
-              value={Boolean(displayed)}
-              onValueChange={onToggleDisplay}
-              disabled={busy || !onToggleDisplay}
-              trackColor={{ false: colors_V2.card, true: accent }}
-              thumbColor={colors_V2.textPrimary}
-            />
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Switch
+                value={Boolean(displayed)}
+                onValueChange={onToggleDisplay}
+                disabled={busy || !onToggleDisplay}
+                trackColor={{ false: 'rgba(165,163,179,0.12)', true: accent }}
+                ios_backgroundColor={'rgba(165,163,179,0.12)'}
+                thumbColor={colors_V2.textPrimary}
+              />
+              {busy ? (
+                <ActivityIndicator size="small" color={accent} style={{ marginLeft: 8 }} />
+              ) : null}
+            </View>
           </View>
           <Pressable
             disabled={busy || !onSetActive || isCurrentActive}
@@ -183,6 +190,7 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
   });
   const toggleMutation = useToggleAchievementDisplay();
   const setActiveMutation = useSetActiveAchievement();
+  const [pendingIds, setPendingIds] = useState<Set<number>>(new Set());
 
   const mine = myRows ?? [];
   const mineByAchievementId = useMemo(
@@ -195,10 +203,13 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
     [mine],
   );
 
-  const selectedEntry = useMemo(
-    () => mine.find((entry) => entry.displayed && entry.achievement?.is_obtained),
-    [mine],
-  );
+  const meQuery = useFetchCurrentUser();
+  const selectedAchievementId = meQuery.data?.selected_achievement?.id ?? null;
+
+  const selectedEntry = useMemo(() => {
+    if (selectedAchievementId == null) return undefined;
+    return mine.find((entry) => entry.achievement?.id === selectedAchievementId);
+  }, [mine, selectedAchievementId]);
 
   const mergedCatalog = useMemo(() => {
     const rows = catalog ?? [];
@@ -246,23 +257,37 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
   const showBack = variant === "stack";
 
   const handleToggle = useCallback(
-    (userAchievementId: number) => {
-      toggleMutation.mutate(userAchievementId, {
-        onError: (err) => {
-          Alert.alert("تم بلوغ الحد", err.message || "يمكن عرض 4 إنجازات كحد أقصى.");
-        },
-      });
+    async (userAchievementId: number) => {
+      setPendingIds((prev) => new Set(prev).add(userAchievementId));
+      try {
+        await toggleMutation.mutateAsync(userAchievementId);
+      } catch (err: any) {
+        Alert.alert("تم بلوغ الحد", err?.message || "يمكن عرض 4 إنجازات كحد أقصى.");
+      } finally {
+        setPendingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(userAchievementId);
+          return next;
+        });
+      }
     },
     [toggleMutation],
   );
 
   const handleSetActive = useCallback(
-    (userAchievementId: number) => {
-      setActiveMutation.mutate(userAchievementId, {
-        onError: (err) => {
-          Alert.alert("تعذّر تحديث اللقب", err.message || "حدث خطأ أثناء تعيين اللقب.");
-        },
-      });
+    async (userAchievementId: number) => {
+      setPendingIds((prev) => new Set(prev).add(userAchievementId));
+      try {
+        await setActiveMutation.mutateAsync(userAchievementId);
+      } catch (err: any) {
+        Alert.alert("تعذّر تحديث اللقب", err?.message || "حدث خطأ أثناء تعيين اللقب.");
+      } finally {
+        setPendingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(userAchievementId);
+          return next;
+        });
+      }
     },
     [setActiveMutation],
   );
@@ -331,7 +356,7 @@ export function AchievementsListScreen({ variant = "stack" }: AchievementsListSc
                       selectedEntry?.achievement?.id === item.achievement.id
                     }
                     canToggleDisplay={item.userAchievementId != null}
-                    busy={toggleMutation.isPending || setActiveMutation.isPending}
+                    busy={item.userAchievementId != null && pendingIds.has(item.userAchievementId)}
                     onToggleDisplay={
                       item.userAchievementId != null
                         ? () => handleToggle(item.userAchievementId!)
