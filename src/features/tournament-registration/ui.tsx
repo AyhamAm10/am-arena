@@ -106,6 +106,7 @@ export function Ui() {
   const isLoadingFriends = useMirror("isLoadingFriends");
   const isFetchingMoreFriends = useMirror("isFetchingMoreFriends");
   const showSquadFriends = useMirror("showSquadFriends");
+  const maxSelectableFriends = useMirror("maxSelectableFriends");
   const termsAccepted = useMirror("termsAccepted");
   const setTermsAccepted = useMirror("setTermsAccepted");
   const friendSearch = useMirror("friendSearch");
@@ -395,14 +396,14 @@ export function Ui() {
 
       {registrationFields.map((f) => renderDynamicField(f))}
 
-      <View style={styles.fieldBlock}>
-        <Text style={styles.fieldLabel}>حجم الفريق</Text>
-        <View style={styles.selectField}>
-          <Text style={styles.selectFieldText}>
-            {String(teamSizeFromGameType(gameType))}
+      {showSquadFriends ? (
+        <View style={styles.fieldBlock}>
+          <Text style={styles.fieldLabel}>اختيار الشريك</Text>
+          <Text style={[styles.fieldHint, textRtl]}>
+            يتوجب عليك اختيار {maxSelectableFriends} {maxSelectableFriends === 1 ? "صديق" : "أصدقاء"} من القائمة لإكمال التسجيل.
           </Text>
         </View>
-      </View>
+      ) : null}
 
       <View style={styles.fieldBlock}>
         <TouchableOpacity
@@ -445,6 +446,18 @@ export function Ui() {
               onBlur={() => setFriendSearch(friendSearchLocal)}
             />
           </View>
+          {filteredFriends.length === 0 ? (
+            <View style={styles.emptyFriendsWrap}>
+              <Text style={styles.emptyFriendsText}>لم يتم العثور على أصدقاء للعرض.</Text>
+              <TouchableOpacity
+                style={styles.emptyFriendsBtn}
+                activeOpacity={0.85}
+                onPress={() => router.push("/(tabs)/friends" as never)}
+              >
+                <Text style={styles.emptyFriendsBtnText}>اذهب إلى قائمة الأصدقاء</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </>
       ) : null}
     </>
@@ -487,7 +500,7 @@ export function Ui() {
           onEndReached={onFriendsListEndReached}
           renderItem={({ item }: { item: FriendOption }) => {
             const selected = selectedFriendIds.includes(item.id);
-            const blocked = !selected && selectedFriendIds.length >= 3;
+            const blocked = !selected && maxSelectableFriends > 0 && selectedFriendIds.length >= maxSelectableFriends;
             const avatarSource = item.avatarUrl
               ? { uri: resolveMediaUrl(item.avatarUrl, "image") }
               : undefined;

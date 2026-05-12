@@ -18,6 +18,7 @@ type ApiState = {
   hasNextFriendsPage: boolean;
   isLoadingFriends: boolean;
   isFetchingMoreFriends: boolean;
+  refreshFriends: () => Promise<unknown>;
   fetchMoreFriends: () => Promise<unknown>;
   submitRegistration: (payload: {
     tournamentId: string;
@@ -39,6 +40,7 @@ const store = (): ApiState => ({
   hasNextFriendsPage: false,
   isLoadingFriends: false,
   isFetchingMoreFriends: false,
+  refreshFriends: async () => undefined,
   fetchMoreFriends: async () => undefined,
   submitRegistration: async () => undefined,
   isSubmitting: false,

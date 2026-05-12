@@ -8,16 +8,27 @@ import { useFetchMyRegistration } from "@/src/hooks/api/tournament/useFetchMyReg
 import type { InfiniteData } from "@tanstack/react-query";
 import type { FriendEntityResponse } from "@/src/api/types/friend.types";
 import type { FriendsPageResult } from "@/src/hooks/api/friends/useFetchFriendsInfinite";
+import { useHeaderUser } from "@/src/hooks/auth/useHeaderUser";
 import { useMirrorRegistry } from "./store";
 import type { FriendOption } from "./store/api";
 
-function mapFriendRecordToOption(record: FriendEntityResponse): FriendOption | null {
-  const friendUser = record.friend;
+function mapFriendRecordToOption(
+  record: FriendEntityResponse,
+  currentUserId?: number
+): FriendOption | null {
   const userUser = record.user;
-  const nestedName = friendUser?.gamer_name ?? userUser?.gamer_name ?? "";
-  const nestedId = friendUser?.id ?? userUser?.id;
-  const avatar =
-    friendUser?.avatarUrl ?? userUser?.avatarUrl ?? undefined;
+  const friendUser = record.friend;
+
+  const otherUser =
+    currentUserId !== undefined && userUser?.id === currentUserId
+      ? friendUser
+      : currentUserId !== undefined && friendUser?.id === currentUserId
+        ? userUser
+        : friendUser ?? userUser;
+
+  const nestedId = otherUser?.id;
+  const nestedName = otherUser?.gamer_name ?? "";
+  const avatar = otherUser?.avatarUrl ?? undefined;
 
   const id = nestedId ?? record.friend_user_id ?? record.user_id;
   const name = nestedName;
@@ -35,6 +46,7 @@ function mapFriendRecordToOption(record: FriendEntityResponse): FriendOption | n
 }
 
 function Api({ children }: PropsWithChildren) {
+  const header = useHeaderUser();
   const params = useLocalSearchParams<{ id?: string | string[] }>();
   const tournamentId = useMemo(() => {
     if (Array.isArray(params.id)) return params.id[0] ?? "";
@@ -42,7 +54,8 @@ function Api({ children }: PropsWithChildren) {
   }, [params.id]);
 
   const tournamentQuery = useFetchPubgTournamentById(tournamentId);
-  const isSquadTournament =
+  const requiresFriendsSelection =
+    tournamentQuery.data?.game?.type === "duo" ||
     tournamentQuery.data?.game?.type === "squad";
   const fieldsQuery = useFetchTournamentRegistrationFields(tournamentId, {
     enabled: Boolean(tournamentId),
@@ -54,7 +67,7 @@ function Api({ children }: PropsWithChildren) {
     enabled:
       Boolean(tournamentId) &&
       tournamentQuery.isSuccess &&
-      isSquadTournament,
+      requiresFriendsSelection,
   });
   const registerMutation = useRegisterForTournament();
   const myRegQuery = useFetchMyRegistration(tournamentId);
@@ -66,10 +79,17 @@ function Api({ children }: PropsWithChildren) {
   const friends = useMemo(() => {
     const rows =
       friendsData?.pages.flatMap((p: FriendsPageResult) => p.data) ?? [];
-    return rows
-      .map((friend: FriendEntityResponse) => mapFriendRecordToOption(friend))
+    const mapped = rows
+      .map((friend: FriendEntityResponse) => mapFriendRecordToOption(friend, header.user?.id))
       .filter((friend): friend is FriendOption => Boolean(friend));
-  }, [friendsData?.pages]);
+
+    const seen = new Set<number>();
+    return mapped.filter((friend) => {
+      if (seen.has(friend.id)) return false;
+      seen.add(friend.id);
+      return true;
+    });
+  }, [friendsData?.pages, header.user?.id]);
 
   const friendsTotalCount =
     friendsData?.pages[0]?.meta?.total ?? friends.length;
@@ -93,7 +113,7 @@ function Api({ children }: PropsWithChildren) {
   );
   useMirrorRegistry("friends", friends, friendsQuery.dataUpdatedAt);
   useMirrorRegistry("hasNextFriendsPage", Boolean(friendsQuery.hasNextPage), friendsQuery.hasNextPage);
-  const isLoadingFriendsEffective = isSquadTournament ? friendsQuery.isLoading : false;
+  const isLoadingFriendsEffective = requiresFriendsSelection ? friendsQuery.isLoading : false;
   useMirrorRegistry(
     "isLoadingFriends",
     isLoadingFriendsEffective,

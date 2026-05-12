@@ -6,8 +6,9 @@ function State({ children }: PropsWithChildren) {
   const registrationFields = useMirror("registrationFields");
   const tournament = useMirror("tournament");
 
-  const maxSelectableFriends =
-    tournament?.game?.type === "squad" ? 3 : 0;
+  const gameType = tournament?.game?.type;
+  const requiredTeamSize = gameType === "duo" ? 2 : gameType === "squad" ? 4 : 1;
+  const maxSelectableFriends = Math.max(0, requiredTeamSize - 1);
 
   const [selectedFriendIds, setSelectedFriendIds] = useState<number[]>([]);
   const [fieldValues, setFieldValues] = useState<Record<number, string>>({});
@@ -24,10 +25,10 @@ function State({ children }: PropsWithChildren) {
   }, [tournamentId, fieldSignature]);
 
   useEffect(() => {
-    if (tournament?.game?.type !== "squad") {
+    if (maxSelectableFriends === 0) {
       setSelectedFriendIds([]);
     }
-  }, [tournament?.game?.type]);
+  }, [maxSelectableFriends]);
 
   const toggleFriendSelection = (friendId: number) => {
     setSelectedFriendIds((prev) => {

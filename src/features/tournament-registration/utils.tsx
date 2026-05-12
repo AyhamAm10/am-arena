@@ -76,8 +76,11 @@ function Utils({ children }: PropsWithChildren) {
   const isFetchingMoreFriends = useMirror("isFetchingMoreFriends");
   const isSubmitting = useMirror("isSubmitting");
 
-  const showSquadFriends = tournament?.game?.type === "squad";
-  const maxSelectableFriends = showSquadFriends ? 3 : 0;
+  const gameType = tournament?.game?.type;
+  const requiredTeamSize = gameType === "duo" ? 2 : gameType === "squad" ? 4 : 1;
+  const requiredFriendsCount = Math.max(0, requiredTeamSize - 1);
+  const showSquadFriends = requiredFriendsCount > 0;
+  const maxSelectableFriends = requiredFriendsCount;
 
   const xpThreshold = tournament ? xpThresholdFromTournament(tournament) : 0;
   const levelRequired = tournament ? requiredLevelForTournament(tournament) : 0;
@@ -123,13 +126,13 @@ function Utils({ children }: PropsWithChildren) {
     }));
     return {
       field_values,
-      friends: showSquadFriends ? selectedFriendIds : [],
+      friends: requiredFriendsCount > 0 ? selectedFriendIds : [],
     };
   }, [
     fieldValues,
     registrationFields,
     selectedFriendIds,
-    showSquadFriends,
+    requiredFriendsCount,
   ]);
 
   const canSubmit = useMemo(() => {
@@ -143,9 +146,15 @@ function Utils({ children }: PropsWithChildren) {
     if (!termsAccepted) {
       return false;
     }
-    return registrationFields.every((field) =>
+    const fieldsOk = registrationFields.every((field) =>
       fieldSatisfied(field, resolvedFieldValue(field, fieldValues))
     );
+    if (!fieldsOk) return false;
+    // If team requires friends, ensure exact number of selections
+    if (requiredFriendsCount > 0) {
+      return selectedFriendIds.length === requiredFriendsCount;
+    }
+    return true;
   }, [
     canJoinByLevel,
     fieldValues,
@@ -154,6 +163,8 @@ function Utils({ children }: PropsWithChildren) {
     termsAccepted,
     tournamentId,
     isRegistered,
+    selectedFriendIds,
+    requiredFriendsCount,
   ]);
 
   const selectedCountLabel = useMemo(

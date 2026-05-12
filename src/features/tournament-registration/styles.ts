@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 18,
+    paddingHorizontal: 8,
     paddingTop: 8,
     paddingBottom: 28,
   },
@@ -263,6 +263,11 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     flex: 1,
   },
+  fieldHint: {
+    color: trColors.labelMuted,
+    fontSize: 12,
+    marginTop: 6,
+  },
   boolRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -396,6 +401,27 @@ export const styles = StyleSheet.create({
   loadingMoreWrap: {
     paddingVertical: 12,
     alignItems: "center",
+  },
+  emptyFriendsWrap: {
+    paddingVertical: 14,
+    alignItems: "center",
+    gap: 8,
+  },
+  emptyFriendsText: {
+    color: trColors.labelMuted,
+    fontSize: 13,
+    marginBottom: 8,
+  },
+  emptyFriendsBtn: {
+    backgroundColor: trColors.cyan,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  emptyFriendsBtnText: {
+    color: colors_V2.background,
+    fontSize: 14,
+    fontWeight: "800",
   },
   modalBackdrop: {
     flex: 1,
