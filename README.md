@@ -1,10 +1,6 @@
-# Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
 ## AM-Arena Frontend Architectural Handbook
 
-This repository contains the mobile frontend for AM-Arena, built with Expo, Expo Router, React Native, TypeScript, React Query, and Zustand. The codebase is organized as a feature-driven application with a clear separation between composition, reusable UI, API access, server-state management, and feature-local state.
+This repository contains the mobile frontend for AM-Arena, a React Native application built with TypeScript, React Query, and Zustand. The codebase is organized as a feature-driven application with a clear separation between composition, reusable UI, API access, server-state management, and feature-local state.
 
 ## Architecture Overview
 
@@ -285,7 +281,7 @@ npm run web
 npm run lint
 ```
 
-The app is built with Expo Router, so navigation is file-based and route composition stays close to the screen structure.
+The app uses file-based routing, so navigation stays close to the screen structure and each route remains easy to trace.
 
 ## Summary
 
