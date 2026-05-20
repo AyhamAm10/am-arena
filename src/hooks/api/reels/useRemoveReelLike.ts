@@ -2,10 +2,60 @@ import { useMutation, UseMutationResult, useQueryClient } from "@tanstack/react-
 import { removeReelLike } from "@/src/api/services/reel.api";
 import type { ReelEntity } from "@/src/api/types/reel.types";
 
-type ReelsListResult = {
-  data: ReelEntity[];
-  meta?: unknown;
-};
+type ReelsListResult =
+  | {
+      data?: ReelEntity[];
+      meta?: unknown;
+    }
+  | {
+      pages?: Array<{
+        data?: ReelEntity[];
+        meta?: unknown;
+      }>;
+      pageParams?: unknown[];
+    };
+
+function patchLikeState(data: ReelsListResult | undefined, reelId: string) {
+  if (!data) return data;
+
+  if (Array.isArray((data as any).pages)) {
+    return {
+      ...data,
+      pages: (data as any).pages.map((page: any) => {
+        if (!page || !Array.isArray(page.data)) return page;
+        return {
+          ...page,
+          data: page.data.map((reel: ReelEntity) =>
+            String(reel.id) === String(reelId)
+              ? {
+                  ...reel,
+                  liked_by_current_user: false,
+                  likes_count: Math.max(0, (reel.likes_count ?? 1) - 1),
+                }
+              : reel,
+          ),
+        };
+      }),
+    };
+  }
+
+  if (Array.isArray((data as any).data)) {
+    return {
+      ...data,
+      data: (data as any).data.map((reel: ReelEntity) =>
+        String(reel.id) === String(reelId)
+          ? {
+              ...reel,
+              liked_by_current_user: false,
+              likes_count: Math.max(0, (reel.likes_count ?? 1) - 1),
+            }
+          : reel,
+      ),
+    };
+  }
+
+  return data;
+}
 
 /**
  * Remove like from a reel.
@@ -23,16 +73,7 @@ export function useRemoveReelLike(): UseMutationResult<void, Error, string> {
       const previousSingle = queryClient.getQueryData<ReelEntity>(["reel", reelId]);
 
       previousReels.forEach(([key, data]) => {
-        if (!data) return;
-        const next = {
-          ...data,
-          data: data.data.map((r) =>
-            String(r.id) === String(reelId)
-              ? { ...r, liked_by_current_user: false, likes_count: Math.max(0, (r.likes_count ?? 1) - 1) }
-              : r,
-          ),
-        };
-        queryClient.setQueryData(key, next);
+        queryClient.setQueryData(key, patchLikeState(data, reelId));
       });
 
       if (previousSingle) {

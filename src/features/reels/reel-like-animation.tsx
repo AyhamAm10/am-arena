@@ -1,6 +1,6 @@
 import React from "react";
-import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withDelay, withSequence, withSpring, withTiming } from "react-native-reanimated";
-import { View, StyleSheet } from "react-native";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from "react-native-reanimated";
+import { StyleSheet, View } from "react-native";
 import { colors_V2 } from "@/src/theme/colors";
 import Svg, { Path } from "react-native-svg";
 
@@ -43,51 +43,46 @@ export function ReelLikeAnimationHost({ children }: { children?: React.ReactNode
 }
 
 function FloatingHeart({ index }: { index: number }) {
-  const ty = useSharedValue(0);
-  const scale = useSharedValue(0);
+  const scale = useSharedValue(0.2);
   const opacity = useSharedValue(0);
 
   React.useEffect(() => {
-    // sequence: pop scale 0->1.15->1, float up -60, fade out
+    // center pop then fade out; keep it non-intrusive.
     scale.value = withSequence(
-      withTiming(1.15, { duration: 160, easing: Easing.out(Easing.back(2)) }),
+      withTiming(1.25, { duration: 140, easing: Easing.out(Easing.back(2)) }),
       withTiming(1, { duration: 120 }),
     );
     opacity.value = withTiming(1, { duration: 120 });
-    ty.value = withSequence(withDelay(120, withTiming(-60, { duration: 900 })), withTiming(-80));
-    // fade out after
-    opacity.value = withDelay(600, withTiming(0, { duration: 400 }));
+    opacity.value = withDelay(240, withTiming(0, { duration: 320 }));
   }, []);
 
   const style = useAnimatedStyle(() => ({
-    transform: [{ translateY: ty.value }, { scale: scale.value }],
+    transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
 
   return (
-    <Animated.View style={[styles.heartWrap, style]}>
-      <Svg width={46} height={46} viewBox="0 0 24 24" fill="none">
+    <View style={styles.heartStage}>
+      <Animated.View style={[styles.heartWrap, style]}>
+        <Svg width={54} height={54} viewBox="0 0 24 24" fill="none">
         <Path d="M12 21s-6.716-4.5-9.2-7.006C-0.466 10.616 2.8 6 6.5 6c2.03 0 3.5 1.248 5.5 3.07C13.998 7.248 15.47 6 17.5 6c3.7 0 6.967 4.616 3.7 7.994C18.716 16.5 12 21 12 21z" fill={colors_V2.primary} opacity={0.98} />
-      </Svg>
-    </Animated.View>
+        </Svg>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  heartStage: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   heartWrap: {
-    position: "absolute",
-    right: 40,
-    bottom: 160,
-    width: 46,
-    height: 46,
+    width: 54,
+    height: 54,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 9999,
-    // small shadow/glow
-    shadowColor: colors_V2.primary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 18,
-    elevation: 20,
   },
 });

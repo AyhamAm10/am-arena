@@ -1,8 +1,5 @@
-import type { PollOptionResponse, PollResponse } from "@/src/api/types/poll.types";
 import type { MentionableUser, ReelCommentEntity, ReelEntity } from "@/src/api/types/reel.types";
 import { searchTagUsers } from "@/src/api/services/reel.api";
-import type { UserAccountDto } from "@/src/api/types/user.types";
-import { NotificationsIcon } from "@/src/components/icons/figma/NotificationsIcon";
 import {
   AnimatedBottomSheet,
   SheetDimmedBackdrop,
@@ -27,12 +24,14 @@ import { KeyboardStickyView } from "react-native-keyboard-controller";
 import type { AVPlaybackStatus } from "expo-av";
 import { Audio, ResizeMode, Video } from "expo-av";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import { useLocalSearchParams, useRouter, useSegments } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import { ReelLikeAnimationHost } from "./reel-like-animation";
+import { ArenaHeader } from "./ui/ArenaHeader";
+import { ReelDescriptionBlock } from "./ui/ReelDescriptionBlock";
+import { ReelFeedVideo } from "./ui/ReelFeedVideo";
+import { VotingTab } from "./ui/VotingTab";
+import { commentAuthor, commentAvatarUri, reelAuthorLabel, reelKey } from "./helpers";
 import {
   ActivityIndicator,
   Dimensions,
@@ -52,537 +51,10 @@ import { useMirror } from "./store";
 import { styles } from "./styles";
 import { usePullToRefresh } from "@/src/hooks/usePullToRefresh";
 
-const COMMENT_DRAG_DISMISS_PX = 16;
-
 const DESCRIPTION_CHAR_THRESHOLD = 96;
-const DESCRIPTION_MAX_LINES = 2;
 const LAYOUT_PAD_X = 16;
-
-const INTERACTION_ICON_SIZE = 20;
+const INTERACTION_ICON_SIZE = 22;
 const INTERACTION_ICON_STROKE_WIDTH = 1.9;
-
-function DraggableCommentPreview({
-  reelIdStr,
-  onOpen,
-  dismissed,
-  onDismiss,
-  children,
-}: {
-  reelIdStr: string;
-  onOpen: () => void;
-  dismissed: boolean;
-  onDismiss: (id: string) => void;
-  children: React.ReactNode;
-}) {
-  const tx = useSharedValue(0);
-  const ty = useSharedValue(0);
-
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: tx.value }, { translateY: ty.value }],
-  }));
-
-  const tap = Gesture.Tap().onEnd(() => {
-    runOnJS(onOpen)();
-  });
-
-  const pan = Gesture.Pan()
-    .onUpdate((e) => {
-      tx.value = e.translationX;
-      ty.value = e.translationY;
-    })
-    .onEnd((e) => {
-      const dist = Math.hypot(e.translationX, e.translationY);
-      tx.value = withSpring(0);
-      ty.value = withSpring(0);
-      if (dist >= COMMENT_DRAG_DISMISS_PX) {
-        runOnJS(onDismiss)(reelIdStr);
-      }
-    });
-
-  const gesture = Gesture.Exclusive(tap, pan);
-
-  if (dismissed) return null;
-
-  return (
-    <GestureDetector gesture={gesture}>
-      <Animated.View style={[styles.commentPreviewDragHost, animStyle]}>{children}</Animated.View>
-    </GestureDetector>
-  );
-}
-
-function reelKey(item: ReelEntity, index: number) {
-  const id = item.id;
-  if (typeof id === "number" || typeof id === "string") {
-    return String(id);
-  }
-  return `reel-${index}`;
-}
-
-function commentAuthor(user: ReelCommentEntity["user"]): string {
-  if (!user || typeof user !== "object") return "مستخدم";
-  const u = user as UserAccountDto;
-  return (u.gamer_name || u.full_name || "").trim() || "مستخدم";
-}
-
-function commentAvatarUri(user: ReelCommentEntity["user"]): string | null {
-  if (!user || typeof user !== "object") return null;
-  const u = user as UserAccountDto;
-  const raw = u.avatarUrl;
-  if (!raw) return null;
-  return resolveMediaUrl(raw, "image");
-}
-
-function formatPollCountdown(expiresAt: string | null): string {
-  if (!expiresAt) return "ينتهي قريباً";
-  const end = new Date(expiresAt).getTime();
-  if (Number.isNaN(end)) return "ينتهي قريباً";
-  const diff = end - Date.now();
-  if (diff <= 0) return "انتهى التصويت";
-  const totalMinutes = Math.floor(diff / 60000);
-  const hours = Math.floor(totalMinutes / 60);
-  const mins = totalMinutes % 60;
-  if (hours > 0) return `ينتهي خلال ${hours}س ${mins}د`;
-  return `ينتهي خلال ${mins}د`;
-}
-
-function hasUserVoted(poll: PollResponse): boolean {
-  if (poll.current_user_vote_option_id != null) return true;
-  return Array.isArray(poll.options)
-    ? poll.options.some((option) => option.selected === true)
-    : false;
-}
-
-function isOptionSelected(poll: PollResponse, option: PollOptionResponse): boolean {
-  return option.selected === true || option.id === poll.current_user_vote_option_id;
-}
-
-function pollOptionTitle(option: PollOptionResponse): string {
-  return option.label || option.user?.gamer_name || `خيار #${option.id}`;
-}
-
-function PollCard({
-  poll,
-  isVotingPoll,
-  onVote,
-}: {
-  poll: PollResponse;
-  isVotingPoll: boolean;
-  onVote: (pollId: number, optionId: number) => void;
-}) {
-  const options = Array.isArray(poll.options) ? poll.options : [];
-  const voted = hasUserVoted(poll);
-  const disabled = voted || poll.closed || isVotingPoll;
-
-  return (
-    <View style={styles.pollCard}>
-      <View style={[styles.pollHeaderRow, flexRowRtl]}>
-        <View style={styles.pollHeaderMain}>
-          <Text style={styles.pollTitle}>{poll.title}</Text>
-          {poll.description ? <Text style={styles.pollDescription}>{poll.description}</Text> : null}
-        </View>
-        <View style={styles.liveBadgeWrap}>
-          <Text style={styles.liveBadgeText}>{poll.closed ? "منتهي" : "مباشر"}</Text>
-        </View>
-      </View>
-
-      <View style={styles.pollOptionsList}>
-        {options.map((option) => {
-          const selected = isOptionSelected(poll, option);
-          const inactiveAfterVote = voted && !selected;
-          return (
-            <Pressable
-              key={option.id}
-              disabled={disabled}
-              onPress={() => {
-                if (disabled) return;
-                onVote(poll.id, option.id);
-              }}
-              style={[
-                styles.pollOptionCard,
-                voted && selected && styles.pollOptionCardSelected,
-                inactiveAfterVote && styles.pollOptionCardInactive,
-              ]}
-            >
-              <View style={[styles.pollOptionRow, flexRowRtl]}>
-                <View style={styles.pollOptionLabelWrap}>
-                  <Text
-                    style={[
-                      styles.pollOptionLabel,
-                      voted && selected && styles.pollOptionLabelSelected,
-                      inactiveAfterVote && styles.pollOptionLabelInactive,
-                    ]}
-                  >
-                    {pollOptionTitle(option)}
-                  </Text>
-                </View>
-                <View style={styles.pollOptionRight}>
-                  {selected ? (
-                    <View style={styles.selectedDot} />
-                  ) : (
-                    <View
-                      style={[styles.unselectedDot, inactiveAfterVote && styles.pollOptionDotInactive]}
-                    />
-                  )}
-                  <Text
-                    style={[
-                      styles.pollOptionPercent,
-                      voted && selected && styles.pollOptionPercentSelected,
-                      inactiveAfterVote && styles.pollOptionPercentInactive,
-                    ]}
-                  >
-                    {Math.round(option.percentage)}%
-                  </Text>
-                </View>
-              </View>
-            </Pressable>
-          );
-        })}
-        {options.length === 0 ? (
-          <View style={styles.pollOptionCard}>
-            <Text style={styles.pollEmptyText}>لا توجد خيارات متاحة لهذا التصويت حالياً.</Text>
-          </View>
-        ) : null}
-      </View>
-
-      <View style={[styles.pollFooterRow, flexRowRtl]}>
-        <Text style={styles.pollFooterText}>{formatPollCountdown(poll.expires_at)}</Text>
-        {voted ? <Text style={styles.pollFooterLocked}>تم تسجيل صوتك</Text> : null}
-      </View>
-    </View>
-  );
-}
-
-function VotingTab({
-  polls,
-  isLoading,
-  isRefreshing,
-  isError,
-  isVotingPoll,
-  focusPollId,
-  refresh,
-  voteOnPoll,
-}: {
-  polls: PollResponse[];
-  isLoading: boolean;
-  isRefreshing: boolean;
-  isError: boolean;
-  isVotingPoll: boolean;
-  focusPollId?: string;
-  refresh: () => Promise<void>;
-  voteOnPoll: (pollId: number, optionId: number) => Promise<unknown>;
-}) {
-  if (isLoading) {
-    return (
-      <View style={styles.votingStateWrap}>
-        <ActivityIndicator color={colors_V2.primary} size="large" />
-        <Text style={styles.votingStateText}>جاري تحميل التصويتات…</Text>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return (
-      <View style={styles.votingStateWrap}>
-        <Text style={styles.votingStateText}>تعذّر تحميل التصويتات.</Text>
-        <Pressable onPress={() => void refresh()}>
-          <Text style={styles.retryText}>إعادة المحاولة</Text>
-        </Pressable>
-      </View>
-    );
-  }
-
-  if (polls.length === 0) {
-    return (
-      <View style={styles.votingStateWrap}>
-        <Text style={styles.votingStateText}>لا توجد تصويتات عامة حالياً.</Text>
-      </View>
-    );
-  }
-
-  const flatListRef = useRef<FlatList<PollResponse>>(null);
-  const didJumpRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    const trimmed = (focusPollId ?? "").trim();
-    if (!trimmed) return;
-    const idNum = Number(trimmed);
-    if (!Number.isFinite(idNum) || idNum <= 0) return;
-    if (didJumpRef.current === String(idNum)) return;
-    if (polls.length === 0) return;
-
-    const index = polls.findIndex((p) => p.id === idNum);
-    if (index < 0) {
-      // Target poll missing/deleted: preserve existing behavior (no forced scroll).
-      didJumpRef.current = String(idNum);
-      return;
-    }
-
-    didJumpRef.current = String(idNum);
-    flatListRef.current?.scrollToIndex({
-      index,
-      animated: false,
-      viewPosition: 0,
-    });
-  }, [focusPollId, polls]);
-
-  return (
-    <FlatList
-      ref={flatListRef}
-      data={polls}
-      keyExtractor={(item) => String(item.id)}
-      contentContainerStyle={styles.votingListContent}
-      showsVerticalScrollIndicator={false}
-      onScrollToIndexFailed={() => undefined}
-      refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={() => void refresh()}
-          tintColor={colors_V2.primary}
-          colors={[colors_V2.primary]}
-        />
-      }
-      renderItem={({ item }) => (
-        <PollCard
-          poll={item}
-          isVotingPoll={isVotingPoll}
-          onVote={(pollId, optionId) => {
-            void voteOnPoll(pollId, optionId);
-          }}
-        />
-      )}
-    />
-  );
-}
-
-function ArenaHeader({
-  activeTab,
-  setActiveTab,
-}: {
-  activeTab: "reels" | "voting";
-  setActiveTab: (tab: "reels" | "voting") => void;
-}) {
-  const router = useRouter();
-  const header = useHeaderUser();
-  const segments = useSegments();
-
-  return (
-    <View style={styles.headerWrap}>
-      <View style={[styles.headerRow, flexRowRtl]}>
-        <Pressable
-          style={styles.headerIconWrap}
-          accessibilityRole="button"
-          accessibilityLabel="الملف الشخصي"
-          onPress={() => {
-            const isProfileRoute = segments.includes("profile");
-            if (isProfileRoute) router.replace("/(tabs)/profile" as never);
-            else router.push("/(tabs)/profile" as never);
-          }}
-        >
-          {header.avatarUri ? (
-            <Image source={{ uri: header.avatarUri }} style={styles.headerAvatar} contentFit="cover" />
-          ) : (
-            <View style={styles.headerAvatarPlaceholder} />
-          )}
-        </Pressable>
-
-        <Text style={styles.headerTitle}>KINETIC ARENA</Text>
-
-        <Pressable
-          style={styles.headerNotifButton}
-          accessibilityRole="button"
-          accessibilityLabel="الإشعارات"
-          onPress={() => router.push("/(tabs)/notifications" as never)}
-        >
-          <NotificationsIcon width={16} height={20} color={colors_V2.primaryLight} />
-        </Pressable>
-      </View>
-
-      <View style={[styles.tabsWrap, flexRowRtl]}>
-        <Pressable
-          onPress={() => setActiveTab("reels")}
-          style={[styles.tabButton, activeTab === "reels" && styles.tabButtonActive]}
-        >
-          <Text style={[styles.tabLabel, activeTab === "reels" && styles.tabLabelActive]}>الريلز</Text>
-        </Pressable>
-        <Pressable
-          onPress={() => setActiveTab("voting")}
-          style={[styles.tabButton, activeTab === "voting" && styles.tabButtonActive]}
-        >
-          <Text style={[styles.tabLabel, activeTab === "voting" && styles.tabLabelActive]}>التصويت</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-}
-
-function ReelDescriptionBlock({ description }: { description: string }) {
-  const [expanded, setExpanded] = useState(false);
-  const [clampedToMaxLines, setClampedToMaxLines] = useState(false);
-  const trimmed = description.trim();
-  if (!trimmed) return null;
-
-  const longByChars = trimmed.length > DESCRIPTION_CHAR_THRESHOLD;
-  const canExpand =
-    !expanded && (longByChars || (clampedToMaxLines && trimmed.length > 48));
-  const showLess =
-    expanded && (longByChars || (clampedToMaxLines && trimmed.length > 48));
-
-  return (
-    <View style={styles.descriptionBlock}>
-      <View pointerEvents="none">
-        <Text
-          style={styles.reelDescription}
-          numberOfLines={expanded ? undefined : DESCRIPTION_MAX_LINES}
-          onTextLayout={(e) => {
-            if (expanded) return;
-            if (e.nativeEvent.lines.length >= DESCRIPTION_MAX_LINES) {
-              setClampedToMaxLines(true);
-            }
-          }}
-        >
-          {trimmed}
-        </Text>
-      </View>
-      {canExpand ? (
-        <Pressable
-          onPress={() => setExpanded(true)}
-          hitSlop={8}
-          style={styles.moreLessPressable}
-          accessibilityRole="button"
-          accessibilityLabel="توسيع الوصف"
-        >
-          <Text style={styles.moreText}>المزيد</Text>
-        </Pressable>
-      ) : null}
-      {showLess ? (
-        <Pressable
-          onPress={() => setExpanded(false)}
-          hitSlop={8}
-          style={styles.moreLessPressable}
-          accessibilityRole="button"
-          accessibilityLabel="طي الوصف"
-        >
-          <Text style={styles.moreText}>أقل</Text>
-        </Pressable>
-      ) : null}
-    </View>
-  );
-}
-
-type ReelFeedVideoProps = {
-  uri: string;
-  isActive: boolean;
-  screenFocused: boolean;
-  onPlaybackTick: (isActiveRow: boolean, status: AVPlaybackStatus) => void;
-};
-
-function ReelFeedVideo({
-  uri,
-  isActive,
-  screenFocused,
-  onPlaybackTick,
-}: ReelFeedVideoProps) {
-  const ref = useRef<InstanceType<typeof Video> | null>(null);
-  const prevActiveRef = useRef(false);
-  const pendingSeekFromEnterRef = useRef(false);
-  const [userPaused, setUserPaused] = useState(false);
-  const isActiveRef = useRef(isActive);
-  const screenFocusedRef = useRef(screenFocused);
-  isActiveRef.current = isActive;
-  screenFocusedRef.current = screenFocused;
-
-  const wantsPlay = isActive && screenFocused && !userPaused;
-
-  const applyEnterPlayback = useCallback(async () => {
-    const v = ref.current;
-    if (!v) return;
-    try {
-      await v.setPositionAsync(0);
-      await v.setIsMutedAsync(false);
-      await v.playAsync();
-    } catch {
-      /* race */
-    }
-  }, []);
-
-  useEffect(() => {
-    void (async () => {
-      const v = ref.current;
-      if (!v) return;
-      try {
-        if (!screenFocused || !isActive) {
-          pendingSeekFromEnterRef.current = false;
-          await v.pauseAsync();
-          await v.setIsMutedAsync(true);
-          if (!isActive) prevActiveRef.current = false;
-          return;
-        }
-
-        if (!prevActiveRef.current) {
-          setUserPaused(false);
-          prevActiveRef.current = true;
-          const st = await v.getStatusAsync();
-          if (st.isLoaded) {
-            await applyEnterPlayback();
-          } else {
-            pendingSeekFromEnterRef.current = true;
-          }
-          return;
-        }
-
-        if (userPaused) {
-          await v.pauseAsync();
-          return;
-        }
-
-        await v.setIsMutedAsync(false);
-        await v.playAsync();
-      } catch {
-        /* unload / swap race */
-      }
-    })();
-  }, [applyEnterPlayback, isActive, screenFocused, uri, userPaused]);
-
-  const onVideoPress = useCallback(() => {
-    if (!isActiveRef.current || !screenFocusedRef.current) return;
-    setUserPaused((p) => !p);
-  }, []);
-
-  const onVideoLoad = useCallback(
-    (st: AVPlaybackStatus) => {
-      if (!pendingSeekFromEnterRef.current || !st.isLoaded) return;
-      pendingSeekFromEnterRef.current = false;
-      if (!isActiveRef.current || !screenFocusedRef.current) return;
-      void applyEnterPlayback();
-    },
-    [applyEnterPlayback]
-  );
-
-  return (
-    <View style={styles.videoPlayerStack}>
-      <Video
-        ref={ref}
-        source={{ uri }}
-        style={styles.video}
-        resizeMode={ResizeMode.COVER}
-        isLooping
-        shouldPlay={wantsPlay}
-        isMuted={!wantsPlay}
-        volume={1}
-        useNativeControls={false}
-        progressUpdateIntervalMillis={100}
-        onLoad={onVideoLoad}
-        onPlaybackStatusUpdate={(s) => onPlaybackTick(isActive, s)}
-      />
-      <Pressable
-        style={styles.videoTapLayer}
-        onPress={onVideoPress}
-        accessibilityRole="button"
-        accessibilityLabel="تشغيل أو إيقاف الفيديو"
-      />
-    </View>
-  );
-}
 
 export function Ui() {
   const params = useLocalSearchParams<{
@@ -594,6 +66,7 @@ export function Ui() {
   const activeTab = useMirror("activeTab");
   const router = useRouter();
   const segments = useSegments();
+  const header = useHeaderUser();
   const setActiveTab = useMirror("setActiveTab");
   const reels = useMirror("reels");
   const globalPolls = useMirror("globalPolls");
@@ -615,6 +88,16 @@ export function Ui() {
   );
   const currentIndex = useMirror("currentIndex");
   const viewportHeight = useMirror("viewportHeight");
+  const onProfilePress = useCallback(() => {
+    const isProfileRoute = segments.includes("profile");
+    if (isProfileRoute) router.replace("/(tabs)/profile" as never);
+    else router.push("/(tabs)/profile" as never);
+  }, [router, segments]);
+
+  const onNotificationsPress = useCallback(() => {
+    router.push("/(tabs)/notifications" as never);
+  }, [router]);
+
   const flatListRef = useMirror("flatListRef");
   const onScrollBeginDrag = useMirror("onScrollBeginDrag");
   const onScrollEndDrag = useMirror("onScrollEndDrag");
@@ -639,11 +122,7 @@ export function Ui() {
   const [mentionedUserIds, setMentionedUserIds] = useState<number[]>([]);
   const [mentionHits, setMentionHits] = useState<MentionableUser[]>([]);
   const [mentionLoading, setMentionLoading] = useState(false);
-  const [dismissedCommentPreviews, setDismissedCommentPreviews] = useState<Record<string, true>>({});
   const modalCommentsRef = useRef<FlatList<ReelCommentEntity> | null>(null);
-  const dismissCommentPreview = useCallback((reelId: string) => {
-    setDismissedCommentPreviews((s) => ({ ...s, [reelId]: true }));
-  }, []);
 
   useEffect(() => {
     void Audio.setAudioModeAsync({
@@ -820,7 +299,13 @@ export function Ui() {
 
   return (
     <View style={styles.screen}>
-      <ArenaHeader activeTab={activeTab} setActiveTab={setActiveTab} />
+      <ArenaHeader
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        avatarUri={header.avatarUri}
+        onProfilePress={onProfilePress}
+        onNotificationsPress={onNotificationsPress}
+      />
       <ReelLikeAnimationHost />
 
       <View style={styles.contentArea}>
@@ -877,10 +362,7 @@ export function Ui() {
                     const commentsCount =
                       item.comments_count ?? item.comments?.length ?? 0;
                     const barRatio = isActive ? playbackRatio : 0;
-                    const previewComment = item.comments?.[0];
-                    const previewAvatarUri = previewComment
-                      ? commentAvatarUri(previewComment.user)
-                      : null;
+                    const authorLabel = reelAuthorLabel(item.user);
 
                     return (
                       <View
@@ -907,57 +389,35 @@ export function Ui() {
                             </View>
                           )}
 
-                          <LinearGradient
-                            colors={["rgba(18,10,28,0.2)", "rgba(18,10,28,0.88)"]}
-                            style={styles.videoOverlay}
-                            start={{ x: 0.5, y: 0 }}
-                            end={{ x: 0.5, y: 1 }}
-                          />
-
                           <View style={styles.overlayRight} pointerEvents="box-none">
                             <View style={styles.overlayAction}>
-                                <Pressable
-                                  disabled={isReelLikeBusy}
-                                  onPress={() => {
-                                    const id = String(item.id ?? "");
-                                    // optimistically update is handled in mutations; trigger animation locally
-                                    void (async () => {
-                                      // run floating heart animation (if available)
-                                      try {
-                                        // import lazy to avoid bundle cost when not used
-                                        const mod = await import("./reel-like-animation");
-                                        mod.spawnLikeAnimation(id);
-                                      } catch (e) {
-                                        /* ignore */
-                                      }
+                              <Pressable
+                                disabled={isReelLikeBusy}
+                                onPress={() => {
+                                  const id = String(item.id ?? "");
+                                  void (async () => {
+                                    try {
+                                      const mod = await import("./reel-like-animation");
+                                      mod.spawnLikeAnimation(id);
+                                    } catch (e) {
+                                      /* ignore */
+                                    }
 
-                                      if (liked) void removeReelLike(id);
-                                      else void likeReel(id);
-                                    })();
-                                  }}
-                                  style={[
-                                    styles.overlayCircle,
-                                    liked && styles.overlayCircleActive,
-                                  ]}
-                                >
-                                  {liked ? (
-                                    <HugeiconsIcon
-                                      icon={FavouriteIcon}
-                                      size={INTERACTION_ICON_SIZE}
-                                      color={"#FFFFFF"}
-                                      strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
-                                      absoluteStrokeWidth
-                                    />
-                                  ) : (
-                                    <HugeiconsIcon
-                                      icon={FavouriteIcon}
-                                      size={INTERACTION_ICON_SIZE}
-                                      color={colors_V2.primaryLight}
-                                      strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
-                                      absoluteStrokeWidth
-                                    />
-                                  )}
-                                </Pressable>
+                                    if (liked) void removeReelLike(id);
+                                    else void likeReel(id);
+                                  })();
+                                }}
+                                style={styles.overlayCircle}
+                              >
+                                <HugeiconsIcon
+                                  icon={FavouriteIcon}
+                                  size={INTERACTION_ICON_SIZE}
+                                  color={liked ? "#9047FF" : "#FFFFFF"}
+                                  strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
+                                  absoluteStrokeWidth
+                                  fill={liked ? "#9047FF" : "transparent"}
+                                />
+                              </Pressable>
                               <Text style={styles.overlayCount}>
                                 {formatCompactCount(likesCount)}
                               </Text>
@@ -971,7 +431,7 @@ export function Ui() {
                                 <HugeiconsIcon
                                   icon={Comment03Icon}
                                   size={INTERACTION_ICON_SIZE}
-                                  color={colors_V2.primaryLight}
+                                  color={"#FFFFFF"}
                                   strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
                                   absoluteStrokeWidth
                                 />
@@ -989,7 +449,7 @@ export function Ui() {
                                 <HugeiconsIcon
                                   icon={Share01Icon}
                                   size={INTERACTION_ICON_SIZE}
-                                  color={colors_V2.primaryLight}
+                                  color={"#FFFFFF"}
                                   strokeWidth={INTERACTION_ICON_STROKE_WIDTH}
                                   absoluteStrokeWidth
                                 />
@@ -999,59 +459,21 @@ export function Ui() {
                           </View>
 
                           <View style={styles.overlayBottomLeft} pointerEvents="box-none">
-                            {previewComment ? (
-                              <DraggableCommentPreview
-                                reelIdStr={String(item.id ?? "")}
-                                dismissed={Boolean(dismissedCommentPreviews[String(item.id ?? "")])}
-                                onDismiss={dismissCommentPreview}
-                                onOpen={() => setCommentReelId(String(item.id ?? ""))}
-                              >
-                                <View
-                                  style={styles.commentPreview}
-                                  accessibilityRole="button"
-                                  accessibilityLabel="فتح التعليقات أو اسحب لإخفاء المعاينة"
-                                >
-                                  <View style={styles.commentPreviewIdentity}>
-                                    {previewAvatarUri ? (
-                                      <Image
-                                        source={{ uri: previewAvatarUri }}
-                                        style={styles.commentPreviewAvatar}
-                                        contentFit="cover"
-                                      />
-                                    ) : (
-                                      <View style={styles.commentPreviewAvatarPlaceholder} />
-                                    )}
-                                    <Text
-                                      style={styles.commentPreviewUser}
-                                      numberOfLines={1}
-                                      ellipsizeMode="tail"
-                                    >
-                                      {commentAuthor(previewComment.user)}
-                                    </Text>
-                                  </View>
-                                  <View style={styles.commentPreviewBodyWrap}>
-                                    <Text
-                                      style={styles.commentPreviewBody}
-                                      numberOfLines={1}
-                                      ellipsizeMode="tail"
-                                    >
-                                      <Text style={styles.commentPreviewBodyPrefix}>: </Text>
-                                      {previewComment.comment}
-                                    </Text>
-                                  </View>
-                                </View>
-                              </DraggableCommentPreview>
-                            ) : null}
-
-                            {Boolean(item.title?.trim()) && (
-                              <Text style={styles.reelTitle} numberOfLines={2}>
-                                {item.title.trim()}
+                            <View style={styles.overlayTextContent}>
+                              <Text style={styles.reelAuthor} numberOfLines={1}>
+                                {authorLabel}
                               </Text>
-                            )}
-                            <ReelDescriptionBlock
-                              key={`desc-${String(item.id ?? index)}`}
-                              description={item.description ?? ""}
-                            />
+
+                              {Boolean(item.title?.trim()) && (
+                                <Text style={styles.reelTitle} numberOfLines={1}>
+                                  {item.title.trim()}
+                                </Text>
+                              )}
+                              <ReelDescriptionBlock
+                                key={`desc-${String(item.id ?? index)}`}
+                                description={item.description ?? ""}
+                              />
+                            </View>
                           </View>
 
                           <View style={styles.bottomChrome}>
@@ -1085,14 +507,6 @@ export function Ui() {
                   onViewableItemsChanged={onViewableItemsChanged}
                   viewabilityConfig={viewabilityConfig}
                   removeClippedSubviews={false}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={isFetchingReels && !isLoadingReels}
-                      onRefresh={() => void refreshReels()}
-                      tintColor={colors_V2.primary}
-                      colors={[colors_V2.primary]}
-                    />
-                  }
                   ListEmptyComponent={
                     <View style={styles.centered}>
                       <Text style={styles.text}>لا ريلز بعد.</Text>
